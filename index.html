@@ -179,42 +179,48 @@
       <canvas id="summaryChart"></canvas>
     </div>
   </div>
+
 <script>
-if (typeof google === "undefined") {
-  window.google = {};
+  const API_BASE_URL = "https://script.google.com/macros/s/AKfycbyI_n5W9EoqPC-J40JPfNeVISEZKxJJjo5WwcYTRXkvmHnx8huh5U15T-nSveW9_0zj/exec";
+
+// =========================
+// GET API
+// =========================
+function apiGet(api, params = {}) {
+
+  const query = new URLSearchParams({
+    api: api,
+    ...params
+  }).toString();
+
+  return fetch(API_BASE_URL + "?" + query)
+    .then(res => res.json())
+    .catch(err => {
+      console.error("GET API Error:", err);
+      throw err;
+    });
 }
 
-if (!google.script) {
-  google.script = {};
-}
 
-if (!google.script.run) {
-  google.script.run = new Proxy({}, {
-    get: function () {
-      return function () {
-        console.warn("⚠ google.script.run blocked (API mode pending)");
-        return {
-          withSuccessHandler: function () { return this; },
-          withFailureHandler: function () { return this; }
-        };
-      };
-    }
+// =========================
+// POST API
+// =========================
+function apiPost(api, body = {}) {
+
+  return fetch(API_BASE_URL + "?api=" + api, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(body)
+  })
+  .then(res => res.json())
+  .catch(err => {
+    console.error("POST API Error:", err);
+    throw err;
   });
 }
 </script>
-
-  const API_BASE_URL = "https://script.google.com/macros/s/AKfycbyI_n5W9EoqPC-J40JPfNeVISEZKxJJjo5WwcYTRXkvmHnx8huh5U15T-nSveW9_0zj/exec";
-
-function apiPost(action, payload = {}) {
-  return fetch(API_BASE_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      action: action,
-      ...payload
-    })
-  }).then(res => res.json());
-}
  <!-- NAV + MIGRATION SCRIPT -->
   <script>
 (function(){
@@ -612,75 +618,56 @@ google.script.run.withSuccessHandler(function(data) {
         btn.classList.add('processing');
         if (errDiv) errDiv.textContent = '';
 
-        google.script.run.withSuccessHandler(function(result){
-  // result is expected: { valid: boolean, role: string|null }
-  // restore button state
-  btn.textContent = 'Login';
-  btn.disabled = false;
-  btn.classList.remove('processing');
+    apiPost("adminLogin", { username, password })
+  .then(function(result){
 
-  if (result && result.valid) {
-    if (window._navObserver) window._navObserver.disconnect();
+    btn.textContent = 'Login';
+    btn.disabled = false;
+    btn.classList.remove('processing');
 
-    // mark logged in and enable nav buttons
-    window.isLoggedIn = true;
-    document.querySelectorAll('.nav-btn').forEach(b => {
-         if (b.getAttribute('data-page') !== 'pageLogin') {
-        b.classList.remove('disabled');
-        b.disabled = false;
-      }
-    });
-const couponTab = document.getElementById('couponStatusTab');
-if (couponTab) couponTab.style.display = 'none';
+    if (result && result.valid) {
 
-const menuTab = document.getElementById('menuTab');
-if (menuTab) menuTab.style.display = 'none';
+      window.isLoggedIn = true;
 
-    // Show/Hide Menu tab based on role === 'Master' (case-insensitive)
-    try {
+      document.querySelectorAll('.nav-btn').forEach(b => {
+        if (b.getAttribute('data-page') !== 'pageLogin') {
+          b.classList.remove('disabled');
+          b.disabled = false;
+        }
+      });
+
       const role = (result.role || '').toString().trim().toLowerCase();
       const menuTab = document.getElementById('menuTab');
-
-      if (menuTab) {
-        if (role === 'admin') {
-          menuTab.style.display = 'block';
-        } else {
-          menuTab.style.display = 'none';
-        }
-      }
       const couponTab = document.getElementById('couponStatusTab');
-if (couponTab) {
-  if (role === 'admin') {
-    couponTab.style.display = 'block';
-  } else {
-    couponTab.style.display = 'none';
-  }
-}
 
-    } catch(e) {
-      console.warn('Role check failed', e);
+      if (menuTab) menuTab.style.display = (role === 'admin') ? 'block' : 'none';
+      if (couponTab) couponTab.style.display = (role === 'admin') ? 'block' : 'none';
+
+      document.getElementById('loginForm').style.display = 'none';
+      document.getElementById('pendingOrder').style.display = 'block';
+
+      const ordersBtn = document.querySelector('.nav-btn[data-page="pageOrders"]');
+      if (ordersBtn) ordersBtn.classList.add('active');
+
+      loadOrders();
+      loadYearOptions();
+      window.refreshInterval = setInterval(loadOrders, 30000);
+
+      const pageOrders = document.getElementById('pageOrders');
+      if (pageOrders) pageOrders.style.display = 'block';
+
+    } else {
+      if (errDiv) errDiv.textContent = 'Invalid username or password';
     }
 
-    // show pages
-    document.getElementById('loginForm').style.display = 'none';
-    document.getElementById('pendingOrder').style.display = 'block';
-    const ordersBtn = document.querySelector('.nav-btn[data-page="pageOrders"]');
-    if (ordersBtn) ordersBtn.classList.add('active');
-    loadOrders();
-    loadYearOptions();
-    window.refreshInterval = setInterval(loadOrders, 30000);
-    const pageOrders = document.getElementById('pageOrders');
-    if (pageOrders) pageOrders.style.display = 'block';
-  } else {
-    if (errDiv) errDiv.textContent = 'Invalid username or password';
-  }
-}).withFailureHandler(function(err){
-  console.error('checkLogin error:', err);
-  if (errDiv) errDiv.textContent = 'Login error';
-  btn.textContent = 'Login';
-  btn.disabled = false;
-  btn.classList.remove('processing');
-}).checkLogin(username, password);
+  })
+  .catch(function(err){
+    console.error('Login error:', err);
+    if (errDiv) errDiv.textContent = 'Login error';
+    btn.textContent = 'Login';
+    btn.disabled = false;
+    btn.classList.remove('processing');
+  });
 
       }
 
