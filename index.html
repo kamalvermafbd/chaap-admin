@@ -350,11 +350,26 @@ function loadCouponStatus() {
   box.innerHTML = "Loading pending coupon payments...";
 
   // 🔹 helper: number formatting (comma)
-  const fmt = n =>
-    Number(n || 0).toLocaleString("en-IN");
+  const fmt = n => Number(n || 0).toLocaleString("en-IN");
+
+  /* 🔴 REMOVE THIS OLD BLOCK COMPLETELY
 
   google.script.run
     .withSuccessHandler(function (rows) {
+      ...
+    })
+    .withFailureHandler(function (err) {
+      ...
+    })
+    .getPendingPrepaidCoupons();
+
+  🔴 END REMOVE
+  */
+
+  // 🟢 NEW API VERSION START
+  apiGet("getPendingPrepaidCoupons")
+    .then(function (rows) {
+
       console.log("UI RECEIVED COUPONS:", rows);
 
       if (!rows || rows.length === 0) {
@@ -395,7 +410,6 @@ function loadCouponStatus() {
         let mobileTotal = 0;
 
         grouped[mobile].forEach(r => {
-          console.log("ROW DEBUG:", r._row); // 👈 YAHAN
           const netAmt = Number(r.net_amount || 0);
           mobileTotal += netAmt;
 
@@ -406,14 +420,12 @@ function loadCouponStatus() {
               <td>${r.mobile}</td>
               <td>${r.package_id}</td>
               <td>${r.slab_id}</td>
-
               <td style="text-align:right;">${fmt(r.buy_amount)}</td>
               <td style="text-align:right;">${fmt(r.discount_percent)}</td>
               <td style="text-align:right;">${fmt(r.discount_amount)}</td>
               <td style="text-align:right;">${fmt(r.net_rate)}</td>
               <td style="text-align:right;">${fmt(r.qty)}</td>
               <td style="text-align:right;"><b>${fmt(netAmt)}</b></td>
-
               <td>${renderStatusCell(r)}</td>
             </tr>
           `;
@@ -443,12 +455,12 @@ function loadCouponStatus() {
       html += "</table>";
       box.innerHTML = html;
     })
-    .withFailureHandler(function (err) {
+    .catch(function (err) {
       console.error("Coupon status load failed", err);
       box.innerHTML =
         "<p style='color:red'>Failed to load coupon status</p>";
-    })
-    .getPendingPrepaidCoupons();
+    });
+  // 🟢 NEW API VERSION END
 }
 
 function renderStatusCell(r) {
