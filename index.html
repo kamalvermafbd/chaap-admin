@@ -206,20 +206,13 @@ function apiGet(api, params = {}) {
 // POST API
 // =========================
 function apiPost(api, body = {}) {
-
   return fetch(API_BASE_URL + "?api=" + api, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
     body: JSON.stringify(body)
   })
-  .then(res => res.json())
-  .catch(err => {
-    console.error("POST API Error:", err);
-    throw err;
-  });
+  .then(res => res.json());
 }
+
 </script>
  <!-- NAV + MIGRATION SCRIPT -->
   <script>
@@ -1618,17 +1611,17 @@ function hideScreenLock() {
 }
 
 function loadCategoryList() {
-  google.script.run.withSuccessHandler(function(list) {
-    const arr = list || [];
-    // primary (existing) var
-    window.CATEGORY_OPTIONS = arr;
-    // alias for any old references that use lowercase
-    window.category_options = arr;
-
-    refreshCategoryDropdown();
-  }).getCategoryList();
+  apiGet("getCategoryList")
+    .then(function(list) {
+      const arr = list || [];
+      window.CATEGORY_OPTIONS = arr;
+      window.category_options = arr;
+      refreshCategoryDropdown();
+    })
+    .catch(function(err) {
+      console.error("Category load error:", err);
+    });
 }
-
 
 function refreshCategoryDropdown() {
   const dl = document.getElementById("cat-list");
