@@ -3,10 +3,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <base target="_top">
+  
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
+  
   <title>Pending Orders - Dashboard</title>
+  <link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#343a40">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
@@ -1680,6 +1683,13 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 600);
 
 });
+</script>
+  <script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/sw.js")
+    .then(() => console.log("✅ Admin SW Registered"))
+    .catch(err => console.log("❌ SW Error", err));
+}
 </script>
 </body>
 </html>
