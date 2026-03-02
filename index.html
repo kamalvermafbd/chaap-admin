@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -204,6 +202,19 @@ if (!google.script.run) {
   });
 }
 </script>
+
+  const API_BASE_URL = "https://script.google.com/macros/s/AKfycbyI_n5W9EoqPC-J40JPfNeVISEZKxJJjo5WwcYTRXkvmHnx8huh5U15T-nSveW9_0zj/exec";
+
+function apiPost(action, payload = {}) {
+  return fetch(API_BASE_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      action: action,
+      ...payload
+    })
+  }).then(res => res.json());
+}
  <!-- NAV + MIGRATION SCRIPT -->
   <script>
 (function(){
