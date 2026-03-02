@@ -524,78 +524,41 @@ if (action === "received") {
           //placeholder.textContent = 'No orders found.';
           //return;
         //}
-google.script.run.withSuccessHandler(function(data) {
-  data.forEach(function(item, i){
-  console.log('Row ' + i + ':', item);
+document.querySelectorAll('.acceptBtn').forEach(btn => {
+  btn.addEventListener('click', function() {
+
+    const orderNumber = this.getAttribute('data-order');
+    const orderDate = this.getAttribute('data-date');
+    const statusCell = this.closest('tr').querySelector('.statusCell');
+
+    this.disabled = true;
+    this.textContent = 'Processing...';
+
+    apiGet("acceptOrder", {
+      orderNumber: orderNumber,
+      orderDate: orderDate
+    })
+    .then(function(success){
+
+      if (success) {
+        statusCell.textContent = 'Accepted';
+        btn.textContent = 'Accepted';
+      } else {
+        alert('Failed to update order status');
+        btn.disabled = false;
+        btn.textContent = 'Accept';
+      }
+
+    })
+    .catch(function(err){
+      console.error("acceptOrder error:", err);
+      alert("Server error");
+      btn.disabled = false;
+      btn.textContent = 'Accept';
+    });
+
+  });
 });
-  console.log('DEBUG: getMenuData() returned rows:', data);
-  if (!data || data.length === 0) {
-    menuDiv.textContent = 'No menu items found';
-    return;
-  }
-
-        let html = '<table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse;width:100%;">';
-        html += '<tr><th>OrderNumber</th><th>Date</th><th>Address</th><th>Order Type</th><th>Order Status</th><th>Accept</th><th>Action</th></tr>';
-
-        data.forEach(order => {
-          const orderNumber = order.OrderNumber || '';
-          const orderDate = order.Date || '';
-          const orderType = order["Order Type"] || '';
-          const orderStatus = order.OrderStatus || 'Pending';
-          const address = order.Address || '';
-
-          html += `<tr>
-            <td>${orderNumber}</td>
-            <td>${orderDate}</td>
-            <td>${address}</td>
-            <td>${orderType}</td>
-            <td class="statusCell">${orderStatus}</td>
-            <td><button class="acceptBtn" data-order="${orderNumber}" data-date="${orderDate}" ${orderStatus === 'Accepted' ? 'disabled' : ''}>${orderStatus === 'Accepted' ? 'Accepted' : 'Accept'}</button></td>
-            <td><button class="billBtn" data-order="${orderNumber}">Generate Bill</button></td>
-          </tr>`;
-        });
-
-        html += '</table>';
-        placeholder.innerHTML = html;
-
-        document.querySelectorAll('.billBtn').forEach(btn => {
-          btn.addEventListener('click', function() {
-            const orderNumber = this.getAttribute('data-order') || '';
-            generateBill(orderNumber, this);
-          });
-        });
-
-        document.querySelectorAll('.acceptBtn').forEach(btn => {
-          btn.addEventListener('click', function() {
-            const orderNumber = this.getAttribute('data-order') || '';
-            const orderDate = this.getAttribute('data-date') || '';
-            const statusCell = this.closest('tr').querySelector('.statusCell');
-
-            this.disabled = true;
-            this.textContent = 'Processing...';
-
-            google.script.run.withSuccessHandler(function(success) {
-              if (success) {
-                if (statusCell) statusCell.textContent = 'Accepted';
-                btn.textContent = 'Accepted';
-              } else {
-                alert('Failed to update order status');
-                btn.disabled = false;
-                btn.textContent = 'Accept';
-              }
-            }).acceptOrder(orderNumber, orderDate);
-          });
-        });
-
-        const now = new Date();
-        if (lastUpdatedDiv) lastUpdatedDiv.textContent = 'Last updated: ' + now.toLocaleTimeString();
-
-      }).withFailureHandler(function(err){
-        console.error('getOrderNumbers error:', err);
-        if (document.getElementById('ordersPlaceholder')) document.getElementById('ordersPlaceholder').textContent = 'Error loading orders';
-      }).getOrderNumbers();
-    }
-
     // LOGIN / LOGOUT
     document.addEventListener('click', function(e){
       if (e.target && e.target.id === 'loginBtn') {
