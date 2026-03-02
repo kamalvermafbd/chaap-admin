@@ -868,8 +868,10 @@ let activeEditIndex = null;
   // call server
  
   // call server
-  google.script.run.withSuccessHandler(function(data){
+apiGet("getSummaryData", { year: yearFilter })
+  .then(function(data){
     try {
+
       if (loadingBarEl) loadingBarEl.style.display = 'none';
 
       if (!data || !Array.isArray(data) || data.length === 0) {
@@ -914,27 +916,36 @@ let activeEditIndex = null;
           fill: false,
           tension: 0.1
         }));
-        // render chart
+
         if (!summaryCanvas) {
           console.warn('loadSummary: summaryChart canvas not found');
           return;
         }
+
         const ctx = summaryCanvas.getContext('2d');
         if (window.chartInstance) { try{ window.chartInstance.destroy(); }catch(e){} }
+
         window.chartInstance = new Chart(ctx, {
           type: 'line',
           data: { labels, datasets },
-          options: { responsive: true, plugins: { legend: { position: 'bottom' } }, scales: { y: { beginAtZero: true } } }
+          options: { 
+            responsive: true, 
+            plugins: { legend: { position: 'bottom' } }, 
+            scales: { y: { beginAtZero: true } } 
+          }
         });
+
         if (chartContainerEl) chartContainerEl.style.display = 'block';
         if (summaryTableWrapper) summaryTableWrapper.style.display = 'none';
         return;
       }
 
-      // PIE or HISTOGRAM (bar) for selected month
+      // PIE or HISTOGRAM
       if (view === 'pie' || view === 'histogram') {
+
         const labels = [];
         const values = [];
+
         data.forEach(d => {
           const key = `${yearFilter}-${monthSelected}`;
           labels.push(d.Item);
@@ -945,54 +956,66 @@ let activeEditIndex = null;
           console.warn('loadSummary: summaryChart canvas not found');
           return;
         }
+
         const ctx = summaryCanvas.getContext('2d');
         if (window.chartInstance) { try{ window.chartInstance.destroy(); }catch(e){} }
+
         if (view === 'pie') {
-  window.chartInstance = new Chart(ctx, {
-    type: 'pie',
-    data: {
-      labels,
-      datasets: [{
-        data: values,
-        backgroundColor: labels.map((_, i) => getColor(i))
-      }]
-    },
-    options: { responsive: true }
-  });
-} else {
-  const monthIndex = parseInt(monthSelected, 10) - 1;
-  const monthLabel = (monthNames[monthIndex] || monthSelected);
-  window.chartInstance = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels,
-      datasets: [{
-        label: `Qty (${monthLabel})`,
-        data: values,
-        backgroundColor: labels.map((_, i) => getColor(i))
-      }]
-    },
-    options: { 
-      responsive: true, 
-      plugins: { legend: { display: false } },
-      scales: { y: { beginAtZero: true } }
-    }
-  });
-}
+
+          window.chartInstance = new Chart(ctx, {
+            type: 'pie',
+            data: {
+              labels,
+              datasets: [{
+                data: values,
+                backgroundColor: labels.map((_, i) => getColor(i))
+              }]
+            },
+            options: { responsive: true }
+          });
+
+        } else {
+
+          const monthIndex = parseInt(monthSelected, 10) - 1;
+          const monthLabel = (monthNames[monthIndex] || monthSelected);
+
+          window.chartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels,
+              datasets: [{
+                label: `Qty (${monthLabel})`,
+                data: values,
+                backgroundColor: labels.map((_, i) => getColor(i))
+              }]
+            },
+            options: { 
+              responsive: true,
+              plugins: { legend: { display: false } },
+              scales: { y: { beginAtZero: true } }
+            }
+          });
+
+        }
 
         if (chartContainerEl) chartContainerEl.style.display = 'block';
         if (summaryTableWrapper) summaryTableWrapper.style.display = 'none';
         return;
       }
 
-      // fallback
       summaryTableEl.innerHTML = 'Unsupported view';
+
     } catch (err) {
       console.error('loadSummary: error processing server data', err);
       if (loadingBarEl) loadingBarEl.style.display = 'none';
-      if (summaryTableEl) summaryTableEl.innerHTML = 'Error rendering summary. See console.';
+      if (summaryTableEl) summaryTableEl.innerHTML = 'Error rendering summary.';
     }
-  }).getSummaryData();
+  })
+  .catch(function(err){
+    console.error("getSummaryData API failed:", err);
+    if (loadingBarEl) loadingBarEl.style.display = 'none';
+    if (summaryTableEl) summaryTableEl.innerHTML = 'Server error loading summary';
+  });
 }
 
 
