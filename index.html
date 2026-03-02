@@ -1,0 +1,1685 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pending Orders - Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    /* ==== Your original visual styles - kept and expanded ==== */
+    body { font-family:sans-serif; padding:20px; background:#f5f5f5; margin:0; }
+    .container { max-width:400px; margin:50px auto; background:#fff; padding:20px; border-radius:10px; box-shadow:0 4px 15px rgba(0,0,0,0.1); }
+    input, select { width:100%; padding:10px; margin-bottom:15px; border:1px solid #ccc; border-radius:5px; box-sizing:border-box; }
+    button { padding:5px 10px; border:none; border-radius:5px; cursor:pointer; background:#007bff; color:#fff; }
+    button.logoutBtn { background:#dc3545; margin-top:15px; width:100%; }
+    table { width:100%; border-collapse:collapse; margin-top:15px; }
+    th, td { border:1px solid #333; padding:5px; text-align:left; }
+    tr:nth-child(even) { background-color:#f2f2f2; }
+    .error { color:red; text-align:center; margin-bottom:10px; }
+    #thermalPreview { font-family: monospace; font-size:10px; white-space: pre; background:#eee; padding:10px; margin-top:10px; display:none; }
+    .printBtn { margin-left:5px; padding:3px 7px; background:#28a745; color:#fff; border-radius:3px; cursor:pointer; }
+    #lastUpdated { font-size:12px; color:gray; margin-top:5px; }
+    .processing { opacity:0.6; cursor:not-allowed; }
+    #summaryBtn { margin-top:15px; width:100%; padding:8px; background:#17a2b8; }
+    #summaryDiv { background:#f9f9f9; padding:10px; border-radius:6px; margin-top:10px; }
+    #summaryDiv table { width:100%; border-collapse:collapse; }
+    #summaryDiv th, #summaryDiv td { border:1px solid #999; padding:5px; text-align:left; }
+    #summaryDiv tr:nth-child(even) { background:#eee; }
+    #summaryTableWrapper { overflow-x:auto; }
+    th.sticky, td.firstCol { position: sticky; left:0; background:#f9f9f9; z-index:2; }
+
+    /* ==== Navigation / layout styles (kept separate) ==== */
+    .nav-wrap { display:flex; min-height:100vh; margin:0; padding:0; box-sizing:border-box; }
+    .nav-side { width:220px; background:#343a40; color:#fff; padding-top:16px; box-sizing:border-box; display:flex; flex-direction:column; }
+    .nav-title { padding:12px 18px; font-weight:600; border-bottom:1px solid rgba(255,255,255,0.06); }
+    .nav-btn { background:none; border:none; color:#fff; padding:12px 18px; text-align:left; font-size:15px; cursor:pointer; outline:none; }
+    .nav-btn:hover, .nav-btn.active { background:#495057; }
+    .nav-btn.disabled { opacity: 0.5; pointer-events: none; }
+    .nav-content { flex:1; padding:18px; overflow:auto; box-sizing:border-box; }
+    .page { display:none; }
+    .page .container { margin:0 auto; max-width:1000px; }
+    .topbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+    .small { font-size:13px; color:#666; }
+
+    @media (max-width:800px){
+      .nav-wrap { flex-direction:column; }
+      .nav-side { width:100%; flex-direction:row; overflow:auto; }
+      .nav-title { display:none; }
+      .nav-btn { flex:1; white-space:nowrap; }
+    }
+
+   .logout-btn {
+  position: fixed;
+  top: 10px;
+  right: 15px;
+  background: #dc3545;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  z-index: 999;
+}
+
+.logout-btn:hover {
+  background: #c82333;
+}
+
+
+  </style>
+</head>
+<body>
+
+  <div class="nav-wrap" id="navWrap">
+    <div class="nav-side" id="navSide">
+      <div class="nav-title">Dashboard</div>
+      <button class="nav-btn active" data-page="pageLogin">Login</button>
+      <button class="nav-btn" data-page="pageOrders">Pending Orders</button>
+      <button class="nav-btn" data-page="pageSummary">Summary</button>
+      <!-- Menu tab (only visible to Admin) -->
+<button class="nav-btn" data-page="pageMenu" id="menuTab" style="display:none;">Menu</button>
+<button class="nav-btn"
+        data-page="pageCouponStatus"
+        id="couponStatusTab"
+        style="display:none;">
+  Coupon Status
+</button>
+
+
+    </div>
+
+    <div class="nav-content">
+      <div id="pageLogin" class="page"></div>
+      <div id="pageOrders" class="page"></div>
+      <div id="pageSummary" class="page"></div>
+<div id="pageMenu" class="page" style="display:none;">
+  <div class="container">
+    <h2>Menu Management</h2>
+    <p>Welcome Master! You can manage menu items here.</p>
+    <!-- You can add a form or table later -->
+     <div id="menuTable"></div>
+     
+  </div>
+</div>  
+<div id="pageCouponStatus" class="page" style="display:none;">
+  <div class="container">
+    <h2>Coupon Payment Status</h2>
+    <p class="small">
+      Pending prepaid coupon payments will appear here.
+    </p>
+
+    <div id="couponStatusTable">
+      Loading...
+    </div>
+  </div>
+</div>
+
+    </div>
+
+  </div>
+<button id="logoutBtn" class="logout-btn" style="display:none;">Logout</button>
+
+  <!-- ORIGINAL content (kept) -->
+  <div class="container" id="loginForm">
+    <h3 style="text-align:center;">Login</h3>
+    <div class="error" id="loginError"></div>
+    <input id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button id="loginBtn">Login</button>
+  </div>
+
+  <div class="container" id="pendingOrder" style="display:none;">
+    <h3>Pending Orders</h3>
+    <div id="ordersPlaceholder">Loading...</div>
+    <div id="lastUpdated"></div>
+    <div id="thermalPreview"></div>
+    
+  </div>
+
+  <!-- Summary DIV -->
+  <div id="summaryDiv" style="display:none;">
+
+    <h4>Summary</h4>
+    <label>Year:
+      <select id="filterYear"><option value="">Select Year</option></select>
+    </label>
+    <label>View:
+      <select id="viewSelect">
+        <option value="">Select View Type</option>
+        <option value="table">Table</option>
+        <option value="graph">Line Graph</option>
+        <option value="pie">Pie Chart</option>
+        <option value="histogram">Histogram</option>
+      </select>
+    </label>
+    <label id="monthLabel" style="display:none;">Month:
+      <select id="monthSelect">
+        <option value="01">Jan</option><option value="02">Feb</option><option value="03">Mar</option>
+        <option value="04">Apr</option><option value="05">May</option><option value="06">Jun</option>
+        <option value="07">Jul</option><option value="08">Aug</option><option value="09">Sep</option>
+        <option value="10">Oct</option><option value="11">Nov</option><option value="12">Dec</option>
+      </select>
+    </label>
+
+    <div id="loadingBar" style="display:none; margin-top:10px; font-weight:bold; color:#007bff;">
+      Processing... Please wait ⏳
+    </div>
+
+    <div id="summaryTableWrapper" style="margin-top:10px;">
+      <div id="summaryTable"></div>
+    </div>
+
+    <div id="chartContainer" style="margin-top:10px; display:none;">
+      <canvas id="summaryChart"></canvas>
+    </div>
+  </div>
+<script>
+if (typeof google === "undefined") {
+  window.google = {};
+}
+
+if (!google.script) {
+  google.script = {};
+}
+
+if (!google.script.run) {
+  google.script.run = new Proxy({}, {
+    get: function () {
+      return function () {
+        console.warn("⚠ google.script.run blocked (API mode pending)");
+        return {
+          withSuccessHandler: function () { return this; },
+          withFailureHandler: function () { return this; }
+        };
+      };
+    }
+  });
+}
+</script>
+ <!-- NAV + MIGRATION SCRIPT -->
+  <script>
+(function(){
+  document.addEventListener('DOMContentLoaded', function(){
+    try {
+      const pageLogin = document.getElementById('pageLogin');
+      const pageOrders = document.getElementById('pageOrders');
+      const pageSummary = document.getElementById('pageSummary');
+
+      const loginForm = document.getElementById('loginForm');
+      if (loginForm && pageLogin) pageLogin.appendChild(loginForm);
+
+      const pendingOrder = document.getElementById('pendingOrder');
+      if (pendingOrder && pageOrders) pageOrders.appendChild(pendingOrder);
+
+      const summaryDiv = document.getElementById('summaryDiv');
+      if (summaryDiv && pageSummary) pageSummary.appendChild(summaryDiv);
+
+      if (typeof window.isLoggedIn === 'undefined') window.isLoggedIn = false;
+
+      // Disable all menu items initially
+      document.querySelectorAll('.nav-btn').forEach(b => {
+        if (b.getAttribute('data-page') !== 'pageLogin') {
+          b.classList.add('disabled');
+          b.disabled = true;
+        } else {
+          b.classList.add('active');
+        }
+      });
+
+      function showPage(pageId){
+        if (pageId !== 'pageLogin' && !window.isLoggedIn) {
+          const loginErr = document.getElementById('loginError');
+          if (loginErr) loginErr.textContent = 'Please login to access this page';
+          pageId = 'pageLogin';
+        } else {
+          const loginErr = document.getElementById('loginError');
+          if (loginErr) loginErr.textContent = '';
+        }
+
+        document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+        const el = document.getElementById(pageId);
+        if (el) el.style.display = 'block';
+
+if (pageId === 'pageCouponStatus') {
+  setTimeout(loadCouponStatus, 50);
+}
+
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        const btn = document.querySelector('.nav-btn[data-page="'+pageId+'"]');
+        if (btn) btn.classList.add('active');
+
+        if (pageId === 'pageSummary') {
+          const sd = document.getElementById('summaryDiv');
+          if (sd) sd.style.display = 'block';
+          const lb = document.getElementById('loadingBar');
+          if (lb) lb.style.display = 'block';
+          try {
+            loadYearOptions();
+          } catch (e) {
+            console.error('showPage: loadYearOptions error', e);
+            setTimeout(function() { try { loadSummary(); } catch(e2){ console.error(e2); } }, 400);
+          }
+        }
+      }
+
+      // 🔥 FIXED — Correct sequence:
+      document.querySelectorAll('.nav-btn').forEach(btn=>{
+        btn.addEventListener('click', function(){
+          const page = this.getAttribute('data-page');
+          showPage(page);
+
+          if (page === 'pageMenu') {
+            // 1️⃣ Load dropdown values first
+            loadCategoryList();
+
+            // 2️⃣ Load menu after categories loaded
+            setTimeout(loadMenuData, 150);
+          }
+          
+
+        });
+      });
+
+      // Watch login visibility
+      if (loginForm && pendingOrder) {
+       const obs = new MutationObserver(function(){
+
+
+          const loginHidden = window.getComputedStyle(loginForm).display === 'none';
+          const pendingVisible = window.getComputedStyle(pendingOrder).display !== 'none';
+          if (loginHidden && pendingVisible) showPage('pageOrders');
+          if (!loginHidden) showPage('pageLogin');
+        });
+        obs.observe(loginForm, { attributes: true, attributeFilter: ['style', 'class'] });
+        obs.observe(pendingOrder, { attributes: true, attributeFilter: ['style', 'class'] });
+      }
+
+      // Summary listeners
+      try {
+        const fy = document.getElementById('filterYear');
+        const vs = document.getElementById('viewSelect');
+        const ms = document.getElementById('monthSelect');
+        if (fy) fy.addEventListener('change', loadSummary);
+        if (vs) vs.addEventListener('change', function(){
+          const label = document.getElementById('monthLabel');
+          if (label) label.style.display = (this.value === 'pie' || this.value === 'histogram') ? 'block' : 'none';
+          loadSummary();
+        });
+        if (ms) ms.addEventListener('change', loadSummary);
+      } catch(err){
+        console.warn('attach summary listeners error', err);
+      }
+
+      // Show login page initially
+      showPage('pageLogin');
+
+    } catch (e) {
+      console.error('Nav injection failed:', e);
+    }
+  });
+})();
+</script>
+ <!-- MAIN APP SCRIPT -->
+  <script>
+let chartInstance = null;
+window.CATEGORY_OPTIONS = [];
+window.category_options = window.CATEGORY_OPTIONS;
+
+function loadCouponStatus() {
+  const box = document.getElementById("couponStatusTable");
+  if (!box) return;
+
+  box.innerHTML = "Loading pending coupon payments...";
+
+  // 🔹 helper: number formatting (comma)
+  const fmt = n =>
+    Number(n || 0).toLocaleString("en-IN");
+
+  google.script.run
+    .withSuccessHandler(function (rows) {
+      console.log("UI RECEIVED COUPONS:", rows);
+
+      if (!rows || rows.length === 0) {
+        box.innerHTML = "<p>No pending coupon payments 🎉</p>";
+        return;
+      }
+
+      let html = `
+        <table border="1" cellpadding="6" cellspacing="0"
+               style="width:100%; border-collapse:collapse;">
+          <tr style="background:#f0f0f0">
+            <th>Time</th>
+            <th>Order Group</th>
+            <th>Mobile</th>
+            <th>Package</th>
+            <th>Slab</th>
+            <th style="text-align:right;">Coupon Amt</th>
+            <th style="text-align:right;">Discount %</th>
+            <th style="text-align:right;">Discount Amt</th>
+            <th style="text-align:right;">Net Rate</th>
+            <th style="text-align:right;">Qty</th>
+            <th style="text-align:right;">Net Amt</th>
+            <th>Status</th>
+          </tr>
+      `;
+
+      // 🔹 STEP-1: group by mobile
+      const grouped = {};
+      rows.forEach(r => {
+        if (!grouped[r.mobile]) grouped[r.mobile] = [];
+        grouped[r.mobile].push(r);
+      });
+
+      // 🔹 STEP-2: render groups
+      let grandTotal = 0;
+
+      Object.keys(grouped).forEach(mobile => {
+        let mobileTotal = 0;
+
+        grouped[mobile].forEach(r => {
+          console.log("ROW DEBUG:", r._row); // 👈 YAHAN
+          const netAmt = Number(r.net_amount || 0);
+          mobileTotal += netAmt;
+
+          html += `
+            <tr>
+              <td>${r.timestamp}</td>
+              <td>${r.order_group_id}</td>
+              <td>${r.mobile}</td>
+              <td>${r.package_id}</td>
+              <td>${r.slab_id}</td>
+
+              <td style="text-align:right;">${fmt(r.buy_amount)}</td>
+              <td style="text-align:right;">${fmt(r.discount_percent)}</td>
+              <td style="text-align:right;">${fmt(r.discount_amount)}</td>
+              <td style="text-align:right;">${fmt(r.net_rate)}</td>
+              <td style="text-align:right;">${fmt(r.qty)}</td>
+              <td style="text-align:right;"><b>${fmt(netAmt)}</b></td>
+
+              <td>${renderStatusCell(r)}</td>
+            </tr>
+          `;
+        });
+
+        grandTotal += mobileTotal;
+
+        // 🔹 Mobile subtotal
+        html += `
+          <tr style="background:#fff3cd; font-weight:bold;">
+            <td colspan="10">Total of (Mobile ${mobile})</td>
+            <td style="text-align:right;">${fmt(mobileTotal)}</td>
+            <td></td>
+          </tr>
+        `;
+      });
+
+      // 🔹 Grand total
+      html += `
+        <tr style="background:#d1ecf1; font-weight:bold; font-size:15px;">
+          <td colspan="10">GRAND TOTAL</td>
+          <td style="text-align:right;">${fmt(grandTotal)}</td>
+          <td></td>
+        </tr>
+      `;
+
+      html += "</table>";
+      box.innerHTML = html;
+    })
+    .withFailureHandler(function (err) {
+      console.error("Coupon status load failed", err);
+      box.innerHTML =
+        "<p style='color:red'>Failed to load coupon status</p>";
+    })
+    .getPendingPrepaidCoupons();
+}
+
+function renderStatusCell(r) {
+  if (r.payment_status !== "pending") {
+    return `<b>${r.payment_status}</b>`;
+  }
+
+  return `
+    <div style="display:flex; gap:6px; flex-wrap:wrap;">
+      <button
+        data-row="${r._row}"
+        style="padding:2px 6px; font-size:12px; background:#28a745; color:#fff; border:none; border-radius:4px;"
+        onclick="handleCouponAction('received', this)">
+        Received
+      </button>
+
+      <button
+        data-row="${r._row}"
+        style="padding:2px 6px; font-size:12px; background:#dc3545; color:#fff; border:none; border-radius:4px;"
+        onclick="handleCouponAction('cancelled', this)">
+        Cancel
+      </button>
+    </div>
+  `;
+}
+
+function handleCouponAction(action, btn) {
+  const row = Number(btn.dataset.row);
+
+  if (!row || row < 2) {
+    alert("Invalid row");
+    return;
+  }
+
+  const cell = btn.closest("td");
+  cell.innerHTML = "Processing...";
+  // 🔥 instant feedback (optimistic UI)
+if (action === "cancelled") {
+  cell.innerHTML = "<b style='color:#dc3545'>Cancelled</b>";
+}
+if (action === "received") {
+  cell.innerHTML = "<b style='color:#28a745'>Received</b>";
+}
+  btn.disabled = true;
+
+  google.script.run
+    .withSuccessHandler(function () {
+      loadCouponStatus(); // refresh → pending list auto hide
+    })
+    .withFailureHandler(function (err) {
+      console.error("Update failed", err);
+      alert("Failed to update status");
+      loadCouponStatus();
+    })
+    .updateCouponPaymentStatus({
+      row: row,
+      action: action
+    });
+}
+
+
+
+    function loadOrders() {
+      if (!document.querySelector('.nav-btn[data-page="pageOrders"]').classList.contains('active')) return;
+
+      const placeholder = document.getElementById('ordersPlaceholder');
+      const lastUpdatedDiv = document.getElementById('lastUpdated');
+      if (placeholder) placeholder.textContent = 'Loading...';
+
+      //google.script.run.withSuccessHandler(function(data) {
+        //if (!placeholder) return;
+        //if (!data || data.length === 0) {
+          //placeholder.textContent = 'No orders found.';
+          //return;
+        //}
+google.script.run.withSuccessHandler(function(data) {
+  data.forEach(function(item, i){
+  console.log('Row ' + i + ':', item);
+});
+  console.log('DEBUG: getMenuData() returned rows:', data);
+  if (!data || data.length === 0) {
+    menuDiv.textContent = 'No menu items found';
+    return;
+  }
+
+        let html = '<table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse;width:100%;">';
+        html += '<tr><th>OrderNumber</th><th>Date</th><th>Address</th><th>Order Type</th><th>Order Status</th><th>Accept</th><th>Action</th></tr>';
+
+        data.forEach(order => {
+          const orderNumber = order.OrderNumber || '';
+          const orderDate = order.Date || '';
+          const orderType = order["Order Type"] || '';
+          const orderStatus = order.OrderStatus || 'Pending';
+          const address = order.Address || '';
+
+          html += `<tr>
+            <td>${orderNumber}</td>
+            <td>${orderDate}</td>
+            <td>${address}</td>
+            <td>${orderType}</td>
+            <td class="statusCell">${orderStatus}</td>
+            <td><button class="acceptBtn" data-order="${orderNumber}" data-date="${orderDate}" ${orderStatus === 'Accepted' ? 'disabled' : ''}>${orderStatus === 'Accepted' ? 'Accepted' : 'Accept'}</button></td>
+            <td><button class="billBtn" data-order="${orderNumber}">Generate Bill</button></td>
+          </tr>`;
+        });
+
+        html += '</table>';
+        placeholder.innerHTML = html;
+
+        document.querySelectorAll('.billBtn').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const orderNumber = this.getAttribute('data-order') || '';
+            generateBill(orderNumber, this);
+          });
+        });
+
+        document.querySelectorAll('.acceptBtn').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const orderNumber = this.getAttribute('data-order') || '';
+            const orderDate = this.getAttribute('data-date') || '';
+            const statusCell = this.closest('tr').querySelector('.statusCell');
+
+            this.disabled = true;
+            this.textContent = 'Processing...';
+
+            google.script.run.withSuccessHandler(function(success) {
+              if (success) {
+                if (statusCell) statusCell.textContent = 'Accepted';
+                btn.textContent = 'Accepted';
+              } else {
+                alert('Failed to update order status');
+                btn.disabled = false;
+                btn.textContent = 'Accept';
+              }
+            }).acceptOrder(orderNumber, orderDate);
+          });
+        });
+
+        const now = new Date();
+        if (lastUpdatedDiv) lastUpdatedDiv.textContent = 'Last updated: ' + now.toLocaleTimeString();
+
+      }).withFailureHandler(function(err){
+        console.error('getOrderNumbers error:', err);
+        if (document.getElementById('ordersPlaceholder')) document.getElementById('ordersPlaceholder').textContent = 'Error loading orders';
+      }).getOrderNumbers();
+    }
+
+    // LOGIN / LOGOUT
+    document.addEventListener('click', function(e){
+      if (e.target && e.target.id === 'loginBtn') {
+        const btn = e.target;
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value.trim();
+        const errDiv = document.getElementById('loginError');
+
+        if (!username || !password) { if (errDiv) errDiv.textContent = 'Enter username and password'; return; }
+
+        btn.textContent = 'Processing...';
+        btn.disabled = true;
+        btn.classList.add('processing');
+        if (errDiv) errDiv.textContent = '';
+
+        google.script.run.withSuccessHandler(function(result){
+  // result is expected: { valid: boolean, role: string|null }
+  // restore button state
+  btn.textContent = 'Login';
+  btn.disabled = false;
+  btn.classList.remove('processing');
+
+  if (result && result.valid) {
+    if (window._navObserver) window._navObserver.disconnect();
+
+    // mark logged in and enable nav buttons
+    window.isLoggedIn = true;
+    document.querySelectorAll('.nav-btn').forEach(b => {
+         if (b.getAttribute('data-page') !== 'pageLogin') {
+        b.classList.remove('disabled');
+        b.disabled = false;
+      }
+    });
+const couponTab = document.getElementById('couponStatusTab');
+if (couponTab) couponTab.style.display = 'none';
+
+const menuTab = document.getElementById('menuTab');
+if (menuTab) menuTab.style.display = 'none';
+
+    // Show/Hide Menu tab based on role === 'Master' (case-insensitive)
+    try {
+      const role = (result.role || '').toString().trim().toLowerCase();
+      const menuTab = document.getElementById('menuTab');
+
+      if (menuTab) {
+        if (role === 'admin') {
+          menuTab.style.display = 'block';
+        } else {
+          menuTab.style.display = 'none';
+        }
+      }
+      const couponTab = document.getElementById('couponStatusTab');
+if (couponTab) {
+  if (role === 'admin') {
+    couponTab.style.display = 'block';
+  } else {
+    couponTab.style.display = 'none';
+  }
+}
+
+    } catch(e) {
+      console.warn('Role check failed', e);
+    }
+
+    // show pages
+    document.getElementById('loginForm').style.display = 'none';
+    document.getElementById('pendingOrder').style.display = 'block';
+    const ordersBtn = document.querySelector('.nav-btn[data-page="pageOrders"]');
+    if (ordersBtn) ordersBtn.classList.add('active');
+    loadOrders();
+    loadYearOptions();
+    window.refreshInterval = setInterval(loadOrders, 30000);
+    const pageOrders = document.getElementById('pageOrders');
+    if (pageOrders) pageOrders.style.display = 'block';
+  } else {
+    if (errDiv) errDiv.textContent = 'Invalid username or password';
+  }
+}).withFailureHandler(function(err){
+  console.error('checkLogin error:', err);
+  if (errDiv) errDiv.textContent = 'Login error';
+  btn.textContent = 'Login';
+  btn.disabled = false;
+  btn.classList.remove('processing');
+}).checkLogin(username, password);
+
+      }
+
+    if (e.target && e.target.id === 'logoutBtn') {
+  // mark logged out and disable nav
+  window.isLoggedIn = false;
+  document.querySelectorAll('.nav-btn').forEach(b => {
+    if (b.getAttribute('data-page') !== 'pageLogin') {
+      b.classList.add('disabled');
+      b.disabled = true;
+    }
+  });
+
+  document.getElementById('pendingOrder').style.display = 'none';
+  document.getElementById('loginForm').style.display = 'block';
+  document.getElementById('username').value = '';
+  document.getElementById('password').value = '';
+  clearInterval(window.refreshInterval);
+  // show login page explicitly
+  const loginBtn = document.querySelector('.nav-btn[data-page="pageLogin"]');
+  if (loginBtn) loginBtn.click();
+}
+    });
+
+document.getElementById('logoutBtn').style.display = 'block';
+
+    // BILL generation
+    function generateBill(orderNumber, btnRef) {
+      btnRef.textContent = 'Generating, please wait...';
+      btnRef.disabled = true;
+      btnRef.classList.add('processing');
+
+      setTimeout(function() {
+        google.script.run.withSuccessHandler(function(order) {
+          if (!order) {
+            alert('Order not found!');
+            btnRef.textContent = 'Generate Bill';
+            btnRef.disabled = false;
+            btnRef.classList.remove('processing');
+            return;
+          }
+
+          const items = (order['Items'] || '').toString().split(',');
+          const qtys  = (order['Qty'] || '').toString().split(',');
+          const rates = (order['Rate'] || '').toString().split(',');
+          const amtList = items.map((_,i)=> (parseFloat(qtys[i])||0) * (parseFloat(rates[i])||0));
+          let total = amtList.reduce((a,b)=>a+b,0);
+
+          const colSNo = 4, colItem = 20, colQty = 4, colRate = 6, colAmt = 7;
+          let billContent = '';
+          for(let i=0;i<items.length;i++){
+            billContent += String(i+1).padEnd(colSNo) + ' ' +
+                           (items[i]||'').toString().padEnd(colItem) + ' ' +
+                           (qtys[i]||'').toString().padEnd(colQty) + ' ' +
+                           (rates[i]||'').toString().padEnd(colRate) + ' ' +
+                           (amtList[i]||0).toFixed(2).padStart(colAmt) + '\n';
+          }
+
+          const totalLabel = 'Total:';
+          const totalLine = ' '.repeat(colSNo + 1 + colItem + 1 + colQty + 1 + colRate - totalLabel.length)
+                            + totalLabel + ' ' + total.toFixed(2).padStart(colAmt - 1);
+
+          const billText = `
+OrderNumber: ${order['OrderNumber']}
+Customer Name: ${order['CustomerName']}
+Email: ${order['Email']}
+Mobile: ${order['Mobile']}
+Order Type: ${order['Order Type']}
+Address: ${order['Address']}
+
+SNo  Item                 Qty  Rate     Amt
+--------------------------------------------
+${billContent}--------------------------------------------
+${totalLine}
+`;
+
+          const preview = document.getElementById('thermalPreview');
+          if (preview) { preview.textContent = billText; preview.style.display = 'block'; }
+
+          document.querySelectorAll('.rowPrintBtn')?.forEach(b=>b.remove());
+
+          const printBtn = document.createElement('button');
+          printBtn.textContent = 'Print Bill';
+          printBtn.className = 'rowPrintBtn printBtn';
+          btnRef.parentNode.appendChild(printBtn);
+
+          printBtn.onclick = function(){
+            const w = window.open();
+            w.document.write('<pre>'+billText+'</pre>');
+            w.document.close();
+            w.focus();
+            w.print();
+          };
+
+          btnRef.textContent = 'Generate Bill';
+          btnRef.disabled = false;
+          btnRef.classList.remove('processing');
+
+        }).withFailureHandler(function(err){
+          console.error('getOrderDetails error:', err);
+          btnRef.textContent = 'Generate Bill';
+          btnRef.disabled = false;
+          btnRef.classList.remove('processing');
+        }).getOrderDetails(orderNumber);
+      }, 50);
+    }
+
+    // SUMMARY functions (calls server methods getYears and getSummaryData)
+    function loadYearOptions(){
+       if (!document.querySelector('.nav-btn[data-page="pageSummary"]').classList.contains('active')) return;
+      console.log('loadYearOptions: requesting years from server...');
+      google.script.run.withSuccessHandler(function(years){
+        console.log('loadYearOptions: years from server ->', years);
+        const select = document.getElementById('filterYear');
+        if(!select){
+          console.warn('loadYearOptions: filterYear element not found');
+          return;
+        }
+        select.innerHTML = '<option value="">Select Year</option>';
+
+        if(!years || years.length === 0){
+          select.innerHTML += '<option value="">(No years found)</option>';
+          console.warn('loadYearOptions: no years returned from server');
+          return;
+        }
+
+        try { years = years.map(function(y){ return y; }).sort(); } catch(e){ console.warn('sort failed', e); }
+
+        years.forEach(function(y){
+          select.innerHTML += '<option value="' + y + '">' + y + '</option>';
+        });
+
+        if(select.options.length > 1 && !select.value){
+          select.selectedIndex = 1;
+        }
+
+        try{
+          console.log('loadYearOptions: auto-calling loadSummary() after populating years');
+          loadSummary();
+        } catch(err){
+          console.error('loadYearOptions: calling loadSummary failed', err);
+        }
+      }).withFailureHandler(function(err){
+        console.error('getYears failed:', err);
+        const select = document.getElementById('filterYear');
+        if(select) select.innerHTML = '<option value="">(Error loading years)</option>';
+      }).getYears();
+    }
+
+ function getColor(index) {
+  const palette = [
+    '#FF6633', '#FFB399', '#FF33FF', '#FFFF99', '#00B3E6',
+    '#E6B333', '#3366E6', '#999966', '#99FF99', '#B34D4D',
+    '#80B300', '#809900', '#E6B3B3', '#6680B3', '#66991A',
+    '#FF99E6', '#CCFF1A', '#FF1A66', '#E6331A', '#33FFCC',
+    '#66994D', '#B366CC', '#4D8000', '#B33300', '#CC80CC',
+    '#66664D', '#991AFF', '#E666FF', '#4DB3FF', '#1AB399',
+    '#E666B3', '#33991A', '#CC9999', '#B3B31A', '#00E680',
+    '#4D8066', '#809980', '#E6FF80', '#1AFF33', '#999933',
+    '#FF3380', '#CCCC00', '#66E64D', '#4D80CC', '#9900B3',
+    '#E64D66', '#4DB380', '#FF4D4D', '#99E6E6', '#6666FF',
+    '#FF9F40', '#00CED1', '#ADFF2F', '#FFD700', '#7B68EE',
+    '#DC143C', '#008000', '#FF4500', '#00BFFF', '#CD5C5C',
+    '#DAA520', '#40E0D0', '#FF6347', '#6A5ACD', '#7FFF00',
+    '#D2691E', '#20B2AA', '#9370DB', '#3CB371', '#F08080',
+    '#FF1493', '#BA55D3', '#87CEEB', '#32CD32', '#FF8C00',
+    '#8A2BE2', '#00FA9A', '#48D1CC', '#C71585', '#B0C4DE',
+    '#66CDAA', '#FA8072', '#8B0000', '#DA70D6', '#BC8F8F',
+    '#CD853F', '#A0522D', '#708090', '#5F9EA0', '#D8BFD8',
+    '#2E8B57', '#00FF7F', '#FF69B4', '#FF7F50', '#4682B4',
+    '#FF00FF', '#FFDAB9', '#B8860B', '#556B2F', '#8B4513'
+  ];
+  return palette[index % palette.length];
+}
+let activeEditIndex = null; 
+  function loadSummary(){
+  // fresh element lookups
+  const filterYearEl = document.getElementById('filterYear');
+  const viewSelectEl  = document.getElementById('viewSelect');
+  const monthSelectEl = document.getElementById('monthSelect');
+  const loadingBarEl  = document.getElementById('loadingBar');
+  const summaryTableEl = document.getElementById('summaryTable');
+  const summaryTableWrapper = document.getElementById('summaryTableWrapper');
+  const chartContainerEl = document.getElementById('chartContainer');
+  const summaryCanvas = document.getElementById('summaryChart');
+
+  // debug: element existence
+  console.log('loadSummary: start - elements', {
+    filterYearExists: !!filterYearEl,
+    viewSelectExists: !!viewSelectEl,
+    monthSelectExists: !!monthSelectEl,
+    summaryTableExists: !!summaryTableEl,
+    canvasExists: !!summaryCanvas
+  });
+
+  // show loader
+  if (loadingBarEl) loadingBarEl.style.display = 'block';
+
+  if (!filterYearEl || !viewSelectEl || !summaryTableEl) {
+    console.warn('loadSummary: required DOM elements missing');
+    if (loadingBarEl) loadingBarEl.style.display = 'none';
+    return;
+  }
+
+  // read inputs, apply defaults
+  const yearFilter = filterYearEl.value;
+  let view = viewSelectEl.value;
+  if (!view) {
+    console.log('loadSummary: no view selected -> defaulting to "table"');
+    view = 'table';
+    viewSelectEl.value = 'table';
+  }
+  const monthSelected = monthSelectEl ? monthSelectEl.value : '';
+
+  console.log('loadSummary: resolved inputs -> year:', yearFilter, 'view:', view, 'month:', monthSelected);
+
+  // basic validation
+  if (!yearFilter) {
+    summaryTableEl.innerHTML = 'Please select a year';
+    if (loadingBarEl) loadingBarEl.style.display = 'none';
+    return;
+  }
+  if ((view === 'pie' || view === 'histogram') && !monthSelected) {
+    // user must select month for these views
+    summaryTableEl.innerHTML = 'Please select a month for this view';
+    if (loadingBarEl) loadingBarEl.style.display = 'none';
+    return;
+  }
+
+  // call server
+  google.script.run.withSuccessHandler(function(data){
+    try {
+      if (loadingBarEl) loadingBarEl.style.display = 'none';
+
+      if (!data || !Array.isArray(data) || data.length === 0) {
+        summaryTableEl.innerHTML = 'No data found for the selected year';
+        if (chartContainerEl) chartContainerEl.style.display = 'none';
+        return;
+      }
+
+      // prepare month arrays
+      const months = ['01','02','03','04','05','06','07','08','09','10','11','12'];
+      const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+      // TABLE view
+      if (view === 'table') {
+        let html = '<table><tr><th class="sticky firstCol">Item</th>';
+        monthNames.forEach(mn => html += `<th class="sticky">${mn}</th>`);
+        html += '</tr>';
+        data.forEach(itemObj => {
+          html += `<tr><td class="firstCol">${itemObj.Item}</td>`;
+          months.forEach(m => {
+            const key = `${yearFilter}-${m}`;
+            const qty = (itemObj.Months && itemObj.Months[key]) ? itemObj.Months[key] : 0;
+            html += `<td>${qty}</td>`;
+          });
+          html += '</tr>';
+        });
+        summaryTableEl.innerHTML = html;
+        if (summaryTableWrapper) summaryTableWrapper.style.display = 'block';
+        if (chartContainerEl) chartContainerEl.style.display = 'none';
+        if (window.chartInstance) { try{ window.chartInstance.destroy(); } catch(e){} window.chartInstance = null; }
+        return;
+      }
+
+      // GRAPH (line) view
+      if (view === 'graph') {
+        const labels = monthNames;
+        const datasets = data.map(itemObj => ({
+          label: itemObj.Item,
+          data: months.map(m => (itemObj.Months && itemObj.Months[`${yearFilter}-${m}`]) || 0),
+          borderColor: getRandomColor(),
+          backgroundColor: 'transparent',
+          fill: false,
+          tension: 0.1
+        }));
+        // render chart
+        if (!summaryCanvas) {
+          console.warn('loadSummary: summaryChart canvas not found');
+          return;
+        }
+        const ctx = summaryCanvas.getContext('2d');
+        if (window.chartInstance) { try{ window.chartInstance.destroy(); }catch(e){} }
+        window.chartInstance = new Chart(ctx, {
+          type: 'line',
+          data: { labels, datasets },
+          options: { responsive: true, plugins: { legend: { position: 'bottom' } }, scales: { y: { beginAtZero: true } } }
+        });
+        if (chartContainerEl) chartContainerEl.style.display = 'block';
+        if (summaryTableWrapper) summaryTableWrapper.style.display = 'none';
+        return;
+      }
+
+      // PIE or HISTOGRAM (bar) for selected month
+      if (view === 'pie' || view === 'histogram') {
+        const labels = [];
+        const values = [];
+        data.forEach(d => {
+          const key = `${yearFilter}-${monthSelected}`;
+          labels.push(d.Item);
+          values.push((d.Months && d.Months[key]) ? d.Months[key] : 0);
+        });
+
+        if (!summaryCanvas) {
+          console.warn('loadSummary: summaryChart canvas not found');
+          return;
+        }
+        const ctx = summaryCanvas.getContext('2d');
+        if (window.chartInstance) { try{ window.chartInstance.destroy(); }catch(e){} }
+        if (view === 'pie') {
+  window.chartInstance = new Chart(ctx, {
+    type: 'pie',
+    data: {
+      labels,
+      datasets: [{
+        data: values,
+        backgroundColor: labels.map((_, i) => getColor(i))
+      }]
+    },
+    options: { responsive: true }
+  });
+} else {
+  const monthIndex = parseInt(monthSelected, 10) - 1;
+  const monthLabel = (monthNames[monthIndex] || monthSelected);
+  window.chartInstance = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: `Qty (${monthLabel})`,
+        data: values,
+        backgroundColor: labels.map((_, i) => getColor(i))
+      }]
+    },
+    options: { 
+      responsive: true, 
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+}
+
+        if (chartContainerEl) chartContainerEl.style.display = 'block';
+        if (summaryTableWrapper) summaryTableWrapper.style.display = 'none';
+        return;
+      }
+
+      // fallback
+      summaryTableEl.innerHTML = 'Unsupported view';
+    } catch (err) {
+      console.error('loadSummary: error processing server data', err);
+      if (loadingBarEl) loadingBarEl.style.display = 'none';
+      if (summaryTableEl) summaryTableEl.innerHTML = 'Error rendering summary. See console.';
+    }
+  }).getSummaryData();
+}
+
+
+  </script>
+
+  <!-- Final patch to ensure auto-select after years loaded -->
+  <script>
+    (function(){
+      const origLoadYearOptions = window.loadYearOptions;
+      if(origLoadYearOptions && typeof origLoadYearOptions === 'function'){
+        window.loadYearOptions = function(){
+          try{ origLoadYearOptions(); } catch(e){}
+          setTimeout(function(){
+            const fy = document.getElementById('filterYear');
+            if(fy && fy.options && fy.options.length>1 && !fy.value) fy.selectedIndex = 1;
+          },150);
+        };
+      }
+      console.log('Index.html final loaded - debug logs active');
+    })();
+function cacheUrl(url) {
+  if (!url) return url;
+  // if url already has query params, add &v=..., else ?v=...
+  return url + (url.indexOf('?') === -1 ? '?v=' + Date.now() : '&v=' + Date.now());
+}
+
+function uploadImage(inputEl, index) {
+
+ if (index === 'new') {
+    var row = document.getElementById('newRecordRow');
+  } else {
+    var row = document.getElementById(`row-${index}`);
+  }
+ //const row = document.getElementById(`row-${index}`);
+  const span = document.getElementById(`img-url-${index}`);
+
+  // 🚨 Lock row & show overlay
+  row.dataset.uploading = "1";
+  showUploadOverlay(row);
+
+  const file = inputEl.files && inputEl.files[0];
+  if (!file) {
+    hideUploadOverlay(row);
+    return alert("No file selected");
+  }
+
+  span.textContent = "Uploading...";
+  span.removeAttribute("data-url");
+
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    try {
+      const dataUrl = e.target.result;
+      const base64 = dataUrl.split(",")[1];
+      const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+      const filename = `menu_${Date.now()}.${ext}`;
+
+      google.script.run
+        .withSuccessHandler(function (url) {
+          row.dataset.uploading = "0";
+          hideUploadOverlay(row);
+
+          span.setAttribute("data-url", url);
+          span.dataset.url = url;
+          span.textContent = "Uploaded";
+
+          const imgInput = document.getElementById(`img-input-${index}`);
+          if (imgInput) imgInput.value = url;
+
+          const previewImg = document.querySelector(`#row-${index} td img`);
+          if (previewImg) previewImg.src = url + "?v=" + Date.now();
+           alert("Image upload completed successfully.\nPlease review the details and click \"Save\" to update the record.");
+
+        })
+        .withFailureHandler(function () {
+          row.dataset.uploading = "0";
+          hideUploadOverlay(row);
+          span.textContent = "Upload failed";
+          alert("Image upload failed.");
+        })
+        .uploadMenuImage(base64, filename);
+    } catch (err) {
+      row.dataset.uploading = "0";
+      hideUploadOverlay(row);
+      alert("File read error");
+    }
+  };
+
+  reader.readAsDataURL(file);
+}
+
+function loadMenuData() {
+    if (!document.querySelector('.nav-btn[data-page="pageMenu"]').classList.contains('active')) return;
+
+  const menuDiv = document.getElementById('menuTable');
+  if (!menuDiv) return;
+
+  // 🔥 NEW — Screen Lock
+  showScreenLock("Loading menu... Please wait");
+
+  menuDiv.textContent = 'Loading menu...';
+
+  function esc(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  google.script.run.withSuccessHandler(function(data) {
+
+    // 🔥 NEW — Unlock screen
+    hideScreenLock();
+
+    console.log('DEBUG MENU: getMenuData() returned', data);
+
+    if (!data || !Array.isArray(data) || data.length === 0) {
+      menuDiv.textContent = 'No menu items found';
+      return;
+    }
+
+    let html = '<div style="overflow-x:auto;"><table border="1" cellpadding="5" cellspacing="0" style="width:100%; border-collapse:collapse;">';
+
+    // Upload header (hidden)
+    html += `
+      <tr style="background-color:#f0f0f0;">
+        <th>#</th><th style="width:200px;">Name</th><th>Category</th><th>Description</th>
+        <th>Hold</th><th>Price</th>
+        <th>Image</th><th>Hotselling</th><th>Opening</th><th>Purchase</th>
+        <th>Sale</th><th>Balance</th>
+        <th class="upload-header" style="display:none;">Upload</th>
+        <th>Action</th>
+      </tr>
+    `;
+
+    data.forEach(function(item, index) {
+      let rawImg = (item["Image Url"] || '').toString().trim();
+
+    
+      if (rawImg.includes('drive.google.com')) {
+        const idMatch = rawImg.match(/\/d\/([a-zA-Z0-9_-]+)/) || rawImg.match(/id=([a-zA-Z0-9_-]+)/);
+        if (idMatch && idMatch[1]) {
+          rawImg = 'https://drive.google.com/uc?export=view&id=' + idMatch[1];
+        }
+      }
+
+      let imgSrc = rawImg ? encodeURI(rawImg) : 'https://via.placeholder.com/80x80?text=No+Image';
+      imgSrc = cacheUrl(imgSrc);
+
+      html += `
+        <tr id="row-${index}">
+          <td>${index + 1}</td>
+          <td>${esc(item["Name"])}</td>
+          <td>${esc(item["Category"])}</td>
+          <td>${esc(item["Description"])}</td>
+         
+          <td>
+  <input type="checkbox" disabled ${String(item["Hold"]).toUpperCase() === "TRUE" ? "checked" : ""}>
+</td>
+
+          <td>${esc(item["Price"])}</td>
+          <td><img src="${imgSrc}" style="width:80px;height:80px;object-fit:cover;"></td>
+          <td>
+  <input type="checkbox" disabled ${String(item["Hotselling"]).toUpperCase() === "TRUE" ? "checked" : ""}>
+</td>
+
+          <td>${esc(item["Opening"])}</td>
+          <td>${esc(item["Purchase"])}</td>
+          <td>${esc(item["Sale"])}</td>
+          <td>${esc(item["Balance"])}</td>
+
+          <td class="upload-cell" style="display:none;">
+            <input type="file" onchange="uploadImage(this, ${index})">
+            <span id="img-url-${index}" style="font-size:12px;color:#007bff"></span>
+          </td>
+
+          
+          <td>
+            <button class="edit-btn" data-index="${index}" onclick="editRow(${index})">✏️ Edit</button>
+          </td>
+        </tr>
+      `;
+    });
+
+    html += '</table></div>';
+    html += '<br><button id="addNewBtn" onclick="addNewRecord()">➕ Add New Record</button>';
+
+    menuDiv.innerHTML = html;
+    menuDiv.innerHTML += `<datalist id="cat-list"></datalist>`;
+
+  })
+  .withFailureHandler(function(err) {
+    hideScreenLock();
+    alert("Error loading menu: " + err);
+  })
+  .getMenuData();
+}
+
+
+
+
+function editRow(index) {
+
+  // 🔥 Prevent editing another row while one is active
+  if (activeEditIndex !== null && activeEditIndex !== index) {
+    alert("⚠️ Please save the current row before editing another.");
+    return;
+  }
+
+  // 🔥 Mark this as active editing row
+  activeEditIndex = index;
+
+  // 🔥 SAFE Disable all other edit buttons (only if they exist)
+  const allEditButtons = document.querySelectorAll(".edit-btn");
+  if (allEditButtons.length > 0) {
+    allEditButtons.forEach(btn => {
+      if (parseInt(btn.dataset.index) !== index) {
+        btn.disabled = true;
+      }
+    });
+  }
+
+  // 🔒 Lock Add New Record button
+  document.getElementById("addNewBtn").disabled = true;
+
+  const row = document.getElementById(`row-${index}`);
+  if (!row) return;
+
+  row.dataset.uploading = "0";
+
+  const cells = row.querySelectorAll('td');
+  row.dataset.original = JSON.stringify(Array.from(cells).map(c => c.innerHTML));
+
+  const editableCols = [1, 2, 3, 4, 5, 6, 7, 8];
+
+  editableCols.forEach(i => {
+    const cell = cells[i];
+    let value = "";
+
+    if (i === 6) {
+      const img = cell.querySelector("img");
+      const cleanUrl = img ? img.src.replace(/\?v=\d+/, "") : "";
+      value = cleanUrl;
+      cell.innerHTML =
+        `<input type="text" id="img-input-${index}" value="${value}" placeholder="Image Url" style="width:100%">`;
+
+    } else if (i === 2) {
+      value = cell.textContent.trim();
+      let options = CATEGORY_OPTIONS
+        .map(c => `<option value="${c}" ${c === value ? "selected" : ""}>${c}</option>`)
+        .join("");
+
+      cell.innerHTML = `
+        <select style="width:100%">
+          ${options}
+        </select>
+      `;
+
+ } else if (i === 4) {
+  // HOLD COLUMN → checkbox in edit mode
+
+  // READ value from existing checkbox (display mode)
+  const chk = cell.querySelector("input[type='checkbox']");
+  const isChecked = chk && chk.checked;
+
+  cell.innerHTML = `
+    <input type="checkbox" id="hold-checkbox-${index}" ${isChecked ? "checked" : ""}>
+  `;
+} else if (i === 7) {
+  // HOTSELLING COLUMN → checkbox
+  const chk = cell.querySelector("input[type='checkbox']");
+  const isChecked = chk && chk.checked;
+
+  cell.innerHTML = `
+    <input type="checkbox" id="hotselling-checkbox-${index}" ${isChecked ? "checked" : ""}>
+  `;
+
+} else {
+  value = cell.textContent.trim();
+  cell.innerHTML = `<input type="text" value="${value}" style="width:100%">`;
+}
+  });
+
+  const uploadHeader = document.querySelector(".upload-header");
+  if (uploadHeader) uploadHeader.style.display = "table-cell";
+
+  const uploadCell = cells[cells.length - 2];
+  uploadCell.style.display = "table-cell";
+
+  uploadCell.innerHTML = `
+    <input type="file" id="file-input-${index}" style="display:none"
+      onchange="uploadImage(this, ${index})">
+
+    <button type="button"
+      onclick="document.getElementById('file-input-${index}').click()">
+      Upload Image
+    </button>
+
+    <span id="img-url-${index}" style="font-size:12px;color:#007bff;margin-left:6px;"></span>
+  `;
+
+    const img = row.querySelector('td:nth-child(7) img');  // image is 7th TD (1-based)
+  if (img) {
+    const clean = img.src.replace(/\?v=\d+/, "");
+    const span = document.getElementById(`img-url-${index}`);
+    span.setAttribute('data-url', clean);
+    span.dataset.url = clean;
+    span.textContent = "(current)";
+  }
+
+  cells[cells.length - 1].innerHTML = `
+    <button onclick="saveRow(${index})">💾 Save</button>
+    <button onclick="cancelEdit(${index})">❌ Cancel</button>
+  `;
+}
+function cancelEdit(index) {
+  const row = document.getElementById(`row-${index}`);
+  if (!row || !row.dataset.original) return;
+
+  // 🔥 HIDE UPLOAD HEADER
+  const uploadHeader = document.querySelector(".upload-header");
+  if (uploadHeader) uploadHeader.style.display = "none";
+
+  // 🔥 HIDE upload cell for this row
+  const uploadCell = row.querySelector(".upload-cell");
+  if (uploadCell) uploadCell.style.display = "none";
+
+  // Restore original cells
+  const originalValues = JSON.parse(row.dataset.original);
+  const cells = row.querySelectorAll('td');
+  originalValues.forEach((value, i) => {
+    cells[i].innerHTML = value;
+  });
+
+  delete row.dataset.original;
+
+  // ⭐ Re-enable Add New Record button (ONLY this)
+  const addBtn = document.getElementById("addNewBtn");
+  if (addBtn) addBtn.disabled = false;
+}
+
+
+function saveRow(index) {
+  const row = document.getElementById(`row-${index}`);
+  if (!row) return;
+
+  if (row.dataset.uploading === "1") {
+    alert("⏳ Image uploading...\nPlease wait until it finishes.");
+    return;
+  }
+
+  showScreenLock("Saving record...");
+
+  const cells = row.querySelectorAll("td");
+  const inputs = row.querySelectorAll("input, button");
+  inputs.forEach((el) => (el.disabled = true));
+
+  const actionCell = cells[cells.length - 1];
+  actionCell.innerHTML = `<span style="color:blue;">Saving...</span>`;
+
+  const updatedData = {
+    Name: cells[1].querySelector("input").value.trim(),
+    Category: cells[2].querySelector("select").value.trim(),
+    Description: cells[3].querySelector("input").value.trim(),
+    Hold: document.getElementById(`hold-checkbox-${index}`).checked ? "TRUE" : "FALSE",
+
+    Price: cells[5].querySelector("input").value.trim(),
+    "Image Url": "",
+    Hotselling: document.getElementById(`hotselling-checkbox-${index}`).checked ? "TRUE" : "FALSE",
+
+    
+    Opening: cells[8].querySelector("input").value.trim(),
+  };
+
+  const span = document.getElementById(`img-url-${index}`);
+  let finalUrl = span && span.dataset.url ? span.dataset.url.trim() : "";
+
+  if (!finalUrl) {
+    const txt = document.getElementById(`img-input-${index}`);
+    if (txt && txt.value.trim() !== "") finalUrl = txt.value.trim();
+  }
+
+  updatedData["Image Url"] = finalUrl;
+
+  google.script.run
+    .withSuccessHandler(() => {
+
+      hideScreenLock();
+
+      // 🔥 Enable ALL edit buttons after successful save
+      document.querySelectorAll(".edit-btn").forEach(btn => btn.disabled = false);
+      activeEditIndex = null;  // reset lock
+
+      cells[6].innerHTML = finalUrl
+        ? `<img src="${finalUrl}?v=${Date.now()}" style="width:80px;height:80px;object-fit:cover;">`
+        : `<img src="https://via.placeholder.com/80x80?text=No+Image">`;
+
+      cells[cells.length - 1].innerHTML =
+        `<button class="edit-btn" data-index="${index}" onclick="editRow(${index})">✏️ Edit</button>`;
+
+      // ⭐⭐⭐ MOVE HERE — Now reload after save completes ⭐⭐⭐
+     setTimeout(() => {
+  loadMenuData();
+}, 500);
+
+    })
+    .withFailureHandler((err) => {
+      hideScreenLock();
+      alert("Error saving: " + err);
+    })
+    .updateMenuRecord(index, updatedData);
+}
+
+
+function addNewRecord() {
+  const menuDiv = document.getElementById('menuTable');
+  const existingForm = document.getElementById('newRecordRow');
+  if (existingForm) return alert('🟡 New record form already open!');
+
+  const table = menuDiv.querySelector('table');
+  if (!table) return;
+
+  let options = CATEGORY_OPTIONS
+    .map(c => `<option value="${c}">${c}</option>`)
+    .join("");
+
+  const newRow = document.createElement('tr');
+  newRow.id = 'newRecordRow';
+
+  newRow.innerHTML = `
+    <td>New</td>
+    <td><input type="text" placeholder="Name"></td>
+
+    <td>
+      <select id="new-cat" style="width:100%">
+        ${options}
+      </select>
+    </td>
+
+    <td><input type="text" placeholder="Description"></td>
+    <td><input type="text" placeholder="Hold"></td>
+    <td><input type="text" placeholder="Price"></td>
+
+    <td class="upload-cell">
+      <input class="no-save" type="file" id="file-input-new" style="display:none"
+        onchange="uploadImage(this, 'new')">
+
+      <button type="button"
+        onclick="document.getElementById('file-input-new').click()">
+        Upload Image
+      </button>
+
+      <span id="img-url-new" style="font-size:12px;color:#007bff;margin-left:6px;"></span>
+
+      <input type="text" placeholder="Image Url" id="img-input-new"
+             style="width:100%;margin-top:4px;">
+    </td>
+
+    <td>
+  <input type="checkbox" id="new-hotselling">
+</td>
+
+    <td><input type="text" placeholder="Opening"></td>
+
+    <td>—</td><td>—</td><td>—</td>
+
+    <td>
+      <button onclick="saveNewRecord()">💾 Save</button>
+      <button onclick="cancelNewRecord()">❌ Cancel</button>
+    </td>
+  `;
+
+  table.appendChild(newRow);
+  document.getElementById("addNewBtn").disabled = false;
+
+}
+
+
+function cancelNewRecord() {
+  try {
+    const row = document.getElementById('newRecordRow');
+    if (row) row.remove();
+  } catch (e) {
+    console.warn("cancelNewRecord error:", e);
+  }
+
+  // Safely enable Add New button only if it exists
+  const addBtn = document.getElementById("addNewBtn");
+  if (addBtn) addBtn.disabled = false;
+}
+
+function saveNewRecord() {
+  const row = document.getElementById('newRecordRow');
+  if (!row) return;
+
+  showScreenLock("Saving new record...");
+
+  const newData = {
+    Name: row.querySelector('td:nth-child(2) input').value.trim(),
+    Category: document.getElementById("new-cat").value.trim(),
+    Description: row.querySelector('td:nth-child(4) input').value.trim(),
+    Hold: row.querySelector('td:nth-child(5) input').value.trim(),
+    Price: row.querySelector('td:nth-child(6) input').value.trim(),
+    "Image Url": row.querySelector('#img-input-new').value.trim(),
+    Hotselling: document.getElementById("new-hotselling").checked ? "TRUE" : "FALSE",
+
+    
+    Opening: row.querySelector('td:nth-child(9) input').value.trim()
+  };
+
+  // Mandatory Name
+  if (!newData.Name) {
+    hideScreenLock();
+    return alert("⚠️ Please enter a Name.");
+  }
+
+  // VALID Category
+  if (!CATEGORY_OPTIONS.includes(newData.Category)) {
+    hideScreenLock();
+    return alert("⚠️ Invalid Category! Select only from dropdown.");
+  }
+
+  const span = document.getElementById('img-url-new');
+  if (span?.dataset?.url) newData["Image Url"] = span.dataset.url.trim();
+
+  google.script.run
+    .withSuccessHandler(() => {
+      hideScreenLock();
+      alert("✅ New record added successfully!");
+      loadMenuData();
+    })
+    .withFailureHandler((err) => {
+      hideScreenLock();
+      alert("Error saving new record: " + err);
+    })
+    .addMenuRecord(newData);
+}
+
+
+
+function showUploadOverlay(row) {
+  let overlay = document.createElement("div");
+  overlay.className = "upload-overlay";
+  overlay.innerHTML = `<div class="upload-text">Uploading...</div>`;
+  overlay.style.cssText = `
+      position:absolute;
+      top:0; left:0;
+      width:100%; height:100%;
+      background:rgba(0,0,0,0.4);
+      color:white;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:18px;
+      z-index:999;
+  `;
+  row.style.position = "relative";
+  row.appendChild(overlay);
+}
+
+function hideUploadOverlay(row) {
+  const overlay = row.querySelector(".upload-overlay");
+  if (overlay) overlay.remove();
+}
+
+function showScreenLock(message = "Processing...") {
+  let lock = document.getElementById("screen-lock");
+  if (!lock) {
+    lock = document.createElement("div");
+    lock.id = "screen-lock";
+    lock.style.cssText = `
+      position: fixed;
+      top:0; left:0;
+      width:100%; height:100%;
+      background: rgba(0,0,0,0.5);
+      color:white;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:24px;
+      z-index: 999999;
+    `;
+    document.body.appendChild(lock);
+  }
+  lock.textContent = message;
+  lock.style.display = "flex";
+}
+
+function hideScreenLock() {
+  const lock = document.getElementById("screen-lock");
+  if (lock) lock.style.display = "none";
+}
+
+function loadCategoryList() {
+  google.script.run.withSuccessHandler(function(list) {
+    const arr = list || [];
+    // primary (existing) var
+    window.CATEGORY_OPTIONS = arr;
+    // alias for any old references that use lowercase
+    window.category_options = arr;
+
+    refreshCategoryDropdown();
+  }).getCategoryList();
+}
+
+
+function refreshCategoryDropdown() {
+  const dl = document.getElementById("cat-list");
+  if (!dl) return;
+
+  // prefer uppercase var, fall back to lowercase alias
+  const opts = (window.CATEGORY_OPTIONS && window.CATEGORY_OPTIONS.length) ? window.CATEGORY_OPTIONS
+             : (window.category_options || []);
+
+  dl.innerHTML = opts.map(cat => `<option value="${cat}">`).join("");
+}
+
+
+
+// 🔥 अब बाकी code शुरू करें
+(function(){
+
+  const origLoadYearOptions = window.loadYearOptions;
+  if(origLoadYearOptions && typeof origLoadYearOptions === 'function'){
+    window.loadYearOptions = function(){
+      try { origLoadYearOptions(); } catch(e){}
+      setTimeout(function(){
+        const fy = document.getElementById('filterYear');
+        if(fy && fy.options && fy.options.length>1 && !fy.value)
+          fy.selectedIndex = 1;
+      },150);
+    };
+  }
+
+  console.log('Index.html final loaded - debug logs active');
+
+})();  
+  </script>
+  <datalist id="cat-list"></datalist>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    // 1️⃣ Load categories
+    loadCategoryList();
+
+    // 2️⃣ Wait until CATEGORY_OPTIONS is filled + table loaded (2-step fallback)
+    setTimeout(() => {
+        console.log("DEBUG → CATEGORY_OPTIONS:", CATEGORY_OPTIONS);
+        refreshCategoryDropdown();
+    }, 300);
+
+    // 3️⃣ Extra safety: refresh once again after table is fully rendered
+    setTimeout(() => {
+        refreshCategoryDropdown();
+    }, 600);
+
+});
+</script>
+</body>
+</html>
