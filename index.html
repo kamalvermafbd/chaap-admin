@@ -276,9 +276,16 @@ if (savedLogin === "true") {
   if (couponTab) couponTab.style.display = (savedRole === 'admin') ? 'block' : 'none';
 
   document.getElementById('loginForm').style.display = 'none';
-  document.getElementById('pendingOrder').style.display = 'block';
+  document.getElementById('logoutBtn').style.display = 'block';
 
-  loadOrders();
+  // 🔴 IMPORTANT PART
+  const savedPage = localStorage.getItem("adminActivePage") || "pageOrders";
+  showPage(savedPage);
+
+  if (savedPage === "pageOrders") {
+    loadOrders();
+  }
+
 }
       // Disable all menu items initially
       document.querySelectorAll('.nav-btn').forEach(b => {
@@ -345,19 +352,7 @@ localStorage.setItem("adminActivePage", page);   // 🔴 ADDED
       });
 
       // Watch login visibility
-      if (loginForm && pendingOrder) {
-       const obs = new MutationObserver(function(){
-
-
-          const loginHidden = window.getComputedStyle(loginForm).display === 'none';
-          const pendingVisible = window.getComputedStyle(pendingOrder).display !== 'none';
-          if (loginHidden && pendingVisible) showPage('pageOrders');
-          if (!loginHidden) showPage('pageLogin');
-        });
-        obs.observe(loginForm, { attributes: true, attributeFilter: ['style', 'class'] });
-        obs.observe(pendingOrder, { attributes: true, attributeFilter: ['style', 'class'] });
-      }
-
+     
       // Summary listeners
       try {
         const fy = document.getElementById('filterYear');
@@ -374,9 +369,10 @@ localStorage.setItem("adminActivePage", page);   // 🔴 ADDED
         console.warn('attach summary listeners error', err);
       }
 
-      // Show login page initially
-      showPage('pageLogin');
-
+     // Show login page only if NOT logged in
+if (savedLogin !== "true") {
+  showPage('pageLogin');
+}
     } catch (e) {
       console.error('Nav injection failed:', e);
     }
