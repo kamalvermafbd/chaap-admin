@@ -7,6 +7,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   
   <title>Pending Orders ka - Dashboard</title>
+  <div id="loggedInUser" style="padding:10px 18px;font-size:13px;color:#ccc;"></div>
   <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#343a40">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -249,7 +250,13 @@ function apiPost(api, body = {}) {
       if (summaryDiv && pageSummary) pageSummary.appendChild(summaryDiv);
 
       if (typeof window.isLoggedIn === 'undefined') window.isLoggedIn = false;
+const savedLogin = localStorage.getItem("adminLoggedIn");
+const savedUser  = localStorage.getItem("adminUsername");
+const savedRole  = localStorage.getItem("adminRole");
 
+if (savedLogin === "true") {
+  window.isLoggedIn = true;
+}
       // Disable all menu items initially
       document.querySelectorAll('.nav-btn').forEach(b => {
         if (b.getAttribute('data-page') !== 'pageLogin') {
@@ -665,7 +672,7 @@ if (action === "received") {
 
 }
     // LOGIN / LOGOUT
-    document.addEventListener('click', function(e){
+document.addEventListener('click', function(e){
       if (e.target && e.target.id === 'loginBtn') {
         const btn = e.target;
         const username = document.getElementById('username').value.trim();
@@ -689,8 +696,13 @@ if (action === "received") {
     if (result && result.valid) {
 
       window.isLoggedIn = true;
-
+localStorage.setItem("adminLoggedIn", "true");
+localStorage.setItem("adminUsername", username);
+localStorage.setItem("adminRole", role);
+      document.getElementById("loggedInUser").textContent =
+        "Logged in as: " + username;
       document.querySelectorAll('.nav-btn').forEach(b => {
+        
         if (b.getAttribute('data-page') !== 'pageLogin') {
           b.classList.remove('disabled');
           b.disabled = false;
@@ -735,7 +747,11 @@ if (action === "received") {
     if (e.target && e.target.id === 'logoutBtn') {
   // mark logged out and disable nav
   window.isLoggedIn = false;
+        localStorage.clear();
+  document.getElementById("loggedInUser").textContent = "";
+
   document.querySelectorAll('.nav-btn').forEach(b => {
+    
     if (b.getAttribute('data-page') !== 'pageLogin') {
       b.classList.add('disabled');
       b.disabled = true;
