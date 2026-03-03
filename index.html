@@ -303,6 +303,9 @@ if (savedLogin !== "true") {
 }
 
       function showPage(pageId){
+        if (window.isLoggedIn) {
+  localStorage.setItem("adminActivePage", pageId);
+}
         if (pageId !== 'pageLogin' && !window.isLoggedIn) {
           const loginErr = document.getElementById('loginError');
           if (loginErr) loginErr.textContent = 'Please login to access this page';
@@ -728,9 +731,12 @@ const role = (result.role || '').toString().trim().toLowerCase();
 localStorage.setItem("adminLoggedIn", "true");
 localStorage.setItem("adminUsername", username);
 localStorage.setItem("adminRole", role);
+      // 🔴 ALWAYS SET ACTIVE PAGE TO ORDERS
+  localStorage.setItem("adminActivePage", "pageOrders");
       
       document.getElementById("loggedInUser").textContent =
         "Logged in as: " + username;
+      
       document.querySelectorAll('.nav-btn').forEach(b => {
         
         if (b.getAttribute('data-page') !== 'pageLogin') {
@@ -738,6 +744,9 @@ localStorage.setItem("adminRole", role);
           b.disabled = false;
         }
       });
+// 🔴 HIDE LOGIN NAV BUTTON
+  const loginNav = document.querySelector('.nav-btn[data-page="pageLogin"]');
+  if (loginNav) loginNav.style.display = "none";
 
       
       const menuTab = document.getElementById('menuTab');
