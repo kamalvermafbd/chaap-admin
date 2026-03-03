@@ -314,7 +314,12 @@ if (savedLogin === "true") {
   // 🔴 Hide Login Nav After Login
 
   document.getElementById('logoutBtn').style.display = 'block';
+// 🔥 RESTORE ROLE BASED TABS ON REFRESH
+const menuTab = document.getElementById('menuTab');
+const couponTab = document.getElementById('couponStatusTab');
 
+if (menuTab) menuTab.style.display = (savedRole === 'admin') ? 'block' : 'none';
+if (couponTab) couponTab.style.display = (savedRole === 'admin') ? 'block' : 'none';
   // 🔥 ALWAYS GO TO PENDING ORDERS
   showPage("pageOrders");
 
