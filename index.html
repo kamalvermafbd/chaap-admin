@@ -302,8 +302,8 @@ if (savedLogin !== "true") {
 
 }
 
-      function showPage(pageId){
-        if (window.isLoggedIn) {
+window.showPage = function(pageId){
+if (window.isLoggedIn) {
   localStorage.setItem("adminActivePage", pageId);
 }
         if (pageId !== 'pageLogin' && !window.isLoggedIn) {
