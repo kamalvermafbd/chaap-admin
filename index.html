@@ -736,7 +736,7 @@ localStorage.setItem("adminRole", role);
         }
       });
 
-      const role = (result.role || '').toString().trim().toLowerCase();
+      
       const menuTab = document.getElementById('menuTab');
       const couponTab = document.getElementById('couponStatusTab');
 
@@ -745,7 +745,7 @@ localStorage.setItem("adminRole", role);
 
       document.getElementById('loginForm').style.display = 'none';
       document.getElementById('pendingOrder').style.display = 'block';
-
+ document.getElementById('logoutBtn').style.display = 'block'; 
       const ordersBtn = document.querySelector('.nav-btn[data-page="pageOrders"]');
       if (ordersBtn) ordersBtn.classList.add('active');
 
@@ -787,6 +787,7 @@ localStorage.setItem("adminRole", role);
 
   document.getElementById('pendingOrder').style.display = 'none';
   document.getElementById('loginForm').style.display = 'block';
+  document.getElementById('logoutBtn').style.display = 'none';   // ✅ ADD HERE
   document.getElementById('username').value = '';
   document.getElementById('password').value = '';
   clearInterval(window.refreshInterval);
@@ -796,7 +797,7 @@ localStorage.setItem("adminRole", role);
 }
     });
 
-document.getElementById('logoutBtn').style.display = 'block';
+
 
     // BILL generation
 function generateBill(orderNumber, orderDate, btnRef) {
