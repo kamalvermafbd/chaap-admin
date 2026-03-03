@@ -1,4 +1,4 @@
-const CACHE_NAME = "chaap-admin-cache-v12";
+const CACHE_NAME = "chaap-admin-cache-v13";
 
 const URLS_TO_CACHE = [
   "/",
@@ -59,11 +59,14 @@ self.addEventListener("fetch", event => {
     return;
   }
 
-  // 🚫 Never cache Google Apps Script APIs
-  if (request.url.includes("/exec") || request.url.includes("?api=")) {
-    event.respondWith(fetch(request));
-    return;
-  }
+  
+  // 🚫 Completely bypass Google Apps Script APIs
+if (
+  request.url.includes("script.google.com") ||
+  request.url.includes("/exec")
+) {
+  return; // Let browser handle it directly
+}
 
   // 🟢 Static assets → Cache First
   event.respondWith(
