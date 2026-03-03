@@ -756,13 +756,14 @@ if (action === "received") {
 document.getElementById('logoutBtn').style.display = 'block';
 
     // BILL generation
-    function generateBill(orderNumber, btnRef) {
+function generateBill(orderNumber, btnRef) {
       btnRef.textContent = 'Generating, please wait...';
       btnRef.disabled = true;
       btnRef.classList.add('processing');
 
       setTimeout(function() {
-        google.script.run.withSuccessHandler(function(order) {
+        apiGet("getOrderDetails", { orderNumber: orderNumber })
+.then(function(order){
           if (!order) {
             alert('Order not found!');
             btnRef.textContent = 'Generate Bill';
@@ -827,14 +828,14 @@ ${totalLine}
           btnRef.disabled = false;
           btnRef.classList.remove('processing');
 
-        }).withFailureHandler(function(err){
-          console.error('getOrderDetails error:', err);
-          btnRef.textContent = 'Generate Bill';
-          btnRef.disabled = false;
-          btnRef.classList.remove('processing');
-        }).getOrderDetails(orderNumber);
+        }).catch(function(err){
+  console.error('getOrderDetails error:', err);
+  btnRef.textContent = 'Generate Bill';
+  btnRef.disabled = false;
+  btnRef.classList.remove('processing');
+});
       }, 50);
-    }
+}
 
     // SUMMARY functions (calls server methods getYears and getSummaryData)
     function loadYearOptions(){
@@ -876,7 +877,7 @@ ${totalLine}
         const select = document.getElementById('filterYear');
         if(select) select.innerHTML = '<option value="">(Error loading years)</option>';
       }).getYears();
-    }
+  }
 
  function getColor(index) {
   const palette = [
