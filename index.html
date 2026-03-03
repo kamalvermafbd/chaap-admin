@@ -137,6 +137,21 @@
 
   <div class="container" id="pendingOrder" style="display:none;">
     <h3>Pending Orders</h3>
+    <!-- 🔥 DATE FILTER START -->
+  <div style="margin-bottom:10px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+    <label>
+      From:
+      <input type="date" id="fromDate">
+    </label>
+
+    <label>
+      To:
+      <input type="date" id="toDate">
+    </label>
+
+    <button onclick="loadOrders()">Search</button>
+  </div>
+  <!-- 🔥 DATE FILTER END -->
     <div id="ordersPlaceholder">Loading...</div>
     <div id="lastUpdated"></div>
     <div id="thermalPreview"></div>
@@ -1726,6 +1741,57 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 </script>
+
+  <script>
+document.addEventListener("DOMContentLoaded", function(){
+
+  const fromInput = document.getElementById("fromDate");
+  const toInput = document.getElementById("toDate");
+
+  if (!fromInput || !toInput) return;
+
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = ("0" + (today.getMonth()+1)).slice(-2);
+  const dd = ("0" + today.getDate()).slice(-2);
+
+  const todayStr = `${yyyy}-${mm}-${dd}`;
+  fromInput.value = todayStr;
+
+  const nextDay = new Date(today);
+  nextDay.setDate(nextDay.getDate() + 1);
+
+  const toStr =
+    nextDay.getFullYear() + "-" +
+    ("0"+(nextDay.getMonth()+1)).slice(-2) + "-" +
+    ("0"+nextDay.getDate()).slice(-2);
+
+  toInput.value = toStr;
+
+  fromInput.addEventListener("change", function(){
+    const selected = new Date(this.value);
+    const autoNext = new Date(selected);
+    autoNext.setDate(autoNext.getDate() + 1);
+
+    toInput.value =
+      autoNext.getFullYear() + "-" +
+      ("0"+(autoNext.getMonth()+1)).slice(-2) + "-" +
+      ("0"+autoNext.getDate()).slice(-2);
+  });
+
+  toInput.addEventListener("change", function(){
+    const fromDate = new Date(fromInput.value);
+    const toDate = new Date(toInput.value);
+
+    if (toDate < fromDate) {
+      alert("To Date cannot be less than From Date");
+      toInput.value = fromInput.value;
+    }
+  });
+
+});
+</script>
+  
   <script>
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("/sw.js")
