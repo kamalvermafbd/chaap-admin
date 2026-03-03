@@ -545,95 +545,116 @@ if (action === "received") {
 
   const placeholder = document.getElementById('ordersPlaceholder');
   const lastUpdatedDiv = document.getElementById('lastUpdated');
+
   if (placeholder) placeholder.textContent = 'Loading...';
 
-  // 🔥 FETCH ORDERS FROM API
-  apiGet("getOrderNumbers")
-    .then(function(data){
+  // 🔥 READ DATE INPUTS
+  const fromDate = document.getElementById("fromDate")?.value;
+  const toDate = document.getElementById("toDate")?.value;
 
-      if (!placeholder) return;
+  // 🔥 VALIDATION
+  if (!fromDate || !toDate) {
+    placeholder.textContent = "Please select date range.";
+    return;
+  }
 
-      if (!data || data.length === 0) {
-        placeholder.textContent = "No orders found.";
-        return;
-      }
+  // 🔥 SEND FILTER TO BACKEND
+  apiGet("getOrderNumbers", {
+    fromDate: fromDate,
+    toDate: toDate
+  })
+  .then(function(data){
 
-      let html = `
-        <table>
-          <tr>
-            <th>Order No</th>
-            <th>Type</th>
-            <th>Status</th>
-            <th>Action</th>
-          </tr>
-      `;
+    if (!placeholder) return;
 
-      data.forEach(order => {
-        html += `
-          <tr>
-            <td>${order.OrderNumber}</td>
-            <td>${order["Order Type"] || ""}</td>
-            <td class="statusCell">${order.OrderStatus}</td>
-            <td>
-              ${
-                order.OrderStatus === "Pending"
-                ? `<button class="acceptBtn"
-                      data-order="${order.OrderNumber}"
-                      data-date="${order.Date}">
-                      Accept
-                   </button>`
-                : "—"
-              }
-            </td>
-          </tr>
-        `;
-      });
+    if (!data || data.length === 0) {
+      placeholder.textContent = "No orders found.";
+      return;
+    }
 
-      html += "</table>";
-      placeholder.innerHTML = html;
+    let html = `
+      <table>
+        <tr>
+          <th>Order No</th>
+          <th>Type</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+    `;
 
-      // 🔥 Attach accept button listeners AFTER rendering
-      document.querySelectorAll('.acceptBtn').forEach(btn => {
-        btn.addEventListener('click', function() {
-
-          const orderNumber = this.getAttribute('data-order');
-          const orderDate = this.getAttribute('data-date');
-          const statusCell = this.closest('tr').querySelector('.statusCell');
-
-          this.disabled = true;
-          this.textContent = 'Processing...';
-
-          apiGet("acceptOrder", {
-            orderNumber: orderNumber,
-            orderDate: orderDate
-          })
-          .then(function(success){
-
-            if (success) {
-              statusCell.textContent = 'Accepted';
-              btn.textContent = 'Accepted';
-            } else {
-              alert('Failed to update order status');
-              btn.disabled = false;
-              btn.textContent = 'Accept';
+    data.forEach(order => {
+      html += `
+        <tr>
+          <td>${order.OrderNumber}</td>
+          <td>${order["Order Type"] || ""}</td>
+          <td class="statusCell">${order.OrderStatus}</td>
+          <td>
+            ${
+              order.OrderStatus === "Pending"
+              ? `<button class="acceptBtn"
+                    data-order="${order.OrderNumber}"
+                    data-date="${order.Date}">
+                    Accept
+                 </button>`
+              : "—"
             }
+          </td>
+        </tr>
+      `;
+    });
 
-          })
-          .catch(function(err){
-            console.error("acceptOrder error:", err);
-            alert("Server error");
+    html += "</table>";
+    placeholder.innerHTML = html;
+
+    // 🔥 LAST UPDATED TIME
+    if (lastUpdatedDiv) {
+      const now = new Date();
+      lastUpdatedDiv.textContent =
+        "Last Updated: " + now.toLocaleTimeString();
+    }
+
+    // 🔥 ACCEPT BUTTON LISTENER
+    document.querySelectorAll('.acceptBtn').forEach(btn => {
+      btn.addEventListener('click', function() {
+
+        const orderNumber = this.getAttribute('data-order');
+        const orderDate = this.getAttribute('data-date');
+        const statusCell = this.closest('tr').querySelector('.statusCell');
+
+        this.disabled = true;
+        this.textContent = 'Processing...';
+
+        apiGet("acceptOrder", {
+          orderNumber: orderNumber,
+          orderDate: orderDate
+        })
+        .then(function(success){
+
+          if (success) {
+            statusCell.textContent = 'Accepted';
+            btn.textContent = 'Accepted';
+          } else {
+            alert('Failed to update order status');
             btn.disabled = false;
             btn.textContent = 'Accept';
-          });
+          }
 
+        })
+        .catch(function(err){
+          console.error("acceptOrder error:", err);
+          alert("Server error");
+          btn.disabled = false;
+          btn.textContent = 'Accept';
         });
-      });
 
-    })
-    .catch(function(err){
-      console.error("Order load failed:", err);
-      placeholder.textContent = "Server error loading orders.";
+      });
     });
+
+  })
+  .catch(function(err){
+    console.error("Order load failed:", err);
+    placeholder.textContent = "Server error loading orders.";
+  });
 
 }
     // LOGIN / LOGOUT
