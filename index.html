@@ -280,11 +280,13 @@ if (savedLogin === "true") {
 
   // 🔴 IMPORTANT PART
   const savedPage = localStorage.getItem("adminActivePage") || "pageOrders";
-  showPage(savedPage);
+showPage(savedPage);
 
-  if (savedPage === "pageOrders") {
-    loadOrders();
-  }
+if (savedPage === "pageOrders") {
+  const po = document.getElementById("pendingOrder");
+  if (po) po.style.display = "block";   // 🔴 ADD THIS LINE
+  loadOrders();
+}
 
 }
      
