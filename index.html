@@ -756,13 +756,16 @@ if (action === "received") {
 document.getElementById('logoutBtn').style.display = 'block';
 
     // BILL generation
-function generateBill(orderNumber, btnRef) {
+function generateBill(orderNumber, orderDate, btnRef) {
       btnRef.textContent = 'Generating, please wait...';
       btnRef.disabled = true;
       btnRef.classList.add('processing');
 
       setTimeout(function() {
-        apiGet("getOrderDetails", { orderNumber: orderNumber })
+        apiGet("getOrderDetails", { 
+  orderNumber: orderNumber,
+  orderDate: orderDate
+})
 .then(function(order){
           if (!order) {
             alert('Order not found!');
