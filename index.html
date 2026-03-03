@@ -331,7 +331,7 @@ if (pageId === 'pageCouponStatus') {
         btn.addEventListener('click', function(){
           const page = this.getAttribute('data-page');
           showPage(page);
-
+localStorage.setItem("adminActivePage", page);   // 🔴 ADDED
           if (page === 'pageMenu') {
             // 1️⃣ Load dropdown values first
             loadCategoryList();
@@ -717,7 +717,9 @@ document.addEventListener('click', function(e){
     btn.classList.remove('processing');
 
     if (result && result.valid) {
-
+if (window.refreshInterval) {
+  clearInterval(window.refreshInterval);
+}
       window.isLoggedIn = true;
 
 const role = (result.role || '').toString().trim().toLowerCase();
@@ -746,16 +748,20 @@ localStorage.setItem("adminRole", role);
       document.getElementById('loginForm').style.display = 'none';
       document.getElementById('pendingOrder').style.display = 'block';
  document.getElementById('logoutBtn').style.display = 'block'; 
-      const ordersBtn = document.querySelector('.nav-btn[data-page="pageOrders"]');
-      if (ordersBtn) ordersBtn.classList.add('active');
+      const savedPage = localStorage.getItem("adminActivePage") || "pageOrders";
+showPage(savedPage);
+      
 
-      loadOrders();
+     if (savedPage === "pageOrders") {
+  loadOrders();
+}
       loadYearOptions();
-      window.refreshInterval = setInterval(loadOrders, 30000);
-
-      const pageOrders = document.getElementById('pageOrders');
-      if (pageOrders) pageOrders.style.display = 'block';
-
+      window.refreshInterval = setInterval(function(){
+  if (localStorage.getItem("adminActivePage") === "pageOrders") {
+    loadOrders();
+  }
+}, 30000);
+     
     } else {
       if (errDiv) errDiv.textContent = 'Invalid username or password';
     }
