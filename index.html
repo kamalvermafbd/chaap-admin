@@ -269,10 +269,8 @@ if (pageId === 'pageCouponStatus') {
           }
         }
 }
-</script>
- <!-- NAV + MIGRATION SCRIPT -->
-  <script>
-(function(){
+
+  (function(){
   document.addEventListener('DOMContentLoaded', function(){
     try {
       const pageLogin = document.getElementById('pageLogin');
@@ -386,9 +384,7 @@ if (savedLogin !== "true") {
     }
   });
 })();
-</script>
- <!-- MAIN APP SCRIPT -->
-  <script>
+
 let chartInstance = null;
 window.CATEGORY_OPTIONS = [];
 window.category_options = window.CATEGORY_OPTIONS;
@@ -1180,10 +1176,7 @@ apiGet("getSummaryData", { year: yearFilter })
 
 
 
-  </script>
-
-  <!-- Final patch to ensure auto-select after years loaded -->
-  <script>
+  
     (function(){
       const origLoadYearOptions = window.loadYearOptions;
       if(origLoadYearOptions && typeof origLoadYearOptions === 'function'){
@@ -1835,9 +1828,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 600);
 
 });
-</script>
 
-  <script>
 document.addEventListener("DOMContentLoaded", function(){
 
   const fromInput = document.getElementById("fromDate");
@@ -1885,9 +1876,6 @@ document.addEventListener("DOMContentLoaded", function(){
   });
 
 });
-</script>
-  
-  <script>
 if ("serviceWorker" in navigator) {
 
   navigator.serviceWorker.register("/sw.js")
