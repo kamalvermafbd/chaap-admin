@@ -583,25 +583,32 @@ if (action === "received") {
     `;
 
     data.forEach(order => {
-      html += `
-        <tr>
-          <td>${order.OrderNumber}</td>
-          <td>${order["Order Type"] || ""}</td>
-          <td class="statusCell">${order.OrderStatus}</td>
-          <td>
-            ${
-              order.OrderStatus === "Pending"
-              ? `<button class="acceptBtn"
-                    data-order="${order.OrderNumber}"
-                    data-date="${order.Date}">
-                    Accept
-                 </button>`
-              : "—"
-            }
-          </td>
-        </tr>
-      `;
-    });
+  html += `
+    <tr>
+      <td>${order.OrderNumber}</td>
+      <td>${order["Order Type"] || ""}</td>
+      <td class="statusCell">${order.OrderStatus}</td>
+      <td>
+
+        ${
+          order.OrderStatus === "Pending"
+          ? `<button class="acceptBtn"
+                data-order="${order.OrderNumber}"
+                data-date="${order.Date}">
+                Accept
+             </button>`
+          : ""
+        }
+
+        <button class="printBtn"
+          onclick="generateBill('${order.OrderNumber}', this)">
+          Generate Bill
+        </button>
+
+      </td>
+    </tr>
+  `;
+});
 
     html += "</table>";
     placeholder.innerHTML = html;
