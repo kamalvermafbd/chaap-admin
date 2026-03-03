@@ -231,6 +231,44 @@ function apiPost(api, body = {}) {
   .then(res => res.json());
 }
 
+function showPage(pageId){
+if (window.isLoggedIn) {
+  localStorage.setItem("adminActivePage", pageId);
+}
+        if (pageId !== 'pageLogin' && !window.isLoggedIn) {
+          const loginErr = document.getElementById('loginError');
+          if (loginErr) loginErr.textContent = 'Please login to access this page';
+          pageId = 'pageLogin';
+        } else {
+          const loginErr = document.getElementById('loginError');
+          if (loginErr) loginErr.textContent = '';
+        }
+
+        document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+        const el = document.getElementById(pageId);
+        if (el) el.style.display = 'block';
+
+if (pageId === 'pageCouponStatus') {
+  setTimeout(loadCouponStatus, 50);
+}
+
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        const btn = document.querySelector('.nav-btn[data-page="'+pageId+'"]');
+        if (btn) btn.classList.add('active');
+
+        if (pageId === 'pageSummary') {
+          const sd = document.getElementById('summaryDiv');
+          if (sd) sd.style.display = 'block';
+          const lb = document.getElementById('loadingBar');
+          if (lb) lb.style.display = 'block';
+          try {
+            loadYearOptions();
+          } catch (e) {
+            console.error('showPage: loadYearOptions error', e);
+            setTimeout(function() { try { loadSummary(); } catch(e2){ console.error(e2); } }, 400);
+          }
+        }
+}
 </script>
  <!-- NAV + MIGRATION SCRIPT -->
   <script>
@@ -302,44 +340,6 @@ if (savedLogin !== "true") {
 
 }
 
-function showPage(pageId){
-if (window.isLoggedIn) {
-  localStorage.setItem("adminActivePage", pageId);
-}
-        if (pageId !== 'pageLogin' && !window.isLoggedIn) {
-          const loginErr = document.getElementById('loginError');
-          if (loginErr) loginErr.textContent = 'Please login to access this page';
-          pageId = 'pageLogin';
-        } else {
-          const loginErr = document.getElementById('loginError');
-          if (loginErr) loginErr.textContent = '';
-        }
-
-        document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
-        const el = document.getElementById(pageId);
-        if (el) el.style.display = 'block';
-
-if (pageId === 'pageCouponStatus') {
-  setTimeout(loadCouponStatus, 50);
-}
-
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        const btn = document.querySelector('.nav-btn[data-page="'+pageId+'"]');
-        if (btn) btn.classList.add('active');
-
-        if (pageId === 'pageSummary') {
-          const sd = document.getElementById('summaryDiv');
-          if (sd) sd.style.display = 'block';
-          const lb = document.getElementById('loadingBar');
-          if (lb) lb.style.display = 'block';
-          try {
-            loadYearOptions();
-          } catch (e) {
-            console.error('showPage: loadYearOptions error', e);
-            setTimeout(function() { try { loadSummary(); } catch(e2){ console.error(e2); } }, 400);
-          }
-        }
-      }
 
       // 🔥 FIXED — Correct sequence:
       document.querySelectorAll('.nav-btn').forEach(btn=>{
@@ -377,7 +377,7 @@ if (pageId === 'pageCouponStatus') {
         console.warn('attach summary listeners error', err);
       }
 
-     // Show login page only if NOT logged in
+     
 if (savedLogin !== "true") {
   showPage('pageLogin');
 }
