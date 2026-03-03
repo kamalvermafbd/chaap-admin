@@ -302,7 +302,7 @@ if (savedLogin !== "true") {
 
 }
 
-window.showPage = function(pageId){
+function showpage(pageId){
 if (window.isLoggedIn) {
   localStorage.setItem("adminActivePage", pageId);
 }
