@@ -601,7 +601,7 @@ if (action === "received") {
         }
 
         <button class="printBtn"
-          onclick="generateBill('${order.OrderNumber}', this)">
+          onclick="generateBill('${order.OrderNumber}', '${order.Date}', this)">
           Generate Bill
         </button>
 
