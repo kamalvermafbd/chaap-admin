@@ -287,15 +287,20 @@ if (savedLogin === "true") {
   }
 
 }
-      // Disable all menu items initially
-      document.querySelectorAll('.nav-btn').forEach(b => {
-        if (b.getAttribute('data-page') !== 'pageLogin') {
-          b.classList.add('disabled');
-          b.disabled = true;
-        } else {
-          b.classList.add('active');
-        }
-      });
+     
+      // Disable menu items ONLY if not logged in
+if (savedLogin !== "true") {
+
+  document.querySelectorAll('.nav-btn').forEach(b => {
+    if (b.getAttribute('data-page') !== 'pageLogin') {
+      b.classList.add('disabled');
+      b.disabled = true;
+    } else {
+      b.classList.add('active');
+    }
+  });
+
+}
 
       function showPage(pageId){
         if (pageId !== 'pageLogin' && !window.isLoggedIn) {
