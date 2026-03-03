@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   
   <title>Pending Orders ka - Dashboard</title>
-  <div id="loggedInUser" style="padding:10px 18px;font-size:13px;color:#ccc;"></div>
+
   <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#343a40">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -81,6 +81,7 @@
   <div class="nav-wrap" id="navWrap">
     <div class="nav-side" id="navSide">
       <div class="nav-title">Dashboard</div>
+        <div id="loggedInUser" style="padding:10px 18px;font-size:13px;color:#ccc;"></div>
       <button class="nav-btn active" data-page="pageLogin">Login</button>
       <button class="nav-btn" data-page="pageOrders">Pending Orders</button>
       <button class="nav-btn" data-page="pageSummary">Summary</button>
@@ -255,7 +256,29 @@ const savedUser  = localStorage.getItem("adminUsername");
 const savedRole  = localStorage.getItem("adminRole");
 
 if (savedLogin === "true") {
+
   window.isLoggedIn = true;
+
+  document.getElementById("loggedInUser").textContent =
+    "Logged in as: " + savedUser;
+
+  document.querySelectorAll('.nav-btn').forEach(b => {
+    if (b.getAttribute('data-page') !== 'pageLogin') {
+      b.classList.remove('disabled');
+      b.disabled = false;
+    }
+  });
+
+  const menuTab = document.getElementById('menuTab');
+  const couponTab = document.getElementById('couponStatusTab');
+
+  if (menuTab) menuTab.style.display = (savedRole === 'admin') ? 'block' : 'none';
+  if (couponTab) couponTab.style.display = (savedRole === 'admin') ? 'block' : 'none';
+
+  document.getElementById('loginForm').style.display = 'none';
+  document.getElementById('pendingOrder').style.display = 'block';
+
+  loadOrders();
 }
       // Disable all menu items initially
       document.querySelectorAll('.nav-btn').forEach(b => {
@@ -696,9 +719,13 @@ document.addEventListener('click', function(e){
     if (result && result.valid) {
 
       window.isLoggedIn = true;
+
+const role = (result.role || '').toString().trim().toLowerCase();
+
 localStorage.setItem("adminLoggedIn", "true");
 localStorage.setItem("adminUsername", username);
 localStorage.setItem("adminRole", role);
+      
       document.getElementById("loggedInUser").textContent =
         "Logged in as: " + username;
       document.querySelectorAll('.nav-btn').forEach(b => {
