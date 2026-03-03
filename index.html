@@ -760,10 +760,11 @@ localStorage.setItem("adminRole", role);
  document.getElementById('logoutBtn').style.display = 'block'; 
       const savedPage = localStorage.getItem("adminActivePage") || "pageOrders";
 showPage(savedPage);
-      
 
-     if (savedPage === "pageOrders") {
-  loadOrders();
+if (savedPage === "pageOrders") {
+  setTimeout(function(){
+    loadOrders();
+  }, 100);
 }
       loadYearOptions();
       window.refreshInterval = setInterval(function(){
