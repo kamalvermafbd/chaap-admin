@@ -262,6 +262,7 @@ if (savedLogin === "true") {
   document.getElementById("loggedInUser").textContent =
     "Logged in as: " + savedUser;
 
+  // Enable all nav except login
   document.querySelectorAll('.nav-btn').forEach(b => {
     if (b.getAttribute('data-page') !== 'pageLogin') {
       b.classList.remove('disabled');
@@ -269,25 +270,23 @@ if (savedLogin === "true") {
     }
   });
 
-  const menuTab = document.getElementById('menuTab');
-  const couponTab = document.getElementById('couponStatusTab');
-
-  if (menuTab) menuTab.style.display = (savedRole === 'admin') ? 'block' : 'none';
-  if (couponTab) couponTab.style.display = (savedRole === 'admin') ? 'block' : 'none';
+  // 🔴 HIDE LOGIN NAV BUTTON
+  const loginNav = document.querySelector('.nav-btn[data-page="pageLogin"]');
+  if (loginNav) loginNav.style.display = "none";
 
   document.getElementById('loginForm').style.display = 'none';
+  // 🔴 Hide Login Nav After Login
+const loginNav = document.querySelector('.nav-btn[data-page="pageLogin"]');
+if (loginNav) loginNav.style.display = "none";
   document.getElementById('logoutBtn').style.display = 'block';
 
-  // 🔴 IMPORTANT PART
-  const savedPage = localStorage.getItem("adminActivePage") || "pageOrders";
-showPage(savedPage);
+  // 🔥 ALWAYS GO TO PENDING ORDERS
+  showPage("pageOrders");
 
-if (savedPage === "pageOrders") {
   const po = document.getElementById("pendingOrder");
-  if (po) po.style.display = "block";   // 🔴 ADD THIS LINE
-  loadOrders();
-}
+  if (po) po.style.display = "block";
 
+  loadOrders();
 }
      
       // Disable menu items ONLY if not logged in
@@ -345,7 +344,7 @@ if (pageId === 'pageCouponStatus') {
         btn.addEventListener('click', function(){
           const page = this.getAttribute('data-page');
           showPage(page);
-localStorage.setItem("adminActivePage", page);   // 🔴 ADDED
+
           if (page === 'pageMenu') {
             // 1️⃣ Load dropdown values first
             loadCategoryList();
@@ -785,7 +784,9 @@ showPage(savedPage);
   window.isLoggedIn = false;
         localStorage.clear();
   document.getElementById("loggedInUser").textContent = "";
-
+// 🔴 Show Login Nav Again
+const loginNav = document.querySelector('.nav-btn[data-page="pageLogin"]');
+if (loginNav) loginNav.style.display = "block";
   document.querySelectorAll('.nav-btn').forEach(b => {
     
     if (b.getAttribute('data-page') !== 'pageLogin') {
