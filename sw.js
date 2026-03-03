@@ -1,4 +1,4 @@
-const CACHE_NAME = "chaap-admin-cache-v4";
+const CACHE_NAME = "chaap-admin-cache-v5";
 
 const URLS_TO_CACHE = [
   "/",
@@ -7,39 +7,86 @@ const URLS_TO_CACHE = [
   "/offline.html"
 ];
 
-// Install
+// ==========================
+// INSTALL
+// ==========================
 self.addEventListener("install", event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(URLS_TO_CACHE))
+    caches.open(CACHE_NAME).then(cache => {
+      return cache.addAll(URLS_TO_CACHE);
+    })
   );
+
+  // Activate immediately
   self.skipWaiting();
 });
 
-// Activate
+
+// ==========================
+// ACTIVATE
+// ==========================
 self.addEventListener("activate", event => {
   event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(
-        keys.map(k => {
-          if (k !== CACHE_NAME) return caches.delete(k);
+    caches.keys().then(keys => {
+      return Promise.all(
+        keys.map(key => {
+          if (key !== CACHE_NAME) {
+            return caches.delete(key);
+          }
         })
-      )
-    )
+      );
+    })
   );
+
   self.clients.claim();
 });
 
-// Fetch
+
+// ==========================
+// FETCH
+// ==========================
 self.addEventListener("fetch", event => {
+
+  const request = event.request;
+
+  // 🔥 Always get latest HTML from network (prevents stale admin UI)
+  if (request.destination === "document") {
+    event.respondWith(
+      fetch(request)
+        .then(response => response)
+        .catch(() => caches.match("/offline.html"))
+    );
+    return;
+  }
+
+  // 🚫 Never cache Google Apps Script APIs
+  if (request.url.includes("/exec") || request.url.includes("?api=")) {
+    event.respondWith(fetch(request));
+    return;
+  }
+
+  // 🟢 Static assets → Cache First
   event.respondWith(
-    caches.match(event.request).then(cached => {
+    caches.match(request).then(cached => {
       if (cached) return cached;
 
-      return fetch(event.request).catch(() => {
-        if (event.request.destination === "document") {
-          return caches.match("/offline.html");
+      return fetch(request).then(networkResponse => {
+
+        // Cache only GET successful responses
+        if (
+          request.method === "GET" &&
+          networkResponse &&
+          networkResponse.status === 200
+        ) {
+          const clone = networkResponse.clone();
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(request, clone);
+          });
         }
+
+        return networkResponse;
       });
     })
   );
+
 });
