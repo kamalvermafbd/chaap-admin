@@ -1995,8 +1995,8 @@ document.addEventListener("DOMContentLoaded", function(){
       autoNext.getFullYear() + "-" +
       ("0"+(autoNext.getMonth()+1)).slice(-2) + "-" +
       ("0"+autoNext.getDate()).slice(-2);
-// 🔥 run search after DOM update
-  setTimeout(loadOrders, 0);  
+// 🔥 trigger toDate change event
+toInput.dispatchEvent(new Event("change"));  
   });
 
   toInput.addEventListener("change", function(){
