@@ -883,7 +883,7 @@ function generateBill(orderNumber, orderDate, btnRef) {
 
           const billText = `
 OrderNumber: ${order['OrderNumber']}
-Order Date: ${order['Timestamp']}
+Order Date: ${order['Timestamp'] || order['Date']}
 Customer Name: ${order['CustomerName']}
 Email: ${order['Email']}
 Mobile: ${order['Mobile']}
