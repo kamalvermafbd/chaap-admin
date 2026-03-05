@@ -1995,7 +1995,8 @@ document.addEventListener("DOMContentLoaded", function(){
       autoNext.getFullYear() + "-" +
       ("0"+(autoNext.getMonth()+1)).slice(-2) + "-" +
       ("0"+autoNext.getDate()).slice(-2);
-  
+// 🔥 trigger toDate change
+  toInput.dispatchEvent(new Event("change"));  
   });
 
   toInput.addEventListener("change", function(){
