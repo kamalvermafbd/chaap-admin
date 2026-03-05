@@ -843,90 +843,155 @@ if (loginNav) loginNav.style.display = "block";
 
     // BILL generation
 function generateBill(orderNumber, orderDate, btnRef) {
-      btnRef.textContent = 'Generating, please wait...';
-      btnRef.disabled = true;
-      btnRef.classList.add('processing');
 
-      setTimeout(function() {
-        apiGet("getOrderDetails", { 
-  orderNumber: orderNumber,
-  orderDate: orderDate
-})
-.then(function(order){
-          if (!order) {
-            alert('Order not found!');
-            btnRef.textContent = 'Generate Bill';
-            btnRef.disabled = false;
-            btnRef.classList.remove('processing');
-            return;
-          }
+  btnRef.textContent = 'Generating, please wait...';
+  btnRef.disabled = true;
+  btnRef.classList.add('processing');
 
-          const items = (order['Items'] || '').toString().split(',');
-          const qtys  = (order['Qty'] || '').toString().split(',');
-          const rates = (order['Rate'] || '').toString().split(',');
-          const amtList = items.map((_,i)=> (parseFloat(qtys[i])||0) * (parseFloat(rates[i])||0));
-          let total = amtList.reduce((a,b)=>a+b,0);
+  setTimeout(function () {
 
-          const colSNo = 4, colItem = 20, colQty = 4, colRate = 6, colAmt = 7;
-          let billContent = '';
-          for(let i=0;i<items.length;i++){
-            billContent += String(i+1).padEnd(colSNo) + ' ' +
-                           (items[i]||'').toString().padEnd(colItem) + ' ' +
-                           (qtys[i]||'').toString().padEnd(colQty) + ' ' +
-                           (rates[i]||'').toString().padEnd(colRate) + ' ' +
-                           (amtList[i]||0).toFixed(2).padStart(colAmt) + '\n';
-          }
+    apiGet("getOrderDetails", {
+      orderNumber: orderNumber,
+      orderDate: orderDate
+    })
 
-          const totalLabel = 'Total:';
-          const totalLine = ' '.repeat(colSNo + 1 + colItem + 1 + colQty + 1 + colRate - totalLabel.length)
-                            + totalLabel + ' ' + total.toFixed(2).padStart(colAmt - 1);
+    .then(function (order) {
 
-          const billText = `
-OrderNumber: ${order['OrderNumber']}
-Order Date: ${order['Timestamp'] || order['Date']}
-Customer Name: ${order['CustomerName']}
-Email: ${order['Email']}
-Mobile: ${order['Mobile']}
-Order Type: ${order['Order Type']}
-Address: ${order['Address']}
+      if (!order) {
+        alert('Order not found!');
+        btnRef.textContent = 'Generate Bill';
+        btnRef.disabled = false;
+        btnRef.classList.remove('processing');
+        return;
+      }
 
-SNo  Item                 Qty  Rate     Amt
---------------------------------------------
-${billContent}--------------------------------------------
-${totalLine}
+      const items = (order['Items'] || '').toString().split(',');
+      const units = (order['Unit'] || '').toString().split(',');
+      const qtys  = (order['Qty'] || '').toString().split(',');
+      const rates = (order['Rate'] || '').toString().split(',');
+      const discPercent = (order['Discount_Percent'] || '').toString().split(',');
+      const discAmt = (order['Disc_Amt'] || '').toString().split(',');
+      const netAmt = (order['Net_Amt'] || '').toString().split(',');
+
+      const colItem = 22;
+      const colAmt = 10;
+
+      let billContent = '';
+
+      for (let i = 0; i < items.length; i++) {
+
+        const qty = parseFloat(qtys[i]) || 0;
+        const rate = parseFloat(rates[i]) || 0;
+        const discP = parseFloat(discPercent[i]) || 0;
+        const discA = parseFloat(discAmt[i]) || 0;
+        const net = parseFloat(netAmt[i]) || 0;
+
+        const base = qty * rate;
+
+        billContent += `
+${i + 1}. ${items[i]} (${units[i]})
+
+Qty ${qty} x ${rate.toFixed(2)} = ${base.toFixed(2)}
 `;
 
-          const preview = document.getElementById('thermalPreview');
-          if (preview) { preview.textContent = billText; preview.style.display = 'block'; }
+        if (discA > 0) {
+          billContent += `Discount: ${discP}% on ${base.toFixed(2)} i.e. ${discA.toFixed(2)}
+Net Rate: ${base.toFixed(2)} - ${discA.toFixed(2)} = ${net.toFixed(2)}
+`;
+        }
 
-          document.querySelectorAll('.rowPrintBtn')?.forEach(b=>b.remove());
+        billContent += `Item Total`.padEnd(colItem) + net.toFixed(2).padStart(colAmt) + `\n\n`;
+      }
 
-          const printBtn = document.createElement('button');
-          printBtn.textContent = 'Print Bill';
-          printBtn.className = 'rowPrintBtn printBtn';
-          btnRef.parentNode.appendChild(printBtn);
+      const baseTotal = parseFloat(order['Base Total']) || 0;
+      const couponDisc = parseFloat(order['CouponDiscount']) || 0;
+      const taxable = parseFloat(order['Taxable']) || 0;
+      const cgst = parseFloat(order['CGST']) || 0;
+      const sgst = parseFloat(order['SGST']) || 0;
+      const totalAmount = parseFloat(order['TotalAmount']) || 0;
+      const delivery = parseFloat(order['DeliveryCharges']) || 0;
+      const courier = parseFloat(order['CourierCharges']) || 0;
+      const netPay = parseFloat(order['netpayable']) || 0;
 
-          printBtn.onclick = function(){
-            const w = window.open();
-            w.document.write('<pre>'+billText+'</pre>');
-            w.document.close();
-            w.focus();
-            w.print();
-          };
+      const deliveryCharge = delivery > 0 ? delivery : courier;
 
-          btnRef.textContent = 'Generate Bill';
-          btnRef.disabled = false;
-          btnRef.classList.remove('processing');
+      const addressFull = `${order['Address']}, ${order['city']}, ${order['state']} - ${order['Pincode']}`;
 
-        }).catch(function(err){
-  console.error('getOrderDetails error:', err);
-  btnRef.textContent = 'Generate Bill';
-  btnRef.disabled = false;
-  btnRef.classList.remove('processing');
-});
-      }, 50);
+      const billText = `
+${order['OrderNumber']} • ${order['Timestamp']}
+Order ID : ${order['orderId']}
+
+Order Type : ${order['Order Type']}
+
+Name : ${order['CustomerName']}
+Mobile / Email : ${order['Mobile']} / ${order['Email']}
+Address : ${addressFull}
+
+------------------------------------------------
+
+${billContent}
+------------------------------------------------
+
+Items Subtotal`.padEnd(colItem) + baseTotal.toFixed(2).padStart(colAmt) + `
+Offer Applied (${order['couponId'] || ''})`.padEnd(colItem) + (-couponDisc).toFixed(2).padStart(colAmt) + `
+Gross Value`.padEnd(colItem) + taxable.toFixed(2).padStart(colAmt) + `
+Taxable Amount`.padEnd(colItem) + taxable.toFixed(2).padStart(colAmt) + `
+
+CGST`.padEnd(colItem) + cgst.toFixed(2).padStart(colAmt) + `
+SGST`.padEnd(colItem) + sgst.toFixed(2).padStart(colAmt) + `
+
+Bill Amount`.padEnd(colItem) + totalAmount.toFixed(2).padStart(colAmt) + `
+Delivery Charges`.padEnd(colItem) + deliveryCharge.toFixed(2).padStart(colAmt) + `
+
+------------------------------------------------
+Net Payable`.padEnd(colItem) + netPay.toFixed(2).padStart(colAmt) + `
+------------------------------------------------
+
+Payment : ${order['PaymentMethod']}
+`;
+
+      const preview = document.getElementById('thermalPreview');
+      if (preview) {
+        preview.textContent = billText;
+        preview.style.display = 'block';
+      }
+
+      document.querySelectorAll('.rowPrintBtn')?.forEach(b => b.remove());
+
+      const printBtn = document.createElement('button');
+      printBtn.textContent = 'Print Bill';
+      printBtn.className = 'rowPrintBtn printBtn';
+      btnRef.parentNode.appendChild(printBtn);
+
+      printBtn.onclick = function () {
+
+        const w = window.open();
+        w.document.write('<pre>' + billText + '</pre>');
+        w.document.close();
+        w.focus();
+        w.print();
+
+      };
+
+      btnRef.textContent = 'Generate Bill';
+      btnRef.disabled = false;
+      btnRef.classList.remove('processing');
+
+    })
+
+    .catch(function (err) {
+
+      console.error('getOrderDetails error:', err);
+
+      btnRef.textContent = 'Generate Bill';
+      btnRef.disabled = false;
+      btnRef.classList.remove('processing');
+
+    });
+
+  }, 50);
+
 }
-
     // SUMMARY functions (calls server methods getYears and getSummaryData)
     function loadYearOptions(){
        if (!document.querySelector('.nav-btn[data-page="pageSummary"]').classList.contains('active')) return;
