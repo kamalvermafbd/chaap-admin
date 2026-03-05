@@ -1995,8 +1995,12 @@ document.addEventListener("DOMContentLoaded", function(){
       autoNext.getFullYear() + "-" +
       ("0"+(autoNext.getMonth()+1)).slice(-2) + "-" +
       ("0"+autoNext.getDate()).slice(-2);
-// 🔥 trigger toDate change event
-toInput.dispatchEvent(new Event("change"));  
+ const placeholder = document.getElementById("ordersPlaceholder");
+
+  if (placeholder) {
+    placeholder.innerHTML =
+      '<span style="color:red;font-weight:500;">Date changed. Click "Search" to load orders.</span>';
+  }  
   });
 
   toInput.addEventListener("change", function(){
@@ -2010,12 +2014,12 @@ toInput.dispatchEvent(new Event("change"));
     toInput.value = fromInput.value;
     return;
   }
+const placeholder = document.getElementById("ordersPlaceholder");
 
-  // ✅ valid range → run search
-  if (toDate >= fromDate) {
-    loadOrders();
-  }
-
+if (placeholder) {
+  placeholder.innerHTML =
+    '<span style="color:red;font-weight:500;">Date changed. Click "Search" to load orders.</span>';
+}
 });
 
 });
