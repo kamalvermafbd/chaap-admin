@@ -840,7 +840,16 @@ if (loginNav) loginNav.style.display = "block";
     });
 
 
-
+function formatDate(ts){
+  const d = new Date(ts);
+  return d.toLocaleString('en-IN', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+}
     // BILL generation
 function generateBill(orderNumber, orderDate, btnRef) {
 
@@ -924,20 +933,22 @@ Net Rate: ${base.toFixed(2)} - ${discA.toFixed(2)} = ${net.toFixed(2)}
 
       const deliveryCharge = delivery > 0 ? delivery : courier;
 
-      const addressFull =
-        `${order['Address']}, ${order['city']}, ${order['state']} - ${order['Pincode']}`;
+      
 
       // -------- bill text --------
       const billText = `
-${order['OrderNumber']} • ${order['Timestamp']}
+${order['OrderNumber']} • ${formatDate(order['Timestamp'])}
 Order ID : ${order['orderId']}
 
 Order Type : ${order['Order Type']}
 
 Name : ${order['CustomerName']}
-Mobile / Email : ${order['Mobile']} / ${order['Email']}
-Address : ${addressFull}
+Mobile : ${order['Mobile']}
+Email  : ${order['Email']}
 
+Address:
+${order['Address']}
+${order['city']}, ${order['state']} - ${order['Pincode']}
 ${separator}
 
 ${itemSection}${separator}
