@@ -327,6 +327,14 @@ if (couponTab) couponTab.style.display = (savedRole === 'admin') ? 'block' : 'no
   if (po) po.style.display = "block";
 
   loadOrders();
+  // 🔥 AUTO REFRESH START
+clearInterval(window.refreshInterval);
+
+window.refreshInterval = setInterval(function(){
+  if (localStorage.getItem("adminActivePage") === "pageOrders") {
+    loadOrders();
+  }
+}, 30000);
 }
      
       // Disable menu items ONLY if not logged in
