@@ -865,6 +865,17 @@ function generateBill(orderNumber, orderDate, btnRef) {
         return;
       }
 
+      // -------- helper for alignment --------
+      function line(label, value, width = 32) {
+        label = String(label);
+        value = String(value);
+        const space = width - label.length - value.length;
+        return label + " ".repeat(space > 0 ? space : 1) + value;
+      }
+
+      const separator = "-".repeat(32);
+
+      // -------- items --------
       const items = (order['Items'] || '').toString().split(',');
       const units = (order['Unit'] || '').toString().split(',');
       const qtys  = (order['Qty'] || '').toString().split(',');
@@ -873,10 +884,7 @@ function generateBill(orderNumber, orderDate, btnRef) {
       const discAmt = (order['Disc_Amt'] || '').toString().split(',');
       const netAmt = (order['Net_Amt'] || '').toString().split(',');
 
-      const colItem = 22;
-      const colAmt = 10;
-
-      let billContent = '';
+      let itemSection = '';
 
       for (let i = 0; i < items.length; i++) {
 
@@ -888,21 +896,22 @@ function generateBill(orderNumber, orderDate, btnRef) {
 
         const base = qty * rate;
 
-        billContent += `
-${i + 1}. ${items[i]} (${units[i]})
+        itemSection += `
+${i+1}. ${items[i]} (${units[i]})
 
 Qty ${qty} x ${rate.toFixed(2)} = ${base.toFixed(2)}
 `;
 
         if (discA > 0) {
-          billContent += `Discount: ${discP}% on ${base.toFixed(2)} i.e. ${discA.toFixed(2)}
+          itemSection += `Discount ${discP}% = ${discA.toFixed(2)}
 Net Rate: ${base.toFixed(2)} - ${discA.toFixed(2)} = ${net.toFixed(2)}
 `;
         }
 
-        billContent += `Item Total`.padEnd(colItem) + net.toFixed(2).padStart(colAmt) + `\n\n`;
+        itemSection += line("Item Total", net.toFixed(2)) + "\n\n";
       }
 
+      // -------- totals --------
       const baseTotal = parseFloat(order['Base Total']) || 0;
       const couponDisc = parseFloat(order['CouponDiscount']) || 0;
       const taxable = parseFloat(order['Taxable']) || 0;
@@ -915,8 +924,10 @@ Net Rate: ${base.toFixed(2)} - ${discA.toFixed(2)} = ${net.toFixed(2)}
 
       const deliveryCharge = delivery > 0 ? delivery : courier;
 
-      const addressFull = `${order['Address']}, ${order['city']}, ${order['state']} - ${order['Pincode']}`;
+      const addressFull =
+        `${order['Address']}, ${order['city']}, ${order['state']} - ${order['Pincode']}`;
 
+      // -------- bill text --------
       const billText = `
 ${order['OrderNumber']} • ${order['Timestamp']}
 Order ID : ${order['orderId']}
@@ -927,46 +938,47 @@ Name : ${order['CustomerName']}
 Mobile / Email : ${order['Mobile']} / ${order['Email']}
 Address : ${addressFull}
 
-------------------------------------------------
+${separator}
 
-${billContent}
-------------------------------------------------
+${itemSection}${separator}
 
-Items Subtotal`.padEnd(colItem) + baseTotal.toFixed(2).padStart(colAmt) + `
-Offer Applied (${order['couponId'] || ''})`.padEnd(colItem) + (-couponDisc).toFixed(2).padStart(colAmt) + `
-Gross Value`.padEnd(colItem) + taxable.toFixed(2).padStart(colAmt) + `
-Taxable Amount`.padEnd(colItem) + taxable.toFixed(2).padStart(colAmt) + `
+${line("Items Subtotal", baseTotal.toFixed(2))}
+${line(`Offer Applied (${order['couponId']||''})`, (-couponDisc).toFixed(2))}
+${line("Gross Value", taxable.toFixed(2))}
+${line("Taxable Amount", taxable.toFixed(2))}
 
-CGST`.padEnd(colItem) + cgst.toFixed(2).padStart(colAmt) + `
-SGST`.padEnd(colItem) + sgst.toFixed(2).padStart(colAmt) + `
+${line("CGST", cgst.toFixed(2))}
+${line("SGST", sgst.toFixed(2))}
 
-Bill Amount`.padEnd(colItem) + totalAmount.toFixed(2).padStart(colAmt) + `
-Delivery Charges`.padEnd(colItem) + deliveryCharge.toFixed(2).padStart(colAmt) + `
+${line("Bill Amount", totalAmount.toFixed(2))}
+${line("Delivery Charges", deliveryCharge.toFixed(2))}
 
-------------------------------------------------
-Net Payable`.padEnd(colItem) + netPay.toFixed(2).padStart(colAmt) + `
-------------------------------------------------
+${separator}
+${line("Net Payable", netPay.toFixed(2))}
+${separator}
 
 Payment : ${order['PaymentMethod']}
 `;
 
+      // -------- preview --------
       const preview = document.getElementById('thermalPreview');
       if (preview) {
         preview.textContent = billText;
         preview.style.display = 'block';
       }
 
-      document.querySelectorAll('.rowPrintBtn')?.forEach(b => b.remove());
+      // -------- print button --------
+      document.querySelectorAll('.rowPrintBtn')?.forEach(b=>b.remove());
 
       const printBtn = document.createElement('button');
       printBtn.textContent = 'Print Bill';
       printBtn.className = 'rowPrintBtn printBtn';
       btnRef.parentNode.appendChild(printBtn);
 
-      printBtn.onclick = function () {
+      printBtn.onclick = function(){
 
         const w = window.open();
-        w.document.write('<pre>' + billText + '</pre>');
+        w.document.write('<pre style="font-family:monospace">'+billText+'</pre>');
         w.document.close();
         w.focus();
         w.print();
@@ -979,7 +991,7 @@ Payment : ${order['PaymentMethod']}
 
     })
 
-    .catch(function (err) {
+    .catch(function(err){
 
       console.error('getOrderDetails error:', err);
 
@@ -990,7 +1002,6 @@ Payment : ${order['PaymentMethod']}
     });
 
   }, 50);
-
 }
     // SUMMARY functions (calls server methods getYears and getSummaryData)
     function loadYearOptions(){
