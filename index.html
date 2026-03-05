@@ -1986,24 +1986,31 @@ document.addEventListener("DOMContentLoaded", function(){
 
   toInput.value = toStr;
 
-  fromInput.addEventListener("change", function(){
-    const selected = new Date(this.value);
-    const autoNext = new Date(selected);
-    autoNext.setDate(autoNext.getDate() + 1);
+ fromInput.addEventListener("change", function(){
+  const selected = new Date(this.value);
+  const autoNext = new Date(selected);
+  autoNext.setDate(autoNext.getDate() + 1);
 
-    toInput.value =
-      autoNext.getFullYear() + "-" +
-      ("0"+(autoNext.getMonth()+1)).slice(-2) + "-" +
-      ("0"+autoNext.getDate()).slice(-2);
- const placeholder = document.getElementById("ordersPlaceholder");
+  toInput.value =
+    autoNext.getFullYear() + "-" +
+    ("0"+(autoNext.getMonth()+1)).slice(-2) + "-" +
+    ("0"+autoNext.getDate()).slice(-2);
+
+  const placeholder = document.getElementById("ordersPlaceholder");
 
   if (placeholder) {
     placeholder.innerHTML =
       '<span style="color:red;font-weight:500;">Date changed. Click "Search" to load orders.</span>';
-  }  
-  });
+  }
 
-  toInput.addEventListener("change", function(){
+  // 🔴 Close invoice modal if open
+  const invoiceModal = document.getElementById("invoiceModal");
+  if (invoiceModal) invoiceModal.classList.add("hidden");
+
+});
+
+
+toInput.addEventListener("change", function(){
 
   const fromDate = new Date(fromInput.value);
   const toDate = new Date(toInput.value);
@@ -2014,14 +2021,19 @@ document.addEventListener("DOMContentLoaded", function(){
     toInput.value = fromInput.value;
     return;
   }
-const placeholder = document.getElementById("ordersPlaceholder");
 
-if (placeholder) {
-  placeholder.innerHTML =
-    '<span style="color:red;font-weight:500;">Date changed. Click "Search" to load orders.</span>';
-}
+  const placeholder = document.getElementById("ordersPlaceholder");
+
+  if (placeholder) {
+    placeholder.innerHTML =
+      '<span style="color:red;font-weight:500;">Date changed. Click "Search" to load orders.</span>';
+  }
+
+  // 🔴 Close invoice modal if open
+  const invoiceModal = document.getElementById("invoiceModal");
+  if (invoiceModal) invoiceModal.classList.add("hidden");
+
 });
-
 });
 if ("serviceWorker" in navigator) {
 
