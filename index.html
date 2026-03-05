@@ -933,7 +933,24 @@ Net Rate: ${base.toFixed(2)} - ${discA.toFixed(2)} = ${net.toFixed(2)}
 
       const deliveryCharge = delivery > 0 ? delivery : courier;
 
-      
+      // coupon logic
+const rewardCoupon = parseFloat(order['rewardcoupon']) || 0;
+const paidCoupon = parseFloat(order['paidcoupon']) || 0;
+
+let couponSection = "";
+
+if (rewardCoupon > 0) {
+
+  couponSection += "\nReward Coupon\n";
+  couponSection += line(`(${order['couponId'] || ''})`, (-rewardCoupon).toFixed(2)) + "\n";
+
+}
+else if (paidCoupon > 0) {
+
+  couponSection += "\nPaid Coupon\n";
+  couponSection += line(`(${order['couponId'] || ''})`, (-paidCoupon).toFixed(2)) + "\n";
+
+}
 
       // -------- bill text --------
       const billText = `
@@ -963,7 +980,7 @@ ${line("SGST", sgst.toFixed(2))}
 
 ${line("Bill Amount", totalAmount.toFixed(2))}
 ${line("Delivery Charges", deliveryCharge.toFixed(2))}
-
+${couponSection}
 ${separator}
 ${line("Net Payable", netPay.toFixed(2))}
 ${separator}
