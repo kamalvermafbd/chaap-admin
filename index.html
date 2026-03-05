@@ -1995,9 +1995,7 @@ document.addEventListener("DOMContentLoaded", function(){
       autoNext.getFullYear() + "-" +
       ("0"+(autoNext.getMonth()+1)).slice(-2) + "-" +
       ("0"+autoNext.getDate()).slice(-2);
-    
-  // 🔥 AUTO SEARCH (delay so toDate updates first)
-  setTimeout(loadOrders, 250);
+  
   });
 
   toInput.addEventListener("change", function(){
