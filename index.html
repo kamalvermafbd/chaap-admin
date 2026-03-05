@@ -1895,14 +1895,23 @@ document.addEventListener("DOMContentLoaded", function(){
   });
 
   toInput.addEventListener("change", function(){
-    const fromDate = new Date(fromInput.value);
-    const toDate = new Date(toInput.value);
 
-    if (toDate < fromDate) {
-      alert("To Date cannot be less than From Date");
-      toInput.value = fromInput.value;
-    }
-  });
+  const fromDate = new Date(fromInput.value);
+  const toDate = new Date(toInput.value);
+
+  // ❌ invalid range
+  if (toDate < fromDate) {
+    alert("To Date cannot be less than From Date");
+    toInput.value = fromInput.value;
+    return;
+  }
+
+  // ✅ valid range → run search
+  if (toDate >= fromDate) {
+    loadOrders();
+  }
+
+});
 
 });
 if ("serviceWorker" in navigator) {
