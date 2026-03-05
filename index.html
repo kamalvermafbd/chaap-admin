@@ -331,9 +331,23 @@ if (couponTab) couponTab.style.display = (savedRole === 'admin') ? 'block' : 'no
 clearInterval(window.refreshInterval);
 
 window.refreshInterval = setInterval(function(){
-  if (localStorage.getItem("adminActivePage") === "pageOrders") {
+
+  if (localStorage.getItem("adminActivePage") !== "pageOrders") return;
+
+  const toDateInput = document.getElementById("toDate");
+  if (!toDateInput || !toDateInput.value) return;
+
+  const toDate = new Date(toDateInput.value);
+  const today = new Date();
+
+  // normalize today (remove time)
+  today.setHours(0,0,0,0);
+
+  // 🔥 only refresh if toDate >= today
+  if (toDate >= today) {
     loadOrders();
   }
+
 }, 30000);
 }
      
