@@ -599,7 +599,8 @@ if (action === "received") {
  function loadOrders() {
 
   if (!document.querySelector('.nav-btn[data-page="pageOrders"]').classList.contains('active')) return;
-
+console.time("loadOrders TOTAL");
+console.time("API getOrderNumbers");
   const placeholder = document.getElementById('ordersPlaceholder');
   const lastUpdatedDiv = document.getElementById('lastUpdated');
 
@@ -623,8 +624,11 @@ if (action === "received") {
   .then(function(data){
 
     if (!placeholder) return;
-
+console.timeEnd("API getOrderNumbers");
+console.time("DOM render");
     if (!data || data.length === 0) {
+       console.timeEnd("DOM render");
+  console.timeEnd("loadOrders TOTAL");
       placeholder.textContent = "No orders found.";
       return;
     }
@@ -677,7 +681,8 @@ if (action === "received") {
 
     html += "</table>";
     placeholder.innerHTML = html;
-
+console.timeEnd("DOM render");
+console.timeEnd("loadOrders TOTAL");
     // 🔥 LAST UPDATED TIME
     if (lastUpdatedDiv) {
       const now = new Date();
