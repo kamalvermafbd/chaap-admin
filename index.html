@@ -668,6 +668,11 @@ console.time("DOM render");
       : ""
     )
 }
+<button class="cancelBtn"
+  data-order="${order.OrderNumber}"
+  data-date="${order.Date}">
+  Cancel
+</button>
 
         <button class="printBtn"
           onclick="generateBill('${order.OrderNumber}', '${order.Date}', this)">
@@ -820,6 +825,38 @@ placeholder.textContent = "Server error loading orders.";
 });
 
 }
+
+// 🔴 CLOSE CANCEL MODAL
+document.getElementById("closeCancelModal")
+.addEventListener("click", function(){
+
+document.getElementById("cancelModal")
+.classList.add("hidden");
+
+});
+
+  // 🔴 CANCEL BUTTON LISTENER
+document.querySelectorAll(".cancelBtn").forEach(btn => {
+
+btn.addEventListener("click", function(){
+
+const orderNumber = this.getAttribute("data-order");
+const orderDate = this.getAttribute("data-date");
+
+console.log("Cancel clicked:", orderNumber);
+
+// 🔴 OPEN MODAL
+document.getElementById("cancelModal")
+.classList.remove("hidden");
+
+// 🔴 temporary content
+document.getElementById("cancelContent").innerHTML =
+"Loading items for order: " + orderNumber;
+
+});
+
+});
+  
     // LOGIN / LOGOUT
 document.addEventListener('click', function(e){
       if (e.target && e.target.id === 'loginBtn') {
@@ -2165,5 +2202,28 @@ if ("serviceWorker" in navigator) {
     .catch(err => console.log("❌ SW Error", err));
 }
 </script>
+  <!-- 🔴 CANCEL ORDER MODAL -->
+<div id="cancelModal"
+class="fixed inset-0 bg-black bg-opacity-50 hidden z-[100000] flex items-center justify-center">
+
+<div class="bg-white w-[95%] max-w-xl rounded-xl p-4 text-sm relative">
+
+<h2 class="text-lg font-bold mb-3">Cancel Order</h2>
+
+<div id="cancelContent">
+Loading items...
+</div>
+
+<div class="flex justify-end gap-2 mt-4">
+
+<button id="closeCancelModal"
+class="px-3 py-1 bg-gray-300 rounded">
+Close
+</button>
+
+</div>
+
+</div>
+</div>
 </body>
 </html>
