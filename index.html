@@ -649,7 +649,7 @@ console.time("DOM render");
       <td>${order.OrderNumber}</td>
       <td>${order["Order Type"] || ""}</td>
       <td class="statusCell">${order.OrderStatus}</td>
-      <td>
+      <td class="actionCell">
 
         ${
   order.OrderStatus === "Pending"
@@ -750,11 +750,12 @@ document.querySelectorAll('.acceptBtn').forEach(btn => {
 // 🔥 FLOW BUTTON LISTENER
 document.querySelectorAll('.flowBtn').forEach(btn => {
   btn.addEventListener('click', function() {
+const button = this;
 
-    const orderNumber = this.getAttribute('data-order');
-    const orderDate = this.getAttribute('data-date');
-    const nextStatus = this.getAttribute('data-next');
-    const statusCell = this.closest('tr').querySelector('.statusCell');
+const orderNumber = button.getAttribute('data-order');
+const orderDate = button.getAttribute('data-date');
+const nextStatus = button.getAttribute('data-next');
+const statusCell = button.closest('tr').querySelector('.statusCell');
 
 console.log("FLOW CLICK", {
   orderNumber: orderNumber,
@@ -767,8 +768,9 @@ if (!nextStatus || nextStatus === "undefined") {
   return;
 }
   
-    this.disabled = true;
-    this.textContent = 'Processing...';
+   button.disabled = true;
+button.textContent = 'Processing...';
+    
 console.log("Calling updateOrderStatus API");
     apiGet("updateOrderStatus", {
       orderNumber: orderNumber,
@@ -778,18 +780,34 @@ console.log("Calling updateOrderStatus API");
     .then(function(res){
 
      if (res.success) {
-        statusCell.textContent = nextStatus;
-        loadOrders();
-      } else {
-        alert("Failed to update order status");
-btn.disabled = false;
-btn.textContent = nextStatus;
-      }
+
+  const row = statusCell.closest("tr");
+  const actionCell = row.querySelector(".actionCell");
+
+  statusCell.textContent = nextStatus;
+
+  actionCell.innerHTML = `
+    <span style="color:green;font-weight:bold;">
+      ${nextStatus}
+    </span>
+  `;
+
+}
+     
+     else {
+  alert("Failed to update order status");
+ button.disabled = false;
+button.textContent = nextStatus;
+}
 
     })
     .catch(function(err){
       console.error("updateOrderStatus error:", err);
       alert("Server error");
+
+   // 🔴 FIX: restore button if API fails
+      button.disabled = false;
+      button.textContent = nextStatus;
     });
 
   });
