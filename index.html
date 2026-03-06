@@ -648,14 +648,22 @@ if (action === "received") {
       <td>
 
         ${
-          order.OrderStatus === "Pending"
-          ? `<button class="acceptBtn"
-                data-order="${order.OrderNumber}"
-                data-date="${order.Date}">
-                Accept
-             </button>`
-          : ""
-        }
+  order.OrderStatus === "Pending"
+  ? `<button class="acceptBtn"
+        data-order="${order.OrderNumber}"
+        data-date="${order.Date}">
+        Accept
+     </button>`
+  : (order.nextButton
+      ? `<button class="flowBtn"
+            data-order="${order.OrderNumber}"
+            data-date="${order.Date}"
+            data-next="${order.nextStatus}">
+            ${order.nextButton}
+         </button>`
+      : ""
+    )
+}
 
         <button class="printBtn"
           onclick="generateBill('${order.OrderNumber}', '${order.Date}', this)">
@@ -676,49 +684,84 @@ if (action === "received") {
       lastUpdatedDiv.textContent =
         "Last Updated: " + now.toLocaleTimeString();
     }
+// 🔥 ACCEPT BUTTON LISTENER
+document.querySelectorAll('.acceptBtn').forEach(btn => {
+  btn.addEventListener('click', function() {
 
-    // 🔥 ACCEPT BUTTON LISTENER
-    document.querySelectorAll('.acceptBtn').forEach(btn => {
-      btn.addEventListener('click', function() {
+    const orderNumber = this.getAttribute('data-order');
+    const orderDate = this.getAttribute('data-date');
+    const statusCell = this.closest('tr').querySelector('.statusCell');
 
-        const orderNumber = this.getAttribute('data-order');
-        const orderDate = this.getAttribute('data-date');
-        const statusCell = this.closest('tr').querySelector('.statusCell');
+    this.disabled = true;
+    this.textContent = 'Processing...';
 
-        this.disabled = true;
-        this.textContent = 'Processing...';
+    apiGet("acceptOrder", {
+      orderNumber: orderNumber,
+      orderDate: orderDate
+    })
+    .then(function(success){
 
-        apiGet("acceptOrder", {
-          orderNumber: orderNumber,
-          orderDate: orderDate
-        })
-        .then(function(success){
+      if (success) {
+        statusCell.textContent = 'Accepted';
+        btn.textContent = 'Accepted';
+        loadOrders();
+      } else {
+        alert('Failed to update order status');
+        btn.disabled = false;
+        btn.textContent = 'Accept';
+      }
 
-          if (success) {
-            statusCell.textContent = 'Accepted';
-            btn.textContent = 'Accepted';
-          } else {
-            alert('Failed to update order status');
-            btn.disabled = false;
-            btn.textContent = 'Accept';
-          }
-
-        })
-        .catch(function(err){
-          console.error("acceptOrder error:", err);
-          alert("Server error");
-          btn.disabled = false;
-          btn.textContent = 'Accept';
-        });
-
-      });
+    })
+    .catch(function(err){
+      console.error("acceptOrder error:", err);
+      alert("Server error");
+      btn.disabled = false;
+      btn.textContent = 'Accept';
     });
 
-  })
-  .catch(function(err){
-    console.error("Order load failed:", err);
-    placeholder.textContent = "Server error loading orders.";
   });
+});
+
+// 🔥 FLOW BUTTON LISTENER
+document.querySelectorAll('.flowBtn').forEach(btn => {
+  btn.addEventListener('click', function() {
+
+    const orderNumber = this.getAttribute('data-order');
+    const orderDate = this.getAttribute('data-date');
+    const nextStatus = this.getAttribute('data-next');
+    const statusCell = this.closest('tr').querySelector('.statusCell');
+
+    this.disabled = true;
+    this.textContent = 'Processing...';
+
+    apiGet("updateOrderStatus", {
+      orderNumber: orderNumber,
+      orderDate: orderDate,
+      newStatus: nextStatus
+    })
+    .then(function(success){
+
+      if (success) {
+        statusCell.textContent = nextStatus;
+        loadOrders();
+      } else {
+        alert("Failed to update order status");
+      }
+
+    })
+    .catch(function(err){
+      console.error("updateOrderStatus error:", err);
+      alert("Server error");
+    });
+
+  });
+});
+
+})
+.catch(function(err){
+console.error("Order load failed:", err);
+placeholder.textContent = "Server error loading orders.";
+});
 
 }
     // LOGIN / LOGOUT
