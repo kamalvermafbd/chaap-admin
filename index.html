@@ -702,15 +702,15 @@ document.querySelectorAll('.acceptBtn').forEach(btn => {
     button.disabled = true;
     button.textContent = 'Processing...';
 
-    apiGet("acceptOrder", {
-      orderNumber: orderNumber,
-      orderDate: orderDate
-    })
-    .then(function(success){
+   apiGet("acceptOrder", {
+  orderNumber: orderNumber,
+  orderDate: orderDate
+})
+.then(function(res){
 
-      console.log("📡 acceptOrder API response:", success);
+  console.log("📡 acceptOrder API response:", res);
 
-      if (success) {
+  if (res.success) {
 
         statusCell.textContent = 'Accepted';
         button.textContent = 'Accepted';
@@ -759,9 +759,9 @@ document.querySelectorAll('.flowBtn').forEach(btn => {
       orderDate: orderDate,
       newStatus: nextStatus
     })
-    .then(function(success){
+    .then(function(res){
 
-      if (success) {
+     if (res.success) {
         statusCell.textContent = nextStatus;
         loadOrders();
       } else {
