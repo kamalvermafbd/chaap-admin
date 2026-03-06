@@ -348,7 +348,7 @@ window.refreshInterval = setInterval(function(){
     loadOrders();
   }
 
-}, 30000);
+}, 60000);
 }
      
       // Disable menu items ONLY if not logged in
@@ -729,7 +729,7 @@ document.querySelectorAll('.acceptBtn').forEach(btn => {
             console.log("🔄 Auto refresh running");
             loadOrders();
           }
-        }, 30000);
+        }, 60000);
 
       } else {
         alert('Failed to update order status');
@@ -893,7 +893,7 @@ if (savedPage === "pageOrders") {
   if (localStorage.getItem("adminActivePage") === "pageOrders") {
     loadOrders();
   }
-}, 30000);
+}, 60000);
      
     } else {
       if (errDiv) errDiv.textContent = 'Invalid username or password';
