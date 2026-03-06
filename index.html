@@ -756,9 +756,20 @@ document.querySelectorAll('.flowBtn').forEach(btn => {
     const nextStatus = this.getAttribute('data-next');
     const statusCell = this.closest('tr').querySelector('.statusCell');
 
+console.log("FLOW CLICK", {
+  orderNumber: orderNumber,
+  orderDate: orderDate,
+  nextStatus: nextStatus
+});
+
+if (!nextStatus || nextStatus === "undefined") {
+  alert("Invalid next status");
+  return;
+}
+  
     this.disabled = true;
     this.textContent = 'Processing...';
-
+console.log("Calling updateOrderStatus API");
     apiGet("updateOrderStatus", {
       orderNumber: orderNumber,
       orderDate: orderDate,
@@ -771,6 +782,8 @@ document.querySelectorAll('.flowBtn').forEach(btn => {
         loadOrders();
       } else {
         alert("Failed to update order status");
+btn.disabled = false;
+btn.textContent = nextStatus;
       }
 
     })
