@@ -687,7 +687,7 @@ if (action === "received") {
 // 🔥 ACCEPT BUTTON LISTENER
 document.querySelectorAll('.acceptBtn').forEach(btn => {
   btn.addEventListener('click', function() {
-
+ const button = this;
     const orderNumber = this.getAttribute('data-order');
     const orderDate = this.getAttribute('data-date');
     const statusCell = this.closest('tr').querySelector('.statusCell');
