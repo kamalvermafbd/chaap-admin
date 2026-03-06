@@ -687,13 +687,20 @@ if (action === "received") {
 // 🔥 ACCEPT BUTTON LISTENER
 document.querySelectorAll('.acceptBtn').forEach(btn => {
   btn.addEventListener('click', function() {
- const button = this;
-    const orderNumber = this.getAttribute('data-order');
-    const orderDate = this.getAttribute('data-date');
-    const statusCell = this.closest('tr').querySelector('.statusCell');
 
-    this.disabled = true;
-    this.textContent = 'Processing...';
+    const button = this;
+
+    const orderNumber = button.getAttribute('data-order');
+    const orderDate = button.getAttribute('data-date');
+    const statusCell = button.closest('tr').querySelector('.statusCell');
+
+    console.log("🟢 ACCEPT CLICKED", orderNumber);
+
+    clearInterval(window.refreshInterval);
+    console.log("⛔ Auto refresh stopped");
+
+    button.disabled = true;
+    button.textContent = 'Processing...';
 
     apiGet("acceptOrder", {
       orderNumber: orderNumber,
@@ -701,27 +708,40 @@ document.querySelectorAll('.acceptBtn').forEach(btn => {
     })
     .then(function(success){
 
+      console.log("📡 acceptOrder API response:", success);
+
       if (success) {
+
         statusCell.textContent = 'Accepted';
-        btn.textContent = 'Accepted';
+        button.textContent = 'Accepted';
+
+        console.log("✅ Order accepted:", orderNumber);
+
         loadOrders();
+
+        window.refreshInterval = setInterval(function(){
+          if (localStorage.getItem("adminActivePage") === "pageOrders") {
+            console.log("🔄 Auto refresh running");
+            loadOrders();
+          }
+        }, 30000);
+
       } else {
         alert('Failed to update order status');
-        btn.disabled = false;
-        btn.textContent = 'Accept';
+        button.disabled = false;
+        button.textContent = 'Accept';
       }
 
     })
     .catch(function(err){
       console.error("acceptOrder error:", err);
       alert("Server error");
-      btn.disabled = false;
-      btn.textContent = 'Accept';
+      button.disabled = false;
+      button.textContent = 'Accept';
     });
 
   });
 });
-
 // 🔥 FLOW BUTTON LISTENER
 document.querySelectorAll('.flowBtn').forEach(btn => {
   btn.addEventListener('click', function() {
