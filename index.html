@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   
   <title>Pending Orders ka - Dashboard</title>
-
+<script src="https://cdn.tailwindcss.com"></script>
   <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#343a40">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -818,24 +818,7 @@ button.textContent = nextStatus;
   });
 });
 
-})
-.catch(function(err){
-console.error("Order load failed:", err);
-placeholder.textContent = "Server error loading orders.";
-});
-
-}
-
-// 🔴 CLOSE CANCEL MODAL
-document.getElementById("closeCancelModal")
-.addEventListener("click", function(){
-
-document.getElementById("cancelModal")
-.classList.add("hidden");
-
-});
-
-  // 🔴 CANCEL BUTTON LISTENER
+    // 🔴 CANCEL BUTTON LISTENER
 document.querySelectorAll(".cancelBtn").forEach(btn => {
 
 btn.addEventListener("click", function(){
@@ -856,6 +839,25 @@ document.getElementById("cancelContent").innerHTML =
 });
 
 });
+
+})
+.catch(function(err){
+console.error("Order load failed:", err);
+placeholder.textContent = "Server error loading orders.";
+});
+
+}
+
+// 🔴 CLOSE CANCEL MODAL
+document.getElementById("closeCancelModal")
+.addEventListener("click", function(){
+
+document.getElementById("cancelModal")
+.classList.add("hidden");
+
+});
+
+
   
     // LOGIN / LOGOUT
 document.addEventListener('click', function(e){
