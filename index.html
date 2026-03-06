@@ -73,7 +73,30 @@
   background: #c82333;
 }
 
+.modal-overlay {
+  position: fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background: rgba(0,0,0,0.5);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:100000;
+}
 
+.modal-box {
+  background:#fff;
+  width:95%;
+  max-width:500px;
+  border-radius:10px;
+  padding:15px;
+}
+
+.modal-overlay.active {
+  display:flex;
+}
   </style>
 </head>
 <body>
@@ -828,6 +851,10 @@ const orderDate = this.getAttribute("data-date");
 
 console.log("Cancel clicked:", orderNumber);
 
+  const closeBtn = document.getElementById("closeCancelModal");
+
+if (closeBtn) {
+  closeBtn.addEventListener("click", function(){
 // 🔴 OPEN MODAL
 document.getElementById("cancelModal")
 .classList.remove("hidden");
@@ -2205,27 +2232,22 @@ if ("serviceWorker" in navigator) {
 }
 </script>
   <!-- 🔴 CANCEL ORDER MODAL -->
-<div id="cancelModal"
-class="fixed inset-0 bg-black bg-opacity-50 hidden z-[100000] flex items-center justify-center">
 
-<div class="bg-white w-[95%] max-w-xl rounded-xl p-4 text-sm relative">
+<div id="cancelModal" class="modal-overlay">
 
-<h2 class="text-lg font-bold mb-3">Cancel Order</h2>
+  <div class="modal-box">
 
-<div id="cancelContent">
-Loading items...
-</div>
+    <h3>Cancel Order</h3>
 
-<div class="flex justify-end gap-2 mt-4">
+    <div id="cancelContent">
+      Loading items...
+    </div>
 
-<button id="closeCancelModal"
-class="px-3 py-1 bg-gray-300 rounded">
-Close
-</button>
+    <button id="closeCancelModal">Close</button>
+
+  </div>
 
 </div>
-
-</div>
-</div>
+  
 </body>
 </html>
