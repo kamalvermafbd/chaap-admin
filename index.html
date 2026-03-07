@@ -222,7 +222,7 @@
   </div>
 
 <script>
-  const API_BASE_URL = "https://script.google.com/macros/s/AKfycbykXBCBMKSNizrEbAYn40cRVh9eaPO45PPn7q3KxDMCxwliXoYCTejOEDhA1C8TojO2/exec";
+  const API_BASE_URL = "https://script.google.com/macros/s/AKfycbyKYT6qFduCVTBx2-zm3mW0wYMvtkQ7KU401k_NjcyimM9A87SFDEyoz4mAHt-QBLt7/exec";
 
 // =========================
 // GET API
@@ -890,6 +890,65 @@ const modal = document.getElementById("cancelModal");
 
 if(e.target === modal){
 modal.classList.remove("active");
+}
+
+});
+
+  // 🔴 CANCEL ENTIRE ORDER
+// 🔴 CANCEL ENTIRE ORDER
+document.addEventListener("click", function(e){
+
+if(e.target && e.target.id === "cancelFullOrderBtn"){
+
+const btn = e.target;
+
+if(!confirm("Cancel entire order? All items will be cancelled.")) return;
+
+// 🔴 disable button + show progress
+btn.disabled = true;
+btn.textContent = "Cancelling...";
+btn.style.opacity = "0.6";
+
+const orderNumber = window.currentCancelOrder;
+const orderDate   = window.currentCancelDate;
+
+apiGet("cancelFullOrder",{
+orderNumber: orderNumber,
+orderDate: orderDate
+})
+.then(function(res){
+
+if(res.success){
+
+alert("Entire order cancelled");
+
+loadCancelItems(orderNumber, orderDate);
+loadOrders();
+
+}else{
+
+alert("Failed to cancel order");
+
+// 🔴 restore button
+btn.disabled = false;
+btn.textContent = "Cancel Entire Order";
+btn.style.opacity = "1";
+
+}
+
+})
+.catch(function(err){
+
+console.error(err);
+alert("Server error");
+
+// 🔴 restore button
+btn.disabled = false;
+btn.textContent = "Cancel Entire Order";
+btn.style.opacity = "1";
+
+});
+
 }
 
 });
