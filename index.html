@@ -222,7 +222,7 @@
   </div>
 
 <script>
-  const API_BASE_URL = "https://script.google.com/macros/s/AKfycbwsPClTRjC3bPLbNIt_yK6qXhFsfeRu8p-JTbScgFj7RvwwemaWjaDdgjo4hNpelk8/exec";
+  const API_BASE_URL = "https://script.google.com/macros/s/AKfycbykXBCBMKSNizrEbAYn40cRVh9eaPO45PPn7q3KxDMCxwliXoYCTejOEDhA1C8TojO2/exec";
 
 // =========================
 // GET API
@@ -691,10 +691,8 @@ console.time("DOM render");
       : ""
     )
 }
-<button class="cancelBtn"
-  data-order="${order.OrderNumber}"
-  data-date="${order.Date}">
-  Cancel
+<button onclick="cancelItem('${orderIds[i]}')">
+Cancel
 </button>
 
         <button class="printBtn"
@@ -854,6 +852,10 @@ console.log("Cancel clicked:", orderNumber);
   
 // 🔴 OPEN MODAL
 document.getElementById("cancelModal").classList.add("active");
+  // 🔴 store current order for reload
+window.currentCancelOrder = orderNumber;
+window.currentCancelDate = orderDate;
+
 // 🔴 temporary content
 loadCancelItems(orderNumber, orderDate);
 
@@ -1020,7 +1022,7 @@ return;
 const items = (order.Items || "").split(",");
 const units = (order.Unit || "").split(",");
 const qtys  = (order.Qty || "").split(",");
-
+const orderIds = (order.orderId || "").split(",");
 const orderDateText = order.Timestamp || order.Date || "";
 
 let html = `
@@ -1080,7 +1082,40 @@ box.innerHTML = "Failed to load items";
 });
 
 }
-  
+ function cancelItem(orderId){
+
+if(!confirm("Cancel this item?")) return;
+
+apiGet("cancelOrderItem", {
+orderId: orderId
+})
+.then(function(res){
+
+if(res.success){
+
+alert("Item cancelled successfully");
+
+// reload modal items
+const orderNumber = window.currentCancelOrder;
+const orderDate   = window.currentCancelDate;
+
+loadCancelItems(orderNumber, orderDate);
+
+// optional: refresh orders table
+loadOrders();
+
+}
+else{
+alert("Cancel failed");
+}
+
+})
+.catch(function(err){
+console.error(err);
+alert("Server error");
+});
+
+} 
 function formatDate(ts){
   const d = new Date(ts);
   return d.toLocaleString('en-IN', {
