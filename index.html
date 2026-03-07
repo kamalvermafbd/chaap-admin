@@ -2381,13 +2381,22 @@ if ("serviceWorker" in navigator) {
     .catch(err => console.log("❌ SW Error", err));
 }
 </script>
-  <!-- 🔴 CANCEL ORDER MODAL -->
+  
+<<!-- 🔴 CANCEL ORDER MODAL -->
 
 <div id="cancelModal" class="modal-overlay">
 
   <div class="modal-box">
 
-    <h3>Cancel Order</h3>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+
+      <h3 style="margin:0;">Cancel Order</h3>
+
+      <button id="cancelFullOrderBtn" style="background:#dc3545;">
+        Cancel Entire Order
+      </button>
+
+    </div>
 
     <div id="cancelContent">
       Loading items...
