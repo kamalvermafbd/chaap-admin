@@ -1021,7 +1021,26 @@ const items = (order.Items || "").split(",");
 const units = (order.Unit || "").split(",");
 const qtys  = (order.Qty || "").split(",");
 
+const orderDateText = order.Timestamp || order.Date || "";
+
 let html = `
+
+<div style="
+background:#f8f8f8;
+padding:8px;
+border-radius:6px;
+margin-bottom:10px;
+font-size:14px">
+
+<b>Order No:</b> ${order.OrderNumber} <br>
+<b>Order Date:</b> ${orderDateText} <br>
+<b>Customer:</b> ${order.CustomerName} <br>
+<b>Email:</b> ${order.Email} <br>
+<b>Mobile:</b> ${order.Mobile} <br>
+<b>Order Type:</b> ${order["Order Type"]}
+
+</div>
+
 <table style="width:100%;margin-top:10px">
 <tr>
 <th>Item</th>
@@ -1061,6 +1080,7 @@ box.innerHTML = "Failed to load items";
 });
 
 }
+  
 function formatDate(ts){
   const d = new Date(ts);
   return d.toLocaleString('en-IN', {
