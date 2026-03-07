@@ -873,16 +873,15 @@ placeholder.textContent = "Server error loading orders.";
 
 }
 
-// 🔴 CLOSE CANCEL MODAL
-const closeBtn = document.getElementById("closeCancelModal");
 
-if (closeBtn) {
-  closeBtn.addEventListener("click", function(){
+// 🔴 CLOSE CANCEL MODAL (delegated listener)
+document.addEventListener("click", function(e){
 
-    document.getElementById("cancelModal").classList.remove("active");
-
-  });
+if(e.target && e.target.id === "closeCancelModal"){
+document.getElementById("cancelModal").classList.remove("active");
 }
+
+});
 
 
   
