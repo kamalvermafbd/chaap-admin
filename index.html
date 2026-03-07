@@ -853,9 +853,7 @@ console.log("Cancel clicked:", orderNumber);
 
   
 // 🔴 OPEN MODAL
-document.getElementById("cancelModal")
-.classList.remove("hidden");
-
+document.getElementById("cancelModal").classList.add("active");
 // 🔴 temporary content
 document.getElementById("cancelContent").innerHTML =
 "Loading items for order: " + orderNumber;
@@ -878,8 +876,7 @@ const closeBtn = document.getElementById("closeCancelModal");
 if (closeBtn) {
   closeBtn.addEventListener("click", function(){
 
-    document.getElementById("cancelModal")
-    .classList.add("hidden");
+    document.getElementById("cancelModal").classList.remove("active");
 
   });
 }
