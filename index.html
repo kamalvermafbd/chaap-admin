@@ -1057,24 +1057,25 @@ font-size:14px">
 
 for(let i=0;i<items.length;i++){
 
+let cancelBtn = "";
+
+// 🔴 Status check
+if((statusList[i] || "").trim() === "Cancelled"){
+
+cancelBtn = '<button disabled style="background:#999;">Cancelled</button>';
+
+}else{
+
+cancelBtn = '<button onclick="cancelItem(\'' + orderIds[i] + '\')">Cancel Item</button>';
+
+}
+
 html += `
 <tr>
 <td>${items[i]}</td>
 <td>${units[i]}</td>
 <td>${qtys[i]}</td>
-<td>
-if(statusList[i] === "Cancelled"){
-
-cancelBtn = `<button disabled style="background:#999;">Cancelled</button>`;
-
-}else{
-
-cancelBtn = `<button onclick="cancelItem('${orderIds[i]}')">
-Cancel Item
-</button>`;
-
-}
-</td>
+<td>${cancelBtn}</td>
 </tr>
 `;
 
@@ -1093,7 +1094,10 @@ box.innerHTML = "Failed to load items";
 });
 
 }
- function cancelItem(orderId){
+
+
+
+function cancelItem(orderId){
 
 if(!confirm("Cancel this item?")) return;
 
@@ -1126,7 +1130,7 @@ console.error(err);
 alert("Server error");
 });
 
-} 
+}
 function formatDate(ts){
   const d = new Date(ts);
   return d.toLocaleString('en-IN', {
