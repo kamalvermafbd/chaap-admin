@@ -855,8 +855,7 @@ console.log("Cancel clicked:", orderNumber);
 // 🔴 OPEN MODAL
 document.getElementById("cancelModal").classList.add("active");
 // 🔴 temporary content
-document.getElementById("cancelContent").innerHTML =
-"Loading items for order: " + orderNumber;
+loadCancelItems(orderNumber, orderDate);
 
 });
 
@@ -1001,7 +1000,67 @@ if (loginNav) loginNav.style.display = "block";
 }
     });
 
+function loadCancelItems(orderNumber, orderDate){
 
+const box = document.getElementById("cancelContent");
+
+box.innerHTML = "Loading items...";
+
+apiGet("getOrderDetails", {
+  orderNumber: orderNumber,
+  orderDate: orderDate
+})
+.then(function(order){
+
+if(!order){
+box.innerHTML = "Order not found";
+return;
+}
+
+const items = (order.Items || "").split(",");
+const units = (order.Unit || "").split(",");
+const qtys  = (order.Qty || "").split(",");
+
+let html = `
+<table style="width:100%;margin-top:10px">
+<tr>
+<th>Item</th>
+<th>Unit</th>
+<th>Qty</th>
+<th>Cancel</th>
+</tr>
+`;
+
+for(let i=0;i<items.length;i++){
+
+html += `
+<tr>
+<td>${items[i]}</td>
+<td>${units[i]}</td>
+<td>${qtys[i]}</td>
+<td>
+<button onclick="cancelItem('${orderNumber}','${orderDate}','${items[i]}')">
+Cancel
+</button>
+</td>
+</tr>
+`;
+
+}
+
+html += "</table>";
+
+box.innerHTML = html;
+
+})
+.catch(function(err){
+
+console.error(err);
+box.innerHTML = "Failed to load items";
+
+});
+
+}
 function formatDate(ts){
   const d = new Date(ts);
   return d.toLocaleString('en-IN', {
