@@ -1066,7 +1066,7 @@ cancelBtn = '<button disabled style="background:#999;">Cancelled</button>';
 
 }else{
 
-cancelBtn = '<button onclick="cancelItem(\'' + orderIds[i] + '\')">Cancel Item</button>';
+cancelBtn = '<button onclick="cancelItem(\'' + orderIds[i] + '\', this)">Cancel Item</button>';
 
 }
 
@@ -1097,10 +1097,15 @@ box.innerHTML = "Failed to load items";
 
 
 
-function cancelItem(orderId){
+function cancelItem(orderId, btn){
 
 if(!confirm("Cancel this item?")) return;
-
+// 🔴 disable button + show progress
+if(btn){
+btn.disabled = true;
+btn.textContent = "Cancelling...";
+btn.style.opacity = "0.6";
+}
 apiGet("cancelOrderItem", {
 orderId: orderId
 })
@@ -1122,12 +1127,23 @@ loadOrders();
 }
 else{
 alert("Cancel failed");
+
+  if(btn){
+btn.disabled = false;
+btn.textContent = "Cancel Item";
+btn.style.opacity = "1";
+}
 }
 
 })
 .catch(function(err){
 console.error(err);
 alert("Server error");
+  if(btn){
+btn.disabled = false;
+btn.textContent = "Cancel Item";
+btn.style.opacity = "1";
+}
 });
 
 }
