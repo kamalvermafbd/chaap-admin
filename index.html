@@ -883,7 +883,16 @@ document.getElementById("cancelModal").classList.remove("active");
 
 });
 
+// 🔴 CLOSE MODAL ON OUTSIDE CLICK
+document.addEventListener("click", function(e){
 
+const modal = document.getElementById("cancelModal");
+
+if(e.target === modal){
+modal.classList.remove("active");
+}
+
+});
   
     // LOGIN / LOGOUT
 document.addEventListener('click', function(e){
