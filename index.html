@@ -667,11 +667,32 @@ console.time("DOM render");
     `;
 
     data.forEach(order => {
+
+      let rowStyle = "";
+let displayStatus = order.OrderStatus;
+
+// 🔴 PARTIAL CANCEL → blue
+if(order.partialCancel){
+  rowStyle = "style='background:#e7f1ff'";
+}
+
+// 🔴 FULL CANCEL → red
+if(order.OrderStatus === "Cancelled"){
+  rowStyle = "style='background:#ffe5e5'";
+}
+
+  // 🔴 PARTIAL CANCEL badge
+if(order.partialCancel && order.OrderStatus !== "Cancelled"){
+displayStatus = order.OrderStatus + 
+` <span style="background:#ffc107;color:#000;padding:2px 6px;border-radius:4px;font-size:12px;margin-left:5px;">
+Partial
+</span>`;
+}
   html += `
-    <tr>
+   <tr ${rowStyle}>
       <td>${order.OrderNumber}</td>
       <td>${order["Order Type"] || ""}</td>
-      <td class="statusCell">${order.OrderStatus}</td>
+      <td class="statusCell">${displayStatus}</td>
       <td class="actionCell">
 
         ${
