@@ -691,7 +691,9 @@ console.time("DOM render");
       : ""
     )
 }
-<button onclick="cancelItem('${orderIds[i]}')">
+<button class="cancelBtn"
+data-order="${order.OrderNumber}"
+data-date="${order.Date}">
 Cancel
 </button>
 
@@ -1060,8 +1062,8 @@ html += `
 <td>${units[i]}</td>
 <td>${qtys[i]}</td>
 <td>
-<button onclick="cancelItem('${orderNumber}','${orderDate}','${items[i]}')">
-Cancel
+<button onclick="cancelItem('${orderIds[i]}')">
+Cancel Item
 </button>
 </td>
 </tr>
