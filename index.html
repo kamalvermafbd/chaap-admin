@@ -1025,6 +1025,7 @@ const items = (order.Items || "").split(",");
 const units = (order.Unit || "").split(",");
 const qtys  = (order.Qty || "").split(",");
 const orderIds = (order.orderId || "").split(",");
+const statusList = (order.OrderStatusList || "").split(",");
 const orderDateText = order.Timestamp || order.Date || "";
 
 let html = `
@@ -1062,9 +1063,17 @@ html += `
 <td>${units[i]}</td>
 <td>${qtys[i]}</td>
 <td>
-<button onclick="cancelItem('${orderIds[i]}')">
+if(statusList[i] === "Cancelled"){
+
+cancelBtn = `<button disabled style="background:#999;">Cancelled</button>`;
+
+}else{
+
+cancelBtn = `<button onclick="cancelItem('${orderIds[i]}')">
 Cancel Item
-</button>
+</button>`;
+
+}
 </td>
 </tr>
 `;
