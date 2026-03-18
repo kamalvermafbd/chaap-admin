@@ -1267,7 +1267,6 @@ function formatDate(ts){
 }
 
 function submitPartialCancel(orderNumber, orderDate, mobile, orderId, maxQty, btn){
-const btn = event.target;
 btn.disabled = true;
 btn.textContent = "Processing...";
   const qty = Number(document.getElementById("partialQty").value);
