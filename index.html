@@ -1100,6 +1100,22 @@ if (loginNav) loginNav.style.display = "block";
 }
     });
 
+function formatToBackendDate(dateStr){
+
+  // already yyyy-mm-dd
+  if(dateStr.includes("-") && dateStr.split("-")[0].length === 4){
+    return dateStr;
+  }
+
+  // dd-mm-yyyy → yyyy-mm-dd
+  const parts = dateStr.split("-");
+  if(parts.length === 3){
+    return `${parts[2]}-${parts[1]}-${parts[0]}`;
+  }
+
+  return dateStr;
+}
+  
 function loadCancelItems(orderNumber, orderDate){
 
   // ✅ ADD THIS AT TOP
