@@ -222,7 +222,7 @@
   </div>
 
 <script>
-  const API_BASE_URL = "https://script.google.com/macros/s/AKfycbw5I0Jp_3QGZBQf3WLkJCS6_uX8fl2gASUXqDT-zpYM1c8QCYOBSa8ChfuFv44GvHhM/exec";
+  const API_BASE_URL = "https://script.google.com/macros/s/AKfycbztDPeGbF961JJRAlQRixyBXQGXcr8aO5mbSAtNADqX6IhdalPzb5OMLgdWzBo61S9T/exec";
 
 // =========================
 // GET API
@@ -1140,7 +1140,26 @@ return;
 const items = (order.Items || "").split(",");
 const units = (order.Unit || "").split(",");
 const qtys  = (order.Qty || "").split(",");
-const orderIds = (order.orderId || "").split(",");
+  
+//const orderIds = (order.orderId || "").split(",");
+const baseOrderIds = (order.orderId || "").split(",");
+
+const orderIds = items.map((item, i) => {
+
+  const baseId = baseOrderIds[i] || baseOrderIds[0] || "";
+
+  const safeItem = (item || "").replace(/\s+/g, "_");
+  const safeUnit = (units[i] || "").replace(/\s+/g, "_");
+const finalId = baseId + "|" + safeItem + "|" + safeUnit;
+
+  // 🔥 YAHAN ADD KAR
+  console.log("GENERATED ID:", finalId);
+
+  return finalId;
+});
+
+
+  
 const statusList = (order.OrderStatusList || "").split(",");
 const orderDateText = order.Date || "";
 
