@@ -1317,7 +1317,7 @@ btn.textContent = "Processing...";
 
   apiGet("partialCancelOrderItem", {
     orderNumber: orderNumber,
-    orderDate: orderDate,
+     orderDate: formatToBackendDate(orderDate),
     mobile: mobile,
     orderId: orderId,
     cancelQty: qty
