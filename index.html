@@ -1172,7 +1172,14 @@ font-size:14px">
 `;
 
 for(let i=0;i<items.length;i++){
-
+// 🔥 DEBUG LOGS (YAHIN LAGAO)
+console.log("------ ITEM LOOP ------");
+console.log("INDEX:", i);
+console.log("ITEM:", items[i]);
+console.log("ORDER ID RAW:", order.orderId);
+console.log("ORDER ID CURRENT:", orderIds[i]);
+console.log("TOTAL ITEMS:", items.length);
+console.log("TOTAL ORDER IDS:", orderIds.length);
 let cancelBtn = "";
 
 // 🔴 Status check
