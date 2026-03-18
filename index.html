@@ -1102,6 +1102,10 @@ if (loginNav) loginNav.style.display = "block";
 
 function loadCancelItems(orderNumber, orderDate){
 
+  // ✅ ADD THIS AT TOP
+  const fullBtn = document.getElementById("cancelFullOrderBtn");
+  if(fullBtn) fullBtn.style.display = "inline-block";
+
 const box = document.getElementById("cancelContent");
 
 box.innerHTML = "Loading items...";
@@ -1328,7 +1332,10 @@ function openPartialCancelForm(orderNumber, orderDate, mobile, orderId, maxQty){
   console.log("PARTIAL CLICK:", {
     orderNumber, orderDate, mobile, orderId, maxQty
   });
-
+ // ✅ ADD THIS LINE
+  const fullBtn = document.getElementById("cancelFullOrderBtn");
+  if(fullBtn) fullBtn.style.display = "none";
+  
   const html = `
     <div style="padding:10px">
       <h4>Partial Cancel</h4>
