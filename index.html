@@ -1168,19 +1168,22 @@ cancelBtn = '<button disabled style="background:#999;">Cancelled</button>';
 
 cancelBtn = `
   <button 
-    onclick="openPartialCancelForm(
-      '${order.OrderNumber}',
-      '${orderDateText}',
-      '${order.Mobile}',
-      '${orderIds[i]}',
-    ${Number(qtys[i] || 0)}
-    )"
+   onclick="openPartialCancelForm(
+  '${order.OrderNumber}',
+  '${orderDateText}',
+  '${order.Mobile}',
+  '${(order.CustomerName || "").replace(/'/g, "\\'")}',
+  '${(items[i] || "").replace(/'/g, "\\'")}',
+  '${(units[i] || "").replace(/'/g, "\\'")}',
+  ${Number(qtys[i]) || 0},
+  '${orderIds[i]}'
+)"
     style="background:#ffc107;color:#000;margin-right:5px;">
-    Partial
+    Partial Cancel
   </button>
 
   <button onclick="cancelItem('${orderIds[i]}', this)">
-    Cancel Item
+    Full Cancel
   </button>
 `;
 }
@@ -1327,17 +1330,57 @@ btn.textContent = "Processing...";
   loadCancelItems(window.currentCancelOrder, window.currentCancelDate);
 }
 
-function openPartialCancelForm(orderNumber, orderDate, mobile, orderId, maxQty){
+function openPartialCancelForm(orderNumber,
+  orderDate,
+  mobile,
+  customerName,
+  itemName,
+  unit,
+  maxQty,
+  orderId){
 
   console.log("PARTIAL CLICK:", {
     orderNumber, orderDate, mobile, orderId, maxQty
   });
+  
  // ✅ ADD THIS LINE
   const fullBtn = document.getElementById("cancelFullOrderBtn");
   if(fullBtn) fullBtn.style.display = "none";
   
   const html = `
     <div style="padding:10px">
+
+ <!-- 🔝 ORDER INFO -->
+      <div style="
+        background:#f8f8f8;
+        padding:8px;
+        border-radius:6px;
+        margin-bottom:10px;
+        font-size:14px">
+
+        <b>Order No:</b> ${orderNumber} <br>
+        <b>Customer:</b> ${escapeHtml(customerName)} <br>
+        <b>Mobile:</b> ${mobile} <br>
+        <b>Order Date:</b> ${orderDate}
+
+      </div>
+
+  <!-- 🔽 ITEM INFO -->
+      <div style="
+        background:#fff3cd;
+        padding:8px;
+        border-radius:6px;
+        margin-bottom:10px;
+        font-size:14px">
+
+        <b>Item:</b> ${escapeHtml(itemName)} <br>
+<b>Unit:</b> ${escapeHtml(unit)} <br>
+        <b>Ordered Qty:</b> ${maxQty}
+
+      </div>
+
+
+    
       <h4>Partial Cancel</h4>
 
       <label>Qty to cancel:</label>
@@ -1367,6 +1410,15 @@ function openPartialCancelForm(orderNumber, orderDate, mobile, orderId, maxQty){
   document.getElementById("cancelContent").innerHTML = html;
 }
 
+  
+function escapeHtml(str){
+  return String(str || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
   
     // BILL generation
 function generateBill(orderNumber, orderDate, btnRef) {
