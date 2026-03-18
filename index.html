@@ -918,8 +918,11 @@ modal.classList.remove("active");
 
 // 🔴 CANCEL ENTIRE ORDER
 document.addEventListener("click", function(e){
-
-if(e.target && e.target.id === "cancelFullOrderBtn"){
+if(
+  e.target &&
+  e.target.id === "cancelFullOrderBtn" &&
+  document.getElementById("cancelContent").innerHTML.includes("Item")
+){
 
 const btn = e.target;
 
