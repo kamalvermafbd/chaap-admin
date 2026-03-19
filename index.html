@@ -222,7 +222,7 @@
   </div>
 
 <script>
-  const API_BASE_URL = "https://script.google.com/macros/s/AKfycbztDPeGbF961JJRAlQRixyBXQGXcr8aO5mbSAtNADqX6IhdalPzb5OMLgdWzBo61S9T/exec";
+  const API_BASE_URL = "https://script.google.com/macros/s/AKfycbw0GQx8chwBgIJgvNHeGOF23BZ8bBuHAGsX6MM2aVBeGDgX3ZYkKl09E9t-YJ9I8ycp/exec";
 
 // =========================
 // GET API
@@ -1336,17 +1336,19 @@ function submitPartialCancel(orderNumber, orderDate, mobile, orderId, maxQty, bt
   console.log("maxQty:", maxQty);
   console.log("enteredQty:", qty);
 
-  if(!qty || qty <= 0){
-    console.warn("❌ Invalid qty");
-    alert("Enter valid qty");
-    return;
-  }
+ if(!qty || qty <= 0){
+  alert("Enter valid qty");
+  btn.disabled = false;
+  btn.textContent = "Confirm";
+  return;
+}
 
-  if(qty > maxQty){
-    console.warn("❌ Qty exceeds maxQty");
-    alert("Cannot cancel more than ordered qty");
-    return;
-  }
+if(qty > maxQty){
+  alert("Cannot cancel more than ordered qty");
+  btn.disabled = false;
+  btn.textContent = "Confirm";
+  return;
+}
 
   // 🔥 SPLIT ORDER ID
   const parts = (orderId || "").split("|");
@@ -1411,7 +1413,8 @@ function submitPartialCancel(orderNumber, orderDate, mobile, orderId, maxQty, bt
     console.error("🔥 API ERROR:", err);
 
     alert("Server error");
-
+})
+.finally(function(){
     btn.disabled = false;
     btn.textContent = "Confirm";
   });
