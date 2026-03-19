@@ -1583,8 +1583,8 @@ const cancelArr = (order['cancel_qty'] || '').toString().split(',');
 const cancelQty = parseFloat(cancelArr[i]) || 0;
 
 const oldQtyArr = (order['old_qty'] || '').toString().split(',');
-const oldQty = parseFloat(oldQtyArr[i] || qty);
-
+const oldQty = parseFloat(oldQtyArr[i]) || 0;
+const finalOldQty = oldQty > 0 ? oldQty : (qty + cancelQty);
 const statusArr = (order['OrderStatus'] || '').toString().split(',');
 const status = (statusArr[i] || '').trim();
 
@@ -1614,7 +1614,7 @@ if (oldQty > 0) {
 
     // PARTIAL
     itemSection += `
-Qty: ${oldQty}
+Qty: ${finalOldQty}
 Cancelled: ${cancelQty}
 Bill Qty: ${qty}
 
