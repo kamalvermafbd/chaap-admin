@@ -730,11 +730,16 @@ data-order="${order.OrderNumber}"
 data-date="${order.Date}">
 Cancel
 </button>
-<button class="scBtn"
-data-order="${order.OrderNumber}"
-data-date="${order.Date}">
-Remove Ser Chg
-</button>
+
+${order.Servicecharge === "NO"
+  ? `<span style="color:red;font-weight:bold;">SC Removed</span>`
+  : `<button class="scBtn"
+        data-order="${order.OrderNumber}"
+        data-date="${order.Date}">
+        Remove SC
+     </button>`
+}
+
         <button class="printBtn"
           onclick="generateBill('${order.OrderNumber}', '${order.Date}', this)">
           Generate Bill
@@ -903,6 +908,55 @@ loadCancelItems(orderNumber, orderDate);
 
 });
 
+
+// 🔵 SERVICE CHARGE BUTTON LISTENER
+document.querySelectorAll(".scBtn").forEach(btn => {
+
+  btn.addEventListener("click", function(){
+
+    const orderNumber = this.getAttribute("data-order");
+    const orderDate = this.getAttribute("data-date");
+
+    console.log("SC REMOVE CLICKED:", orderNumber);
+
+    const button = this;
+
+    button.disabled = true;
+    button.textContent = "Updating...";
+
+    apiGet("toggleServiceCharge", {
+      orderNumber: orderNumber,
+      orderDate: orderDate
+    })
+    .then(function(res){
+
+      if(res.success){
+
+        loadOrders(); // 🔥 refresh UI
+
+      } else {
+
+        alert("Failed to update");
+
+        button.disabled = false;
+        button.textContent = "Remove SC";
+      }
+
+    })
+    .catch(function(err){
+
+      console.error(err);
+      alert("Server error");
+
+      button.disabled = false;
+      button.textContent = "Remove SC";
+    });
+
+  });
+
+});
+
+    
 })
 .catch(function(err){
 console.error("Order load failed:", err);
