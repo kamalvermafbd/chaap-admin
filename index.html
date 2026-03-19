@@ -1317,54 +1317,103 @@ function formatDate(ts){
     minute: '2-digit'
   });
 }
-
+  
 function submitPartialCancel(orderNumber, orderDate, mobile, orderId, maxQty, btn){
-btn.disabled = true;
-btn.textContent = "Processing...";
-  const qty = Number(document.getElementById("partialQty").value);
+
+  console.log("🚀 CLICKED submitPartialCancel");
+
+  btn.disabled = true;
+  btn.textContent = "Processing...";
+
+  const qtyInput = document.getElementById("partialQty");
+  const qty = Number(qtyInput?.value);
+
+  console.log("📥 INPUT DATA:");
+  console.log("orderNumber:", orderNumber);
+  console.log("orderDate (raw):", orderDate);
+  console.log("mobile:", mobile);
+  console.log("orderId (combined):", orderId);
+  console.log("maxQty:", maxQty);
+  console.log("enteredQty:", qty);
 
   if(!qty || qty <= 0){
+    console.warn("❌ Invalid qty");
     alert("Enter valid qty");
     return;
   }
 
   if(qty > maxQty){
+    console.warn("❌ Qty exceeds maxQty");
     alert("Cannot cancel more than ordered qty");
     return;
   }
 
-  console.log("PARTIAL SUBMIT:", {
-    orderNumber,
-    orderDate,
-    mobile,
-    orderId,
-    qty
-  });
+  // 🔥 SPLIT ORDER ID
+  const parts = (orderId || "").split("|");
 
-  apiGet("partialCancelOrderItem", {
+  console.log("🔪 SPLIT PARTS:", parts);
+
+  const baseOrderId = parts[0] || "";
+  const itemName = (parts[1] || "").replace(/_/g, " ");
+  const unitName = (parts[2] || "").replace(/_/g, " ");
+
+  console.log("🧩 EXTRACTED VALUES:");
+  console.log("baseOrderId:", baseOrderId);
+  console.log("itemName:", itemName);
+  console.log("unitName:", unitName);
+
+  const formattedDate = formatToBackendDate(orderDate);
+
+  console.log("📅 FORMATTED DATE:", formattedDate);
+
+  // 🔥 FINAL PAYLOAD
+  const payload = {
     orderNumber: orderNumber,
-     orderDate: formatToBackendDate(orderDate),
+    orderDate: formattedDate,
     mobile: mobile,
-    orderId: orderId,
+    orderId: baseOrderId,
+    item: itemName,
+    unit: unitName,
     cancelQty: qty
-  })
+  };
+
+  console.log("📦 FINAL API PAYLOAD:");
+  console.log(JSON.stringify(payload, null, 2));
+
+  // 🔥 API CALL
+  apiGet("partialCancelOrderItem", payload)
+
   .then(function(res){
+
+    console.log("📡 API RESPONSE:", res);
 
     if(res.success){
 
+      console.log("✅ PARTIAL CANCEL SUCCESS");
+
       alert("Partial cancel success");
-    closePartialBox(); // ✅ ADD THIS
-      // 🔁 reload modal + table
+      closePartialBox();
       loadOrders();
 
     } else {
+
+      console.error("❌ PARTIAL CANCEL FAILED");
+
       alert("Partial cancel failed");
+
+      btn.disabled = false;
+      btn.textContent = "Confirm";
     }
 
   })
   .catch(function(err){
-    console.error(err);
+
+    console.error("🔥 API ERROR:", err);
+
     alert("Server error");
+
+    btn.disabled = false;
+    btn.textContent = "Confirm";
   });
 }
 
