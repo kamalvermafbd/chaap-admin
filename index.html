@@ -1578,12 +1578,12 @@ function generateBill(orderNumber, orderDate, btnRef) {
 
         const base = qty * rate;
 
-        const cancelQty = parseFloat((order['cancel_qty'] || '').toString().split(',')[i]) || 0;
+const cancelQty = parseFloat((order['cancel_qty'] || '').toString().split(',')[i]) || 0;
 const finalQty = qty; // already updated qty
 
 // strike condition
-const isCancelled = cancelQty > 0 && finalQty === 0;
-
+const isCancelled = cancelQty >= qty && cancelQty > 0;
+        
 if (isCancelled) {
 
   itemSection += `
