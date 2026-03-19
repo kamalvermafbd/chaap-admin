@@ -1595,8 +1595,27 @@ if (isCancelled) {
   itemSection += `
 ${i+1}. ~~${items[i]} (${units[i]})~~  [CANCELLED]
 
+const oldQtyArr = (order['old_qty'] || '').toString().split(',');
+const oldQty = parseFloat(oldQtyArr[i] || qty);
+
+// 🔥 PARTIAL CANCEL CASE
+if (cancelQty > 0 && cancelQty < oldQty) {
+
+  itemSection += `
+Qty: ${oldQty}
+Cancelled: ${cancelQty}
+Bill Qty: ${qty}
+
+${qty} x ${rate.toFixed(2)} = ${base.toFixed(2)}
+`;
+
+} else {
+
+  // 🔥 NORMAL CASE
+  itemSection += `
 Qty ${qty} x ${rate.toFixed(2)} = ${base.toFixed(2)}
 `;
+}
 
 } else {
 
