@@ -1693,7 +1693,7 @@ else if (paidCoupon > 0) {
       // -------- bill text --------
       const billText = `
 ${order['OrderNumber']} • ${formatDate(order['Timestamp'])}
-Order ID : ${order['orderId']}
+Order ID : ${(order['orderId'] || '').toString().split(',')[0]}
 
 Order Type : ${order['Order Type']}
 
