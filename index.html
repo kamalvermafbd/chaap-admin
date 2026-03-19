@@ -255,6 +255,14 @@ function apiPost(api, body = {}) {
 }
 
 function showPage(pageId){
+
+  // 🔥 ALWAYS HIDE BILL ON PAGE CHANGE
+  const preview = document.getElementById('thermalPreview');
+  if (preview) {
+    preview.style.display = 'none';
+    preview.textContent = '';
+  }
+  
 if (window.isLoggedIn) {
   localStorage.setItem("adminActivePage", pageId);
 }
@@ -621,6 +629,11 @@ if (action === "received") {
 
  function loadOrders() {
 
+     const preview = document.getElementById('thermalPreview');
+  if (preview) {
+    preview.style.display = 'none';
+    preview.textContent = '';
+  }
   if (!document.querySelector('.nav-btn[data-page="pageOrders"]').classList.contains('active')) return;
 console.time("loadOrders TOTAL");
 console.time("API getOrderNumbers");
