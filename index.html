@@ -1581,7 +1581,10 @@ const cancelArr = (order['cancel_qty'] || '').toString().split(',');
 
 // fallback: agar single value hai to sab items pe apply kar
 const cancelQty = parseFloat(cancelArr[i] || cancelArr[0] || 0);
-        
+// 🔥 DEBUG LOGS (YAHI DAALNA HAI)
+console.log("ITEM:", items[i]);
+console.log("QTY:", qty);
+console.log("CANCEL_QTY:", cancelQty);        
 const finalQty = qty; // already updated qty
 
 // strike condition
