@@ -1579,13 +1579,11 @@ function generateBill(orderNumber, orderDate, btnRef) {
         const base = qty * rate;
 
 
-const cancelArr = (order['cancel_qty'] || '').toString().split(',');
-const cancelQty = parseFloat(cancelArr[i]) || 0;
-
-const oldQtyArr = (order['old_qty'] || '').toString().split(',');
-const oldQty = parseFloat(oldQtyArr[i]) || 0;
-
-const statusArr = (order['OrderStatus'] || '').toString().split(',');
+const cancelArr = (order['cancel_qty'] || '').toString().split(','); 
+const cancelQty = parseFloat(cancelArr[i]) || 0; 
+const oldQtyArr = (order['old_qty'] || '').toString().split(','); 
+const oldQty = parseFloat(oldQtyArr[i] || qty); 
+const statusArr = (order['OrderStatus'] || '').toString().split(','); 
 const status = (statusArr[i] || '').trim();
 
 // ✅ FINAL LOGIC (line-item wise)
