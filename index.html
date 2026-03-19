@@ -680,7 +680,9 @@ console.time("DOM render");
     `;
 
     data.forEach(order => {
-
+console.log("RAW SC:", order.Servicecharge);
+console.log("PROCESSED:", String(order.Servicecharge || "").trim().toUpperCase());
+      
       let rowStyle = "";
 let displayStatus = order.OrderStatus;
 
@@ -745,6 +747,7 @@ ${
       )
     : ""
 }
+
 
         <button class="printBtn"
           onclick="generateBill('${order.OrderNumber}', '${order.Date}', this)">
