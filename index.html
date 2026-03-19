@@ -1658,7 +1658,9 @@ itemSection += line("Item Total", net.toFixed(2)) + "\n\n";
       const delivery = parseFloat(order['DeliveryCharges']) || 0;
       const courier = parseFloat(order['CourierCharges']) || 0;
       const netPay = parseFloat(order['netpayable']) || 0;
-
+const walletUsed = parseFloat(order['walletUsed']) || 0;
+const billAmt = totalAmount + deliveryCharge;
+const couponUsed = rewardCoupon > 0 ? rewardCoupon : paidCoupon;
       const deliveryCharge = delivery > 0 ? delivery : courier;
 
       // coupon logic
@@ -1706,9 +1708,14 @@ ${line("Taxable Amount", taxable.toFixed(2))}
 ${line("CGST", cgst.toFixed(2))}
 ${line("SGST", sgst.toFixed(2))}
 
-${line("Bill Amount", totalAmount.toFixed(2))}
-${line("Delivery Charges", deliveryCharge.toFixed(2))}
-${couponSection}
+${line("Total", totalAmount.toFixed(2))}
+${line("Delivery", deliveryCharge.toFixed(2))}
+${line("Bill Amt", billAmt.toFixed(2))}
+
+${couponUsed > 0 ? line(`Less: Coupon (${order['couponId'] || ''})`, (-couponUsed).toFixed(2)) : ""}
+
+${walletUsed > 0 ? line("Less: Wallet Used", (-walletUsed).toFixed(2)) : ""}
+
 ${separator}
 ${line("Net Payable", netPay.toFixed(2))}
 ${separator}
