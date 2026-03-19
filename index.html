@@ -1638,9 +1638,11 @@ Qty ${qty} x ${rate.toFixed(2)} = ${base.toFixed(2)}
 }
 
 // ✅ discount (ALWAYS OUTSIDE)
-if (discA > 0) {
-  itemSection += `Discount ${discP}% = ${discA.toFixed(2)}
-Net Rate: ${base.toFixed(2)} - ${discA.toFixed(2)} = ${net.toFixed(2)}
+const finalDiscAmt = (base * discP) / 100;
+
+if (discP > 0) {
+  itemSection += `Discount ${discP}% = ${finalDiscAmt.toFixed(2)}
+Net Rate: ${base.toFixed(2)} - ${finalDiscAmt.toFixed(2)} = ${(base - finalDiscAmt).toFixed(2)}
 `;
 }
 
