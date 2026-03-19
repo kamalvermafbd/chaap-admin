@@ -731,13 +731,19 @@ data-date="${order.Date}">
 Cancel
 </button>
 
-${order.Servicecharge === "NO"
-  ? `<span style="color:red;font-weight:bold;">SC Removed</span>`
-  : `<button class="scBtn"
-        data-order="${order.OrderNumber}"
-        data-date="${order.Date}">
-        Remove SC
-     </button>`
+
+${
+  order["Order Type"] === "Dine In"
+    ? (
+        String(order.Servicecharge || "").toUpperCase() === "NO"
+          ? `<span style="color:red;font-weight:bold;">SC Removed</span>`
+          : `<button class="scBtn"
+                data-order="${order.OrderNumber}"
+                data-date="${order.Date}">
+                Remove SC
+             </button>`
+      )
+    : ""
 }
 
         <button class="printBtn"
