@@ -730,7 +730,11 @@ data-order="${order.OrderNumber}"
 data-date="${order.Date}">
 Cancel
 </button>
-
+<button class="scBtn"
+data-order="${order.OrderNumber}"
+data-date="${order.Date}">
+Remove Ser Chg
+</button>
         <button class="printBtn"
           onclick="generateBill('${order.OrderNumber}', '${order.Date}', this)">
           Generate Bill
