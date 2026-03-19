@@ -1665,9 +1665,12 @@ itemSection += line("Item Total", net.toFixed(2)) + "\n\n";
 const rewardCoupon = parseFloat(order['rewardcoupon']) || 0;
 const paidCoupon = parseFloat(order['paidcoupon']) || 0;
 const netPay = parseFloat(order['netpayable']) || 0;
-const walletUsed = parseFloat(
-  (order['walletUsed'] || '').toString().split(',').find(v => v)
-) || 0;
+const walletUsed = Math.max(
+  ...((order['walletUsed'] || '').toString().split(',').map(v => parseFloat(v) || 0))
+);
+
+  console.log("RAW walletUsed:", order['walletUsed']);
+console.log("PARSED walletUsed:", walletUsed);
       
       const billAmt = totalAmount + deliveryCharge;
 const couponUsed = rewardCoupon > 0 ? rewardCoupon : paidCoupon;
