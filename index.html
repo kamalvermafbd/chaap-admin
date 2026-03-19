@@ -1577,8 +1577,11 @@ function generateBill(orderNumber, orderDate, btnRef) {
         const net = parseFloat(netAmt[i]) || 0;
 
         const base = qty * rate;
+const cancelArr = (order['cancel_qty'] || '').toString().split(',');
 
-const cancelQty = parseFloat((order['cancel_qty'] || '').toString().split(',')[i]) || 0;
+// fallback: agar single value hai to sab items pe apply kar
+const cancelQty = parseFloat(cancelArr[i] || cancelArr[0] || 0);
+        
 const finalQty = qty; // already updated qty
 
 // strike condition
