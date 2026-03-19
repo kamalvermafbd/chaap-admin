@@ -1578,11 +1578,35 @@ function generateBill(orderNumber, orderDate, btnRef) {
 
         const base = qty * rate;
 
-        itemSection += `
-${i+1}. ${items[i]} (${units[i]})
+        const cancelQty = parseFloat((order['cancel_qty'] || '').toString().split(',')[i]) || 0;
+const finalQty = qty; // already updated qty
+
+// strike condition
+const isCancelled = cancelQty > 0 && finalQty === 0;
+
+if (isCancelled) {
+
+  itemSection += `
+${i+1}. ~~${items[i]} (${units[i]})~~  [CANCELLED]
 
 Qty ${qty} x ${rate.toFixed(2)} = ${base.toFixed(2)}
 `;
+
+} else {
+
+  itemSection += `
+${i+1}. ${items[i]} (${units[i]})
+`;
+
+  // partial cancel show
+  if (cancelQty > 0) {
+    itemSection += `Cancelled: ${cancelQty}\n`;
+  }
+
+  itemSection += `
+Qty ${qty} x ${rate.toFixed(2)} = ${base.toFixed(2)}
+`;
+}
 
         if (discA > 0) {
           itemSection += `Discount ${discP}% = ${discA.toFixed(2)}
