@@ -1580,7 +1580,7 @@ function generateBill(orderNumber, orderDate, btnRef) {
 
 
 const cancelArr = (order['cancel_qty'] || '').toString().split(',');
-const cancelQty = parseFloat(cancelArr[i] || cancelArr[0] || 0);
+const cancelQty = parseFloat(cancelArr[i]) || 0;
 
 const oldQtyArr = (order['old_qty'] || '').toString().split(',');
 const oldQty = parseFloat(oldQtyArr[i] || qty);
@@ -1606,8 +1606,11 @@ ${i+1}. ${items[i]} (${units[i]})
 `;
 
   // 🔥 PARTIAL CANCEL
-  if (cancelQty > 0 && cancelQty < oldQty) {
+  if (oldQty > 0) {
 
+  if (oldQty > cancelQty) {
+
+    // ✅ PARTIAL CANCEL
     itemSection += `
 Qty: ${oldQty}
 Cancelled: ${cancelQty}
@@ -1616,12 +1619,22 @@ Bill Qty: ${qty}
 ${qty} x ${rate.toFixed(2)} = ${base.toFixed(2)}
 `;
 
-  } else {
+  } else if (oldQty == cancelQty) {
 
+    // ❌ FULL CANCEL
     itemSection += `
+~~Cancelled Qty: ${cancelQty}~~
+`;
+
+    continue;
+  }
+
+} else {
+
+  // 🟢 NORMAL ITEM
+  itemSection += `
 Qty ${qty} x ${rate.toFixed(2)} = ${base.toFixed(2)}
 `;
-  }
 }
 
         if (discA > 0) {
