@@ -1577,18 +1577,6 @@ function generateBill(orderNumber, orderDate, btnRef) {
         const net = parseFloat(netAmt[i]) || 0;
 
         const base = qty * rate;
-const cancelArr = (order['cancel_qty'] || '').toString().split(',');
-
-// fallback: agar single value hai to sab items pe apply kar
-const cancelQty = parseFloat(cancelArr[i] || cancelArr[0] || 0);
-// 🔥 DEBUG LOGS (YAHI DAALNA HAI)
-console.log("ITEM:", items[i]);
-console.log("QTY:", qty);
-console.log("CANCEL_QTY:", cancelQty);        
-const finalQty = qty; // already updated qty
-
-// strike condition
-const isCancelled = cancelQty >= qty && cancelQty > 0;
 
 
 const cancelArr = (order['cancel_qty'] || '').toString().split(',');
@@ -1597,8 +1585,11 @@ const cancelQty = parseFloat(cancelArr[i] || cancelArr[0] || 0);
 const oldQtyArr = (order['old_qty'] || '').toString().split(',');
 const oldQty = parseFloat(oldQtyArr[i] || qty);
 
-// 🔥 FULL CANCEL
-const isCancelled = order['OrderStatus'] === "Cancelled";
+const statusArr = (order['OrderStatus'] || '').toString().split(',');
+const status = (statusArr[i] || '').trim();
+
+// ✅ FINAL LOGIC (line-item wise)
+const isCancelled = status === "Cancelled"; 
 
 if (isCancelled) {
 
