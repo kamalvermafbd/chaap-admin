@@ -1598,19 +1598,21 @@ ${i+1}. ~~${items[i]} (${units[i]})~~
 
 Cancelled Qty: ${qty}
 `;
-continue;
-} else {
+  continue;
 
-  itemSection += `
+}
+
+// ✅ item header
+itemSection += `
 ${i+1}. ${items[i]} (${units[i]})
 `;
 
-  // 🔥 PARTIAL CANCEL
-  if (oldQty > 0) {
+// ✅ qty logic
+if (oldQty > 0) {
 
   if (oldQty > cancelQty) {
 
-    // ✅ PARTIAL CANCEL
+    // PARTIAL
     itemSection += `
 Qty: ${oldQty}
 Cancelled: ${cancelQty}
@@ -1621,7 +1623,7 @@ ${qty} x ${rate.toFixed(2)} = ${base.toFixed(2)}
 
   } else if (oldQty == cancelQty) {
 
-    // ❌ FULL CANCEL
+    // FULL CANCEL
     itemSection += `
 ~~Cancelled Qty: ${cancelQty}~~
 `;
@@ -1631,20 +1633,20 @@ ${qty} x ${rate.toFixed(2)} = ${base.toFixed(2)}
 
 } else {
 
-  // 🟢 NORMAL ITEM
+  // NORMAL
   itemSection += `
 Qty ${qty} x ${rate.toFixed(2)} = ${base.toFixed(2)}
 `;
 }
 
-        if (discA > 0) {
-          itemSection += `Discount ${discP}% = ${discA.toFixed(2)}
+// ✅ discount (ALWAYS OUTSIDE)
+if (discA > 0) {
+  itemSection += `Discount ${discP}% = ${discA.toFixed(2)}
 Net Rate: ${base.toFixed(2)} - ${discA.toFixed(2)} = ${net.toFixed(2)}
 `;
-        }
+}
 
-        itemSection += line("Item Total", net.toFixed(2)) + "\n\n";
-      }
+itemSection += line("Item Total", net.toFixed(2)) + "\n\n";
 
       // -------- totals --------
       const baseTotal = parseFloat(order['Base Total']) || 0;
