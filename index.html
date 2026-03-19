@@ -1115,7 +1115,27 @@ function formatToBackendDate(dateStr){
 
   return dateStr;
 }
-  
+
+  function formatToBackendDate1(dateStr){
+
+  // agar already dd-mm-yyyy hai
+  if(dateStr.includes("-") && dateStr.split("-")[0].length === 2){
+    return dateStr;
+  }
+
+  // yyyy-mm-dd → dd-mm-yyyy
+  if(dateStr.includes("-") && dateStr.split("-")[0].length === 4){
+    const parts = dateStr.split("-");
+    return `${parts[2]}-${parts[1]}-${parts[0]}`;
+  }
+
+  // fallback (Date object ya ISO case)
+  const d = new Date(dateStr);
+
+  return String(d.getDate()).padStart(2,"0") + "-" +
+         String(d.getMonth()+1).padStart(2,"0") + "-" +
+         d.getFullYear();
+}
 function loadCancelItems(orderNumber, orderDate){
 
   // ✅ ADD THIS AT TOP
@@ -1364,7 +1384,7 @@ if(qty > maxQty){
   console.log("itemName:", itemName);
   console.log("unitName:", unitName);
 
-  const formattedDate = formatToBackendDate(orderDate);
+  const formattedDate = formatToBackendDate1(orderDate);
 
   console.log("📅 FORMATTED DATE:", formattedDate);
 
