@@ -918,7 +918,15 @@ document.querySelectorAll(".scBtn").forEach(btn => {
     const orderDate = this.getAttribute("data-date");
 
     console.log("SC REMOVE CLICKED:", orderNumber);
-
+console.log("OrderNumber:", orderNumber);
+    console.log("OrderDate:", orderDate);
+    console.log("Button Element:", this);
+    
+      if(!orderNumber || !orderDate){
+      console.error("❌ Missing data-order or data-date");
+      alert("Data missing. Check console.");
+      return;
+    }
     const button = this;
 
     button.disabled = true;
@@ -929,13 +937,13 @@ document.querySelectorAll(".scBtn").forEach(btn => {
       orderDate: orderDate
     })
     .then(function(res){
-
+ console.log("✅ API RESPONSE:", res);
       if(res.success){
-
+ console.log("🎉 SUCCESS → Reloading orders");
         loadOrders(); // 🔥 refresh UI
 
       } else {
-
+ console.error("❌ API returned success:false");
         alert("Failed to update");
 
         button.disabled = false;
@@ -945,7 +953,8 @@ document.querySelectorAll(".scBtn").forEach(btn => {
     })
     .catch(function(err){
 
-      console.error(err);
+       console.error("🔥 API ERROR:", err);
+
       alert("Server error");
 
       button.disabled = false;
