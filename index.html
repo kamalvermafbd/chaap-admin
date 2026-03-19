@@ -1647,7 +1647,7 @@ Net Rate: ${base.toFixed(2)} - ${discA.toFixed(2)} = ${net.toFixed(2)}
 }
 
 itemSection += line("Item Total", net.toFixed(2)) + "\n\n";
-
+      }
       // -------- totals --------
       const baseTotal = parseFloat(order['Base Total']) || 0;
       const couponDisc = parseFloat(order['CouponDiscount']) || 0;
