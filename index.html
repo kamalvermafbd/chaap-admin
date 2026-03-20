@@ -150,6 +150,35 @@ td:nth-child(8) { width: 220px; } /* Action */
 #collectionView th:nth-child(4) {
   text-align: right;
 }
+
+/* 📊 Collection table compact layout */
+#collectionView table {
+  width: auto;              /* ❌ 100% hatao */
+  min-width: 500px;         /* optional safety */
+}
+
+#collectionView th,
+#collectionView td {
+  white-space: nowrap;      /* line break na ho */
+}
+
+/* Column specific width control */
+#collectionView th:nth-child(1),
+#collectionView td:nth-child(1) {
+  width: 120px;   /* Order */
+}
+
+#collectionView th:nth-child(2),
+#collectionView td:nth-child(2) {
+  width: 120px;   /* Date */
+}
+
+#collectionView th:nth-child(3),
+#collectionView td:nth-child(3),
+#collectionView th:nth-child(4),
+#collectionView td:nth-child(4) {
+  width: 100px;   /* Cash & Online tight */
+}
     
   </style>
 </head>
