@@ -699,6 +699,13 @@ if (action === "received") {
     });
 }
 
+function formatCurrency(num){
+  return "₹" + Number(num || 0).toLocaleString("en-IN", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+}
+  
 function formatDateDDMMYY(dateStr){
   if(!dateStr) return "";
 
@@ -1495,13 +1502,13 @@ function renderCollection(){
 
     // 🔴 CASH
     if(cashVal > 0){
-      cash = "₹" + cashVal;
+      cash = "₹" + formatCurrency(cashVal);
       totalCash += cashVal;
     }
 
     // 🔵 ONLINE
     if(onlineVal > 0){
-      online = "₹" + onlineVal;
+      online = "₹" + formatCurrency(onlineVal);
       totalOnline += onlineVal;
     }
 
@@ -1520,7 +1527,7 @@ function renderCollection(){
 
   // 👉 Summary
   document.getElementById("collectionSummary").innerHTML =
-    `<b>Cash:</b> ₹${totalCash} &nbsp;&nbsp; | &nbsp;&nbsp; <b>Online:</b> ₹${totalOnline}`;
+   `<b>Cash:</b> ${formatCurrency(totalCash)} &nbsp;&nbsp; | &nbsp;&nbsp; <b>Online:</b> ${formatCurrency(totalOnline)}`;
 }
   
 function formatToBackendDate(dateStr){
