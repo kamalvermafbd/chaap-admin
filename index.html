@@ -2257,13 +2257,12 @@ itemSection += `
 ${i+1}. ${items[i]} (${units[i]})
 `;
 
-// ✅ qty logic
-if (oldQty > 0) {
+// ✅ qty logic (FINAL FIXED)
 
-  if (oldQty > cancelQty) {
+// 🔴 PARTIAL CANCEL
+if (cancelQty > 0 && oldQty > cancelQty) {
 
-    // PARTIAL
-    itemSection += `
+  itemSection += `
 Qty: ${oldQty}
 Cancelled: ${cancelQty}
 Bill Qty: ${qty}
@@ -2271,19 +2270,19 @@ Bill Qty: ${qty}
 ${qty} x ${rate.toFixed(2)} = ${base.toFixed(2)}
 `;
 
-  } else if (oldQty == cancelQty) {
+}
+// 🔴 FULL CANCEL
+else if (cancelQty > 0 && oldQty == cancelQty) {
 
-    // FULL CANCEL
-    itemSection += `
+  itemSection += `
 ~~Cancelled Qty: ${cancelQty}~~
 `;
 
-    continue;
-  }
+  continue;
+}
+// ✅ NORMAL ITEM (NO CANCEL)
+else {
 
-} else {
-
-  // NORMAL
   itemSection += `
 Qty ${qty} x ${rate.toFixed(2)} = ${base.toFixed(2)}
 `;
