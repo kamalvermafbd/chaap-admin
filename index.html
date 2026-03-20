@@ -1553,20 +1553,46 @@ function renderCollection(){
       totalCash += cashVal;
     }
 
+    let actionHTML = "";
+
+if(cashVal > 0){
+  actionHTML = `<button disabled>Cash ✔</button>`;
+}
+else if(onlineVal > 0){
+  actionHTML = `<button disabled>Online ✔</button>`;
+}
+else{
+  actionHTML = `
+    <button class="cashBtn"
+      data-order="${order.OrderNumber}"
+      data-date="${order.Date}">
+      Cash
+    </button>
+
+    <button class="onlineBtn"
+      data-order="${order.OrderNumber}"
+      data-date="${order.Date}">
+      Online
+    </button>
+  `;
+}
+    
     // 🔵 ONLINE
     if(onlineVal > 0){
       online = "₹" + formatCurrency(onlineVal);
       totalOnline += onlineVal;
     }
 
-    html += `
-      <tr>
-        <td>${order.OrderNumber}</td>
-      <td>${formatDateDDMMYY(order.Date)}</td>
-        <td>${cash}</td>
-        <td>${online}</td>
-      </tr>
-    `;
+  html += `
+  <tr>
+    <td>${order.OrderNumber}</td>
+    <td>${formatDateDDMMYY(order.Date)}</td>
+    <td>${cash}</td>
+    <td>${online}</td>
+    <td>${actionHTML}</td>
+  </tr>
+`;
+    
   });
   
 // 🔥 GRAND TOTAL ROW
@@ -1588,6 +1614,52 @@ html += `
   // 👉 Summary
   document.getElementById("collectionSummary").innerHTML =
    `<b>Cash:</b> ${formatCurrency(totalCash)} &nbsp;&nbsp; | &nbsp;&nbsp; <b>Online:</b> ${formatCurrency(totalOnline)}`;
+
+  bindCollectionButtons();
+}
+
+function bindCollectionButtons(){
+  document.querySelectorAll('.cashBtn').forEach(btn => {
+    btn.onclick = function(){
+
+      const orderNumber = this.getAttribute('data-order');
+      const orderDate = this.getAttribute('data-date');
+
+      this.disabled = true;
+      this.textContent = "Saving...";
+
+      apiGet("updatePayment", {
+        orderNumber,
+        orderDate,
+        mode: "cash"
+      }).then(res => {
+        if(res.success){
+          renderCollection();
+        }
+      });
+    };
+  });
+
+  document.querySelectorAll('.onlineBtn').forEach(btn => {
+    btn.onclick = function(){
+
+      const orderNumber = this.getAttribute('data-order');
+      const orderDate = this.getAttribute('data-date');
+
+      this.disabled = true;
+      this.textContent = "Saving...";
+
+      apiGet("updatePayment", {
+        orderNumber,
+        orderDate,
+        mode: "online"
+      }).then(res => {
+        if(res.success){
+          renderCollection();
+        }
+      });
+    };
+  });
 }
   
 function formatToBackendDate(dateStr){
