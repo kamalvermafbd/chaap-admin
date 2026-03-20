@@ -1543,15 +1543,16 @@ function renderCollection(){
   let html = "";
 
   data.forEach(order => {
-
-    let cash = "";
-    let online = "";
-let netPayable = "";
-let balance = "";
     const cashVal = Number(order.Cash) || 0;
     const onlineVal = Number(order.Online) || 0;
 const netPayableVal = Number(order.netpayable) || 0;
 const balanceVal = Number(order.Balance) || 0;
+ // 🔴 ALWAYS SHOW VALUES
+    let netPayable = "₹" + formatCurrency(netPayableVal);
+    let balance = "₹" + formatCurrency(balanceVal);
+    
+      let cash = "";
+    let online = "";
     // 🔴 CASH
     if(cashVal > 0){
       cash = "₹" + formatCurrency(cashVal);
@@ -1560,18 +1561,16 @@ const balanceVal = Number(order.Balance) || 0;
 
     let actionHTML = "";
 
-if(cashVal > 0){
-  if(netPayableVal > 0){
-  netPayable = "₹" + formatCurrency(netPayableVal);
+if(cashVal > 0 && onlineVal > 0){
+  actionHTML = `<button disabled>Mixed ✔</button>`;
 }
+else if(cashVal > 0){
   actionHTML = `<button disabled>Cash ✔</button>`;
 }
 else if(onlineVal > 0){
-  if(balanceVal > 0){
-  balance = "₹" + formatCurrency(balanceVal);
-}
   actionHTML = `<button disabled>Online ✔</button>`;
 }
+  
 else{
   actionHTML = `
     <button class="cashBtn"
@@ -1594,6 +1593,10 @@ else{
       totalOnline += onlineVal;
     }
 
+    // 🎨 BALANCE COLOR
+    const balanceColor = balanceVal > 0 ? 'red' : 'green';
+
+    
   html += `
   <tr>
     <td>${order.OrderNumber}</td>
@@ -1601,7 +1604,7 @@ else{
    <td style="color:red;">${netPayable}</td>
 <td>${cash}</td>
 <td>${online}</td>
-<td style="color:${balanceVal > 0 ? 'red' : 'green'};">
+<td style="color:${balanceColor};">
   ${balance}
 </td>
 <td>${actionHTML}</td>
