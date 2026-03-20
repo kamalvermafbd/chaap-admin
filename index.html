@@ -193,6 +193,7 @@ td:nth-child(8) { width: 220px; } /* Action */
         <div id="loggedInUser" style="padding:10px 18px;font-size:13px;color:#ccc;"></div>
       <button class="nav-btn active" data-page="pageLogin">Login</button>
       <button class="nav-btn" data-page="pageOrders">Pending Orders</button>
+      <button class="nav-btn" data-page="pagePOS">POS</button>
       <button class="nav-btn" data-page="pageSummary">Summary</button>
       <!-- Menu tab (only visible to Admin) -->
 <button class="nav-btn" data-page="pageMenu" id="menuTab" style="display:none;">Menu</button>
@@ -209,6 +210,7 @@ td:nth-child(8) { width: 220px; } /* Action */
     <div class="nav-content">
       <div id="pageLogin" class="page"></div>
       <div id="pageOrders" class="page"></div>
+      <div id="pagePOS" class="page"></div>
       <div id="pageSummary" class="page"></div>
 <div id="pageMenu" class="page" style="display:none;">
   <div class="container">
@@ -432,6 +434,22 @@ if (pageId === 'pageCouponStatus') {
       const pendingOrder = document.getElementById('pendingOrder');
       if (pendingOrder && pageOrders) pageOrders.appendChild(pendingOrder);
 
+const pagePOS = document.getElementById('pagePOS');
+
+if (pagePOS && !pagePOS.hasChildNodes()) {
+
+  const posDiv = document.createElement("div");
+
+  posDiv.innerHTML = `
+    <div class="container">
+      <h2>POS System</h2>
+      <p>POS loading...</p>
+    </div>
+  `;
+
+  pagePOS.appendChild(posDiv);
+}
+      
       const summaryDiv = document.getElementById('summaryDiv');
       if (summaryDiv && pageSummary) pageSummary.appendChild(summaryDiv);
 
