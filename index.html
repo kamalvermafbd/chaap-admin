@@ -232,7 +232,12 @@ td:nth-child(8) { width: 220px; } /* Action */
   <button id="backToOrders">← Back</button>
 
   <h3>💰 Collection Report</h3>
-
+  
+  <!-- 🔴 LOADING TEXT (ADD HERE) -->
+  <div id="collectionLoading" style="display:none; text-align:center; font-size:18px; font-weight:bold; color:red; margin-bottom:10px;">
+    Loading data...
+  </div>
+  
   <div id="collectionSummary" style="margin-bottom:10px;"></div>
 
   <div class="tableWrapper">
@@ -1193,23 +1198,39 @@ document.getElementById("collectionSummary").innerHTML = "";
     document.getElementById("fromDate").value = fromDate;
     document.getElementById("toDate").value = toDate;
   }
+document.getElementById("collectionLoading").style.display = "block";
 
   // 🔄 API call with correct range
   apiGet("getOrderNumbers", {
     fromDate: fromDate,
     toDate: toDate
   })
+
+    
   .then(function(data){
+document.getElementById("collectionLoading").style.display = "none";
 
     console.log("COLLECTION RANGE:", fromDate, toDate);
     console.log("COLLECTION DATA:", data);
 
+if(!data || data.length === 0){
+  document.getElementById("collectionBody").innerHTML =
+    "<tr><td colspan='4' style='text-align:center;'>No data found</td></tr>";
+
+  document.getElementById("collectionSummary").innerHTML = "";
+  return;
+}
+
+    
     window.currentOrdersData = data || [];
 
     renderCollection();
 
   })
   .catch(function(err){
+
+    document.getElementById("collectionLoading").style.display = "none";
+
     console.error("Collection API error:", err);
   });
 
