@@ -1813,9 +1813,10 @@ ${line("SGST", sgst.toFixed(2))}
 ${line("Total", totalAmount.toFixed(2))}
 ${line("Delivery", deliveryCharge.toFixed(2))}
 ${line("Bill Amt", billAmt.toFixed(2))}
-
-${couponUsed > 0 ? line(`Less: Coupon (${order['couponId'] || ''})`, (-couponUsed).toFixed(2)) : ""}
-
+${couponUsed > 0 ? 
+  line("Less: Coupon", (-couponUsed).toFixed(2)) + 
+  `\n(${order['couponId'] || ''})` 
+: ""}
 ${walletUsed > 0 ? line("Less: Wallet Used", (-walletUsed).toFixed(2)) : ""}
 
 ${separator}
