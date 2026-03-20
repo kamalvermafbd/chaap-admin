@@ -1559,7 +1559,20 @@ function renderCollection(){
       </tr>
     `;
   });
-
+  
+// 🔥 GRAND TOTAL ROW
+html += `
+ <tr style="font-weight:bold; background:#e9ecef; border-top:2px solid #000;">
+    <td style="color:red;">Total</td>
+    <td></td>
+    <td style="text-align:right; color:red;">
+      ${formatCurrency(totalCash)}
+    </td>
+    <td style="text-align:right; color:red;">
+      ${formatCurrency(totalOnline)}
+    </td>
+  </tr>
+`;
   // 👉 Table fill
   document.getElementById("collectionBody").innerHTML = html;
 
