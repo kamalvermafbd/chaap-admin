@@ -208,7 +208,7 @@ td:nth-child(8) { width: 220px; } /* Action */
   <div class="container" id="pendingOrder" style="display:none;">
     <h3>Pending Orders</h3>
     <!-- 🔥 DATE FILTER START -->
-  <div style="margin-bottom:10px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+<div id="orderControls" style="margin-bottom:10px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
     <label>
       From:
       <input type="date" id="fromDate">
@@ -291,7 +291,7 @@ td:nth-child(8) { width: 220px; } /* Action */
   </div>
 
 <script>
-  const API_BASE_URL = "https://script.google.com/macros/s/AKfycby2hSBcPBKMu4-6lbD-mQzw2ILu0GOpUfWuZYc8Frr96OYjSUKZgfTcLlK7uIaILM0f/exec";
+  const API_BASE_URL = "https://script.google.com/macros/s/AKfycbyByiU4XfhFsVM8TaN5GafLKh23iVlPGYvMg5HVdlFsV8aUU3VGckPLHh3gqxsV8Wmp/exec";
 
 // =========================
 // GET API
@@ -706,6 +706,7 @@ function formatDateTime(ts){
 }
 
  function loadOrders() {
+   window.currentOrdersData = [];
 
      const preview = document.getElementById('thermalPreview');
   if (preview) {
@@ -736,7 +737,7 @@ console.time("API getOrderNumbers");
     toDate: toDate
   })
   .then(function(data){
-
+window.currentOrdersData = data; // 👈 save data for collection
     if (!placeholder) return;
 console.timeEnd("API getOrderNumbers");
 console.time("DOM render");
@@ -1157,8 +1158,37 @@ placeholder.textContent = "Server error loading orders.";
 });
 
 }
+// 🔥 STEP 4 CODE YAHA PASTE KAR
+
+document.getElementById("collectionBtn").addEventListener("click", function(){
+
+  // 🔴 Orders hide
+  document.getElementById("ordersPlaceholder").style.display = "none";
+
+  // 🔴 Filters hide (NEW)
+  document.getElementById("orderControls").style.display = "none";
+
+  // 🟢 Collection show
+  document.getElementById("collectionView").style.display = "block";
+
+  renderCollection();
+});
 
 
+document.getElementById("backToOrders").addEventListener("click", function(){
+
+  // 🔴 Collection hide
+  document.getElementById("collectionView").style.display = "none";
+
+  // 🟢 Orders show
+  document.getElementById("ordersPlaceholder").style.display = "block";
+
+  // 🟢 Filters show (NEW)
+  document.getElementById("orderControls").style.display = "flex";
+
+});
+
+  
 // 🔴 CLOSE CANCEL MODAL (delegated listener)
 document.addEventListener("click", function(e){
 
@@ -1363,7 +1393,53 @@ if (loginNav) loginNav.style.display = "block";
   if (loginBtn) loginBtn.click();
 }
     });
+function renderCollection(){
 
+  const data = window.currentOrdersData || [];
+
+  let totalCash = 0;
+  let totalOnline = 0;
+
+  let html = "";
+
+  data.forEach(order => {
+
+    let cash = "";
+    let online = "";
+
+    const cashVal = Number(order.Cash) || 0;
+    const onlineVal = Number(order.Online) || 0;
+
+    // 🔴 CASH
+    if(cashVal > 0){
+      cash = "₹" + cashVal;
+      totalCash += cashVal;
+    }
+
+    // 🔵 ONLINE
+    if(onlineVal > 0){
+      online = "₹" + onlineVal;
+      totalOnline += onlineVal;
+    }
+
+    html += `
+      <tr>
+        <td>${order.OrderNumber}</td>
+        <td>${order.Date || ""}</td>
+        <td>${cash}</td>
+        <td>${online}</td>
+      </tr>
+    `;
+  });
+
+  // 👉 Table fill
+  document.getElementById("collectionBody").innerHTML = html;
+
+  // 👉 Summary
+  document.getElementById("collectionSummary").innerHTML =
+    `<b>Cash:</b> ₹${totalCash} &nbsp;&nbsp; | &nbsp;&nbsp; <b>Online:</b> ₹${totalOnline}`;
+}
+  
 function formatToBackendDate(dateStr){
 
   // already yyyy-mm-dd
