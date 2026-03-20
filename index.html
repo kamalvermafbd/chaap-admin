@@ -1627,7 +1627,10 @@ function generateBill(orderNumber, orderDate, btnRef) {
     })
 
     .then(function (order) {
-
+console.log("FULL ORDER OBJECT:", order);
+  console.log("ServiceCharge field:", order.serviceCharge);
+  console.log("Raw Servicecharge:", order['Servicecharge']);
+      
       if (!order) {
         alert('Order not found!');
         btnRef.textContent = 'Generate Bill';
@@ -1761,7 +1764,7 @@ const walletUsed = Math.max(
   console.log("RAW walletUsed:", order['walletUsed']);
 console.log("PARSED walletUsed:", walletUsed);
       
-      const billAmt = totalAmount + deliveryCharge;
+  const billAmt = totalAmount + deliveryCharge;
 const couponUsed = rewardCoupon > 0 ? rewardCoupon : paidCoupon;
       
 let couponSection = "";
