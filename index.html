@@ -1162,28 +1162,32 @@ placeholder.textContent = "Server error loading orders.";
 
 document.getElementById("collectionBtn").addEventListener("click", function(){
 
-  // 🔴 Orders hide
-  document.getElementById("ordersPlaceholder").style.display = "none";
+  const data = window.currentOrdersData || [];
 
-  // 🔴 Filters hide (NEW)
-  document.getElementById("orderControls").style.display = "none";
+  if(data.length === 0){
 
-  // 🟢 Collection show
-  document.getElementById("collectionView").style.display = "block";
+    // 🔄 First time → load data
+    loadOrders();
 
-  renderCollection();
+    // ⏳ wait then show
+    setTimeout(() => {
+      showCollectionView();
+    }, 500);
+
+  } else {
+
+    // ✅ Already loaded
+    showCollectionView();
+  }
+
 });
 
-
+// 🔙 Back button (same rahega)
 document.getElementById("backToOrders").addEventListener("click", function(){
 
-  // 🔴 Collection hide
   document.getElementById("collectionView").style.display = "none";
 
-  // 🟢 Orders show
   document.getElementById("ordersPlaceholder").style.display = "block";
-
-  // 🟢 Filters show (NEW)
   document.getElementById("orderControls").style.display = "flex";
 
 });
@@ -1393,6 +1397,19 @@ if (loginNav) loginNav.style.display = "block";
   if (loginBtn) loginBtn.click();
 }
     });
+
+function showCollectionView(){
+
+  document.getElementById("ordersPlaceholder").style.display = "none";
+  document.getElementById("orderControls").style.display = "none";
+
+  document.getElementById("collectionView").style.display = "block";
+
+  renderCollection();
+}
+
+
+  
 function renderCollection(){
 
   const data = window.currentOrdersData || [];
