@@ -1798,6 +1798,8 @@ ${separator}
 ${itemSection}${separator}
 
 ${line("Items Subtotal", baseTotal.toFixed(2))}
+${order.serviceCharge > 0 ? line("Service Charge", order.serviceCharge.toFixed(2)) : ""}
+
 ${couponDisc > 0 ? line(`Offer Applied (${order['couponId']||''})`, (-couponDisc).toFixed(2)) : ""}
 ${line("Gross Value", taxable.toFixed(2))}
 ${line("Taxable Amount", taxable.toFixed(2))}
