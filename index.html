@@ -443,7 +443,24 @@ if (pagePOS && !pagePOS.hasChildNodes()) {
   posDiv.innerHTML = `
     <div class="container">
       <h2>POS System</h2>
-      <p>POS loading...</p>
+      <div class="pos-layout">
+
+  <!-- 🔍 Search -->
+  <input type="text" id="posSearch" placeholder="Search item..." />
+
+  <!-- 🧾 Items -->
+  <div id="posItems" style="margin-top:10px;">
+    Items will load here...
+  </div>
+
+  <!-- 🛒 Cart -->
+  <div id="posCart" style="margin-top:20px; border-top:1px solid #ccc; padding-top:10px;">
+    <h3>Cart</h3>
+    <div id="cartItems">No items</div>
+    <div id="cartTotal"><b>Total: ₹0</b></div>
+  </div>
+
+</div>
     </div>
   `;
 
