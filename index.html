@@ -939,7 +939,7 @@ document.querySelectorAll('.cashBtn').forEach(btn => {
       if(res.success){
         loadOrders();
       } else {
-        alert("Failed");
+        alert(res.message || "Failed");
         this.disabled = false;
         this.textContent = "Cash";
       }
@@ -967,7 +967,7 @@ document.querySelectorAll('.onlineBtn').forEach(btn => {
       if(res.success){
         loadOrders();
       } else {
-        alert("Failed");
+        alert(res.message || "Failed");
         this.disabled = false;
         this.textContent = "Online";
       }
