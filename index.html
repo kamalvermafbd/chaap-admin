@@ -1159,31 +1159,35 @@ placeholder.textContent = "Server error loading orders.";
 
 }
 // 🔥 STEP 4 CODE YAHA PASTE KAR
-
 document.getElementById("collectionBtn").addEventListener("click", function(){
 
-  const data = window.currentOrdersData || [];
+  // 🔴 Hide orders
+  document.getElementById("ordersPlaceholder").style.display = "none";
+  document.getElementById("orderControls").style.display = "none";
 
-  if(data.length === 0){
-const today = new Date().toISOString().slice(0,10);
+  // 🟢 Show collection
+  document.getElementById("collectionView").style.display = "block";
 
-    // 👉 auto fill date inputs
-    document.getElementById("fromDate").value = today;
-    document.getElementById("toDate").value = today;
-    
-    // 🔄 First time → load data
-    loadOrders();
+  // 🔄 Always fetch fresh data (NO dependency on search)
+  const today = new Date().toISOString().slice(0,10);
 
-    // ⏳ wait then show
-    setTimeout(() => {
-      showCollectionView();
-    }, 500);
+  apiGet("getOrderNumbers", {
+    fromDate: today,
+    toDate: today
+  })
+  .then(function(data){
 
-  } else {
+    window.currentOrdersData = data || [];
 
-    // ✅ Already loaded
-    showCollectionView();
-  }
+    renderCollection();
+
+  })
+  .catch(function(err){
+    console.error("Collection API error:", err);
+
+    document.getElementById("collectionBody").innerHTML =
+      "<tr><td colspan='4'>Failed to load data</td></tr>";
+  });
 
 });
 
