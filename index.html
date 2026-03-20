@@ -633,14 +633,14 @@ syncQtyUI();
   let total = 0;
 
   let html = `
-    <table style="width:100%;border-collapse:collapse;font-size:14px;">
+    <table style="width:100%;border-collapse:collapse;font-size:14px;table-layout:fixed;">
       <thead>
         <tr style="border-bottom:1px solid #ccc;text-align:left;">
           <th>S No.</th>
           <th>Item</th>
           <th>Unit</th>
-          <th>Qty</th>
-          <th>Rate</th>
+          <th style="text-align:center;">Qty</th>
+<th style="text-align:right;">Rate</th>
           <th style="text-align:right;">Amt</th>
         </tr>
       </thead>
@@ -657,9 +657,9 @@ syncQtyUI();
         <td>${index + 1}</td>
         <td>${item.name}</td>
         <td>${item.unit}</td>
-        <td>${item.qty}</td>
-        <td>₹${item.price}</td>
-        <td style="text-align:right;">₹${amt.toFixed(2)}</td>
+        <td style="text-align:center;">${item.qty}</td>
+        <td style="text-align:right;">₹${formatCurrency(item.price)}</td>
+        <td style="text-align:right;">${formatCurrency(amt)}</td>
       </tr>
     `;
   });
@@ -674,7 +674,7 @@ syncQtyUI();
   // 🔥 RIGHT ALIGNED TOTAL
   totalBox.innerHTML = `
     <div style="text-align:right;margin-top:10px;font-size:16px;">
-      <b>Total: ₹${total.toFixed(2)}</b>
+      <b>Total: ₹${formatCurrency(total)}</b>
     </div>
   `;
 }
