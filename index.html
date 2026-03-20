@@ -133,7 +133,15 @@ td:nth-child(8) { width: 220px; } /* Action */
   font-size: 12px;
   border-radius: 4px;
 }
-    
+    .tableWrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* important: force table wide so scroll aaye */
+.tableWrapper table {
+  min-width: 900px;
+}
   </style>
 </head>
 <body>
@@ -716,7 +724,8 @@ console.time("DOM render");
     }
 
     let html = `
-      <table>
+     <div class="tableWrapper">
+     <table>
         <tr>
            <th>Order No</th>
     <th>Order Date</th>
@@ -822,7 +831,7 @@ ${
   `;
 });
 
-    html += "</table>";
+    html += "</table></div>";
     placeholder.innerHTML = html;
 console.timeEnd("DOM render");
 console.timeEnd("loadOrders TOTAL");
