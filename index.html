@@ -513,6 +513,8 @@ function renderPOSItems(items){
     renderItemVariants(item);
   });
 }
+
+  
 function renderItemVariants(item){
 
   const box = document.getElementById("variants-" + item.Name);
@@ -538,7 +540,10 @@ function renderItemVariants(item){
     `;
 
     // 🔥 ADD THIS
-setTimeout(syncQtyUI, 100);
+//setTimeout(syncQtyUI, 100);
+
+    // ✅ ADD THIS
+syncQtyUI();
   }
 
   // 🔹 MULTI ITEM
@@ -577,6 +582,9 @@ setTimeout(syncQtyUI, 100);
 
       box.innerHTML = html;
 
+// ✅ ADD THIS
+syncQtyUI();
+      
     });
 
   }
