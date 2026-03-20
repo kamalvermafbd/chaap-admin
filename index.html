@@ -697,7 +697,7 @@ console.time("DOM render");
     `;
 
     data.forEach(order => {
-      const address = `${order.city || ''}, ${order.state || ''}`;
+      const address = [order.city, order.state].filter(Boolean).join(", ");
       
 console.log("RAW SC:", order.Servicecharge);
 console.log("PROCESSED:", String(order.Servicecharge || "").trim().toUpperCase());
