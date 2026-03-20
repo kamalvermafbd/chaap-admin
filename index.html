@@ -699,6 +699,18 @@ if (action === "received") {
     });
 }
 
+function formatDateDDMMYY(dateStr){
+  if(!dateStr) return "";
+
+  const d = new Date(dateStr);
+
+  const day = String(d.getDate()).padStart(2,'0');
+  const month = String(d.getMonth()+1).padStart(2,'0');
+  const year = String(d.getFullYear()).slice(-2);
+
+  return `${day}-${month}-${year}`;
+}
+  
 function formatDateTime(ts){
   if(!ts) return "";
 
@@ -1496,7 +1508,7 @@ function renderCollection(){
     html += `
       <tr>
         <td>${order.OrderNumber}</td>
-        <td>${order.Date || ""}</td>
+      <td>${formatDateDDMMYY(order.Date)}</td>
         <td>${cash}</td>
         <td>${online}</td>
       </tr>
