@@ -607,6 +607,90 @@ function handlePOSItemClick(name){
 
   });
 }
+
+function toggleVariants(name){
+
+  const box = document.getElementById("variants-" + name);
+
+  if (!box) return;
+
+  // toggle close
+  if (box.innerHTML !== "") {
+    box.innerHTML = "";
+    return;
+  }
+
+  box.innerHTML = "Loading...";
+
+  apiGet("getVariants", { name: name })
+  .then(function(data){
+
+    if(!data || data.length === 0){
+      box.innerHTML = "No variants";
+      return;
+    }
+
+    let html = "";
+
+    data.forEach(v => {
+
+      html += `
+        <div style="margin-top:6px;display:flex;justify-content:space-between;align-items:center;">
+          
+          <span>${v.Unit} - ₹${v.Price}</span>
+
+          <div>
+            <button onclick="changeQty('${name}','${v.Unit}',${v.Price},-1)">-</button>
+            <span id="qty-${name}-${v.Unit}">0</span>
+            <button onclick="changeQty('${name}','${v.Unit}',${v.Price},1)">+</button>
+          </div>
+
+        </div>
+      `;
+
+    });
+
+    box.innerHTML = html;
+
+  });
+
+}
+
+  function changeQty(name, unit, price, delta){
+
+  const id = `qty-${name}-${unit}`;
+  const el = document.getElementById(id);
+
+  let qty = Number(el?.textContent || 0);
+
+  qty += delta;
+
+  if (qty < 0) qty = 0;
+
+  if (el) el.textContent = qty;
+
+  // 🔥 CART UPDATE
+  const existing = cart.find(c =>
+    c.name === name && c.unit === unit
+  );
+
+  if (existing) {
+    existing.qty = qty;
+    if (existing.qty === 0) {
+      cart = cart.filter(c => !(c.name === name && c.unit === unit));
+    }
+  } else {
+    if (qty > 0) {
+      cart.push({ name, unit, price, qty });
+    }
+  }
+
+  renderCart();
+}
+
+  
+
+
   
   (function(){
   document.addEventListener('DOMContentLoaded', function(){
