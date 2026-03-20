@@ -182,6 +182,43 @@ td:nth-child(8) { width: 220px; } /* Action */
 #collectionView td:nth-child(4) {
   width: 100px;   /* Cash & Online tight */
 }
+
+/* 🔥 POS CART TABLE FIX */
+.posCartTable th,
+.posCartTable td {
+  padding: 6px 8px;
+}
+
+/* Column widths */
+.posCartTable th:nth-child(1),
+.posCartTable td:nth-child(1) {
+  width: 40px;
+}
+
+.posCartTable th:nth-child(2),
+.posCartTable td:nth-child(2) {
+  width: auto;
+}
+
+.posCartTable th:nth-child(3),
+.posCartTable td:nth-child(3) {
+  width: 110px;
+}
+
+.posCartTable th:nth-child(4),
+.posCartTable td:nth-child(4) {
+  width: 60px;
+  text-align: center;
+}
+
+.posCartTable th:nth-child(5),
+.posCartTable td:nth-child(5),
+.posCartTable th:nth-child(6),
+.posCartTable td:nth-child(6) {
+  width: 100px;
+  text-align: right;
+}
+
     
   </style>
 </head>
@@ -633,7 +670,7 @@ syncQtyUI();
   let total = 0;
 
   let html = `
-    <table style="width:100%;border-collapse:collapse;font-size:14px;table-layout:fixed;">
+    <table class="posCartTable" style="width:100%;border-collapse:collapse;font-size:14px;table-layout:fixed;">
       <thead>
         <tr style="border-bottom:1px solid #ccc;text-align:left;">
           <th>S No.</th>
