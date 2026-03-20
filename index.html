@@ -2232,9 +2232,15 @@ console.log("FULL ORDER OBJECT:", order);
 
 
 const cancelArr = (order['cancel_qty'] || '').toString().split(','); 
-const cancelQty = parseFloat(cancelArr[i]) || 0; 
+//const cancelQty = parseFloat(cancelArr[i]) || 0; 
+const cancelParsed = parseFloat(cancelArr[i]);
+const cancelQty = isNaN(cancelParsed) ? 0 : cancelParsed;
+        
 const oldQtyArr = (order['old_qty'] || '').toString().split(','); 
-const oldQty = parseFloat(oldQtyArr[i] || qty); 
+//const oldQty = parseFloat(oldQtyArr[i] || qty); 
+const oldQtyParsed = parseFloat(oldQtyArr[i]);
+const oldQty = isNaN(oldQtyParsed) ? qty : oldQtyParsed;
+        
 const statusArr = (order['OrderStatus'] || '').toString().split(','); 
 const status = (statusArr[i] || '').trim();
 
