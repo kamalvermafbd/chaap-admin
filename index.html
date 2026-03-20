@@ -476,6 +476,17 @@ let cart = [];
     if(el) el.textContent = item.qty;
   });
 }
+
+
+  function getNetPrice(price, discount){
+
+  const p = Number(price) || 0;
+  const d = Number(discount) || 0;
+
+  if(d <= 0) return p;
+
+  return +(p - (p * d / 100)).toFixed(2);
+}
   
 function renderPOSItems(items){
 
@@ -529,13 +540,13 @@ function renderItemVariants(item){
     box.innerHTML = `
       <div style="display:flex;justify-content:space-between;">
         <span>${item.Unit}</span>
-        <span>₹${item.Price}</span>
+  <span>₹${getNetPrice(item.Price, item.Discount_Percent)}</span>
       </div>
 
       <div style="margin-top:6px;">
-        <button onclick="changeQty('${item.Name}','${item.Unit}',${item.Price},-1)">-</button>
+       <button onclick="changeQty('${item.Name}','${item.Unit}',${getNetPrice(item.Price, item.Discount_Percent)},-1)">-</button>
         <span id="qty-${item.Name}-${item.Unit}">0</span>
-        <button onclick="changeQty('${item.Name}','${item.Unit}',${item.Price},1)">+</button>
+<button onclick="changeQty('${item.Name}','${item.Unit}',${getNetPrice(item.Price, item.Discount_Percent)},1)">+</button>
       </div>
     `;
 
@@ -566,13 +577,13 @@ syncQtyUI();
 
             <div style="display:flex;justify-content:space-between;">
               <span>${v.Unit}</span>
-              <span>₹${v.Price}</span>
+              <span>₹${getNetPrice(v.Price, v.Discount_Percent)}</span>
             </div>
 
             <div style="margin-top:4px;">
-              <button onclick="changeQty('${item.Name}','${v.Unit}',${v.Price},-1)">-</button>
+              <button onclick="changeQty('${item.Name}','${v.Unit}',${getNetPrice(v.Price, v.Discount_Percent)},-1)">-</button>
               <span id="qty-${item.Name}-${v.Unit}">0</span>
-              <button onclick="changeQty('${item.Name}','${v.Unit}',${v.Price},1)">+</button>
+              <button onclick="changeQty('${item.Name}','${v.Unit}',${getNetPrice(v.Price, v.Discount_Percent)},1)">+</button>
             </div>
 
           </div>
