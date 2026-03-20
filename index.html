@@ -493,21 +493,28 @@ function renderPOSItems(items){
 }
 
 
-  function handlePOSItemClick(name){
+function handlePOSItemClick(name){
 
   const item = menuItems.find(i => i.Name === name);
 
   if(!item) return;
 
-  if(item.Cat2 === "Multi"){
+  const type = (item.Cat2 || "").toLowerCase().trim();
+
+  // 🔴 MULTI ITEM
+  if(type === "multi"){
+
     loadVariants(name);
+
   } else {
+
     addToCart({
       name: item.Name,
       unit: item.Unit,
       price: Number(item.Price),
       qty: 1
     });
+
   }
 }
 
