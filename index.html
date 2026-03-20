@@ -1159,34 +1159,37 @@ placeholder.textContent = "Server error loading orders.";
 
 }
 // 🔥 STEP 4 CODE YAHA PASTE KAR
-document.getElementById("collectionBtn").addEventListener("click", function(){
+document.addEventListener("DOMContentLoaded", function(){
 
-  // 🔴 Hide orders
-  document.getElementById("ordersPlaceholder").style.display = "none";
-  document.getElementById("orderControls").style.display = "none";
+  document.getElementById("collectionBtn").addEventListener("click", function(){
 
-  // 🟢 Show collection
-  document.getElementById("collectionView").style.display = "block";
+    // 🔴 Hide orders
+    document.getElementById("ordersPlaceholder").style.display = "none";
+    document.getElementById("orderControls").style.display = "none";
 
-  // 🔄 Always fetch fresh data (NO dependency on search)
-  const today = new Date().toISOString().slice(0,10);
+    // 🟢 Show collection
+    document.getElementById("collectionView").style.display = "block";
 
-  apiGet("getOrderNumbers", {
-    fromDate: today,
-    toDate: today
-  })
-  .then(function(data){
+    // 🔄 Direct API call
+    const today = new Date().toISOString().slice(0,10);
 
-    window.currentOrdersData = data || [];
+    apiGet("getOrderNumbers", {
+      fromDate: today,
+      toDate: today
+    })
+    .then(function(data){
 
-    renderCollection();
+      console.log("COLLECTION DATA:", data);
 
-  })
-  .catch(function(err){
-    console.error("Collection API error:", err);
+      window.currentOrdersData = data || [];
 
-    document.getElementById("collectionBody").innerHTML =
-      "<tr><td colspan='4'>Failed to load data</td></tr>";
+      renderCollection();
+
+    })
+    .catch(function(err){
+      console.error("Collection API error:", err);
+    });
+
   });
 
 });
