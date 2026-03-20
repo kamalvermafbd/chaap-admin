@@ -97,6 +97,10 @@
 .modal-overlay.active {
   display:flex;
 }
+
+    td {
+  white-space: normal;
+}
   </style>
 </head>
 <body>
@@ -625,7 +629,16 @@ if (action === "received") {
     });
 }
 
+function formatDateTime(ts){
+  if(!ts) return "";
 
+  const d = new Date(ts);
+
+  const date = d.toLocaleDateString("en-GB"); // 19/03/2026
+  const time = d.toLocaleTimeString("en-GB", { hour12: false }); // 21:59:12
+
+  return date + "<br>" + time;
+}
 
  function loadOrders() {
 
@@ -672,14 +685,20 @@ console.time("DOM render");
     let html = `
       <table>
         <tr>
-          <th>Order No</th>
-          <th>Type</th>
-          <th>Status</th>
+           <th>Order No</th>
+    <th>Order Date</th>
+    <th>Name</th>
+    <th>Mobile</th>
+    <th>Type</th>
+    <th>Address</th>
+    <th>Status</th>
           <th>Action</th>
         </tr>
     `;
 
     data.forEach(order => {
+      const address = `${order.city || ''}, ${order.state || ''}`;
+      
 console.log("RAW SC:", order.Servicecharge);
 console.log("PROCESSED:", String(order.Servicecharge || "").trim().toUpperCase());
       
@@ -704,9 +723,20 @@ Partial
 </span>`;
 }
   html += `
+  
    <tr ${rowStyle}>
       <td>${order.OrderNumber}</td>
+
+ <td class="date-col">
+    ${formatDateTime(order.Timestamp)}
+  </td>
+
+  <td>${order.CustomerName || ''}</td>
+
+  <td>${order.Mobile || ''}</td>      
       <td>${order["Order Type"] || ""}</td>
+
+        <td>${address}</td>
       <td class="statusCell">${displayStatus}</td>
       <td class="actionCell">
 
