@@ -630,27 +630,54 @@ syncQtyUI();
     return;
   }
 
-  let html = "";
   let total = 0;
 
-  cart.forEach(item => {
+  let html = `
+    <table style="width:100%;border-collapse:collapse;font-size:14px;">
+      <thead>
+        <tr style="border-bottom:1px solid #ccc;text-align:left;">
+          <th>S No.</th>
+          <th>Item</th>
+          <th>Unit</th>
+          <th>Qty</th>
+          <th>Rate</th>
+          <th style="text-align:right;">Amt</th>
+        </tr>
+      </thead>
+      <tbody>
+  `;
+
+  cart.forEach((item, index) => {
 
     const amt = item.price * item.qty;
     total += amt;
 
     html += `
-      <div>
-        ${item.name} (${item.unit}) x ${item.qty}
-        = ₹${amt}
-      </div>
+      <tr style="border-bottom:1px solid #eee;">
+        <td>${index + 1}</td>
+        <td>${item.name}</td>
+        <td>${item.unit}</td>
+        <td>${item.qty}</td>
+        <td>₹${item.price}</td>
+        <td style="text-align:right;">₹${amt.toFixed(2)}</td>
+      </tr>
     `;
-
   });
 
-  box.innerHTML = html;
-  totalBox.innerHTML = `<b>Total: ₹${total}</b>`;
-}
+  html += `
+      </tbody>
+    </table>
+  `;
 
+  box.innerHTML = html;
+
+  // 🔥 RIGHT ALIGNED TOTAL
+  totalBox.innerHTML = `
+    <div style="text-align:right;margin-top:10px;font-size:16px;">
+      <b>Total: ₹${total.toFixed(2)}</b>
+    </div>
+  `;
+}
 
   function changeQty(name, unit, price, delta){
 
