@@ -2239,7 +2239,8 @@ const cancelQty = isNaN(cancelParsed) ? 0 : cancelParsed;
 const oldQtyArr = (order['old_qty'] || '').toString().split(','); 
 //const oldQty = parseFloat(oldQtyArr[i] || qty); 
 const oldQtyParsed = parseFloat(oldQtyArr[i]);
-const oldQty = isNaN(oldQtyParsed) ? qty : oldQtyParsed;
+const oldQty = isNaN(oldQtyParsed) ? 0 : oldQtyParsed;
+
         
 const statusArr = (order['OrderStatus'] || '').toString().split(','); 
 const status = (statusArr[i] || '').trim();
@@ -2247,12 +2248,11 @@ const status = (statusArr[i] || '').trim();
 // ✅ FINAL LOGIC (line-item wise)
 const isCancelled = status === "Cancelled"; 
 
-if (isCancelled) {
-
+if (status === "Cancelled") {
   itemSection += `
 ${i+1}. ~~${items[i]} (${units[i]})~~ 
 
-Cancelled Qty: ${qty}
+Cancelled Qty: ${oldQty || qty}
 `;
   continue;
 
