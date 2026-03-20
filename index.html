@@ -101,6 +101,27 @@
     td {
   white-space: normal;
 }
+
+    table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 8px 10px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+/* Column-wise control */
+td:nth-child(1) { width: 110px; white-space: nowrap; } /* Order No */
+td:nth-child(2) { width: 120px; } /* Date */
+td:nth-child(3) { width: 140px; white-space: nowrap; } /* Name */
+td:nth-child(4) { width: 130px; } /* Mobile */
+td:nth-child(5) { width: 100px; white-space: nowrap; } /* Type */
+td:nth-child(6) { width: 180px; } /* Address */
+td:nth-child(7) { width: 100px; } /* Status */
+td:nth-child(8) { width: 220px; } /* Action */
   </style>
 </head>
 <body>
