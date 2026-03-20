@@ -780,26 +780,7 @@ Partial
       <td>${order["Order Type"] || ""}</td>
 
         <td>${address}</td>
-      <td class="statusCell">${displayStatus}</td>
-
-<td class="collectionCell">
-  <div class="actionWrap">
-
-    <button class="cashBtn"
-      data-order="${order.OrderNumber}"
-      data-date="${order.Date}">
-      Cash
-    </button>
-
-    <button class="onlineBtn"
-      data-order="${order.OrderNumber}"
-      data-date="${order.Date}">
-      Online
-    </button>
-
-  </div>
-</td>
-      
+      <td class="statusCell">${displayStatus}</td>      
       <td class="actionCell">
 <div class="actionWrap">
         ${
@@ -847,6 +828,25 @@ ${
         </button>
 </div>
       </td>
+
+<td class="collectionCell">
+  <div class="actionWrap">
+
+    <button class="cashBtn"
+      data-order="${order.OrderNumber}"
+      data-date="${order.Date}">
+      Cash
+    </button>
+
+    <button class="onlineBtn"
+      data-order="${order.OrderNumber}"
+      data-date="${order.Date}">
+      Online
+    </button>
+
+  </div>
+</td>
+      
     </tr>
   `;
 });
