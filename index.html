@@ -2316,7 +2316,17 @@ itemSection += line("Item Total", net.toFixed(2)) + "\n\n";
       const courier = parseFloat(order['CourierCharges']) || 0;
       
 
-      const deliveryCharge = delivery > 0 ? delivery : courier;
+      let chargeLabel = "";
+let chargeValue = 0;
+
+if (delivery > 0) {
+  chargeLabel = "Delivery Charges";
+  chargeValue = delivery;
+}
+else if (courier > 0) {
+  chargeLabel = "Courier Charges";
+  chargeValue = courier;
+}
 
       // coupon logic
 const rewardCoupon = parseFloat(order['rewardcoupon']) || 0;
@@ -2329,7 +2339,7 @@ const walletUsed = Math.max(
   console.log("RAW walletUsed:", order['walletUsed']);
 console.log("PARSED walletUsed:", walletUsed);
       
-  const billAmt = totalAmount + deliveryCharge;
+  const billAmt = totalAmount + chargeValue;
 const couponUsed = rewardCoupon > 0 ? rewardCoupon : paidCoupon;
       
 let couponSection = "";
@@ -2376,7 +2386,7 @@ ${line("CGST", cgst.toFixed(2))}
 ${line("SGST", sgst.toFixed(2))}
 
 ${line("Total", totalAmount.toFixed(2))}
-${line("Delivery", deliveryCharge.toFixed(2))}
+${chargeValue > 0 ? line(chargeLabel, chargeValue.toFixed(2)) : ""}
 ${line("Bill Amt", billAmt.toFixed(2))}
 ${couponUsed > 0 ? 
   line("Less: Coupon", (-couponUsed).toFixed(2)) + 
