@@ -1159,37 +1159,52 @@ placeholder.textContent = "Server error loading orders.";
 
 }
 // 🔥 STEP 4 CODE YAHA PASTE KAR
-document.addEventListener("DOMContentLoaded", function(){
 
   document.getElementById("collectionBtn").addEventListener("click", function(){
 
-    // 🔴 Hide orders
-    document.getElementById("ordersPlaceholder").style.display = "none";
-    document.getElementById("orderControls").style.display = "none";
+  // 🔴 Hide orders
+  document.getElementById("ordersPlaceholder").style.display = "none";
+  document.getElementById("orderControls").style.display = "none";
 
-    // 🟢 Show collection
-    document.getElementById("collectionView").style.display = "block";
+  // 🟢 Show collection
+  document.getElementById("collectionView").style.display = "block";
 
-    // 🔄 Direct API call
-    const today = new Date().toISOString().slice(0,10);
+  // 🔥 Read date inputs (IMPORTANT)
+  let fromDate = document.getElementById("fromDate").value;
+  let toDate = document.getElementById("toDate").value;
 
-    apiGet("getOrderNumbers", {
-      fromDate: today,
-      toDate: today
-    })
-    .then(function(data){
+  // 🔥 If empty → default last 7 days
+  if(!fromDate || !toDate){
 
-      console.log("COLLECTION DATA:", data);
+    const today = new Date();
+    const past = new Date();
+    past.setDate(today.getDate() - 7);
 
-      window.currentOrdersData = data || [];
+    fromDate = past.toISOString().slice(0,10);
+    toDate = today.toISOString().slice(0,10);
 
-      renderCollection();
+    // optional: fill UI
+    document.getElementById("fromDate").value = fromDate;
+    document.getElementById("toDate").value = toDate;
+  }
 
-    })
-    .catch(function(err){
-      console.error("Collection API error:", err);
-    });
+  // 🔄 API call with correct range
+  apiGet("getOrderNumbers", {
+    fromDate: fromDate,
+    toDate: toDate
+  })
+  .then(function(data){
 
+    console.log("COLLECTION RANGE:", fromDate, toDate);
+    console.log("COLLECTION DATA:", data);
+
+    window.currentOrdersData = data || [];
+
+    renderCollection();
+
+  })
+  .catch(function(err){
+    console.error("Collection API error:", err);
   });
 
 });
