@@ -1169,6 +1169,12 @@ placeholder.textContent = "Server error loading orders.";
   // 🟢 Show collection
   document.getElementById("collectionView").style.display = "block";
 
+    // 🔄 Show loading
+document.getElementById("collectionBody").innerHTML =
+  "<tr><td colspan='4' style='text-align:center;'>Loading...</td></tr>";
+
+document.getElementById("collectionSummary").innerHTML = "";
+    
   // 🔥 Read date inputs (IMPORTANT)
   let fromDate = document.getElementById("fromDate").value;
   let toDate = document.getElementById("toDate").value;
