@@ -465,34 +465,23 @@ function renderPOSItems(items){
 
   const box = document.getElementById("posItems");
 
-  let html = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;">`;
+  let html = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:15px;">`;
 
   items.forEach(item => {
 
     const type = (item.Cat2 || "").toLowerCase().trim();
 
     html += `
-      <div style="border:1px solid #ccc;padding:10px;border-radius:10px;">
+      <div style="border:1px solid #ddd;padding:12px;border-radius:10px;">
 
         <img src="${item['Image Url'] || ''}" 
              style="width:100%;height:120px;object-fit:cover;border-radius:8px;" />
 
-        <h4 style="margin:6px 0;">${item.Name}</h4>
+        <h4 style="margin:8px 0;">${item.Name}</h4>
 
-        <div id="controls-${item.Name}">
-          ${
-            type === "multi"
-            ? `<button onclick="toggleVariants('${item.Name}')">Select</button>`
-            : `<div>
-                <button onclick="changeQty('${item.Name}','${item.Unit}',${item.Price},-1)">-</button>
-                <span id="qty-${item.Name}-${item.Unit}">0</span>
-                <button onclick="changeQty('${item.Name}','${item.Unit}',${item.Price},1)">+</button>
-              </div>`
-          }
+        <div id="variants-${item.Name}">
+          Loading...
         </div>
-
-        <!-- 🔽 VARIANTS CONTAINER -->
-        <div id="variants-${item.Name}" style="margin-top:8px;"></div>
 
       </div>
     `;
@@ -502,32 +491,81 @@ function renderPOSItems(items){
   html += `</div>`;
 
   box.innerHTML = html;
+
+  // 🔥 AFTER RENDER → LOAD VARIANTS / SINGLE
+  items.forEach(item => {
+    renderItemVariants(item);
+  });
 }
+function renderItemVariants(item){
 
-function handlePOSItemClick(name){
+  const box = document.getElementById("variants-" + item.Name);
 
-  const item = menuItems.find(i => i.Name === name);
-
-  if(!item) return;
+  if (!box) return;
 
   const type = (item.Cat2 || "").toLowerCase().trim();
 
-  // 🔴 MULTI ITEM
-  if(type === "multi"){
+  // 🔹 SINGLE ITEM
+  if(type !== "multi"){
 
-    loadVariants(name);
+    box.innerHTML = `
+      <div style="display:flex;justify-content:space-between;">
+        <span>${item.Unit}</span>
+        <span>₹${item.Price}</span>
+      </div>
 
-  } else {
+      <div style="margin-top:6px;">
+        <button onclick="changeQty('${item.Name}','${item.Unit}',${item.Price},-1)">-</button>
+        <span id="qty-${item.Name}-${item.Unit}">0</span>
+        <button onclick="changeQty('${item.Name}','${item.Unit}',${item.Price},1)">+</button>
+      </div>
+    `;
 
-    addToCart({
-      name: item.Name,
-      unit: item.Unit,
-      price: Number(item.Price),
-      qty: 1
+  }
+
+  // 🔹 MULTI ITEM
+  else{
+
+    apiGet("getVariants", { name: item.Name })
+    .then(function(data){
+
+      if(!data || data.length === 0){
+        box.innerHTML = "No variants";
+        return;
+      }
+
+      let html = "";
+
+      data.forEach(v => {
+
+        html += `
+          <div style="margin-bottom:10px;">
+
+            <div style="display:flex;justify-content:space-between;">
+              <span>${v.Unit}</span>
+              <span>₹${v.Price}</span>
+            </div>
+
+            <div style="margin-top:4px;">
+              <button onclick="changeQty('${item.Name}','${v.Unit}',${v.Price},-1)">-</button>
+              <span id="qty-${item.Name}-${v.Unit}">0</span>
+              <button onclick="changeQty('${item.Name}','${v.Unit}',${v.Price},1)">+</button>
+            </div>
+
+          </div>
+        `;
+
+      });
+
+      box.innerHTML = html;
+
     });
 
   }
+
 }
+  
+
 
   function addToCart(item){
 
@@ -576,85 +614,6 @@ function handlePOSItemClick(name){
   totalBox.innerHTML = `<b>Total: ₹${total}</b>`;
 }
 
-  function loadVariants(name){
-
-  apiGet("getVariants", { name: name })
-  .then(function(data){
-
-    if(!data || data.length === 0){
-      alert("No variants found");
-      return;
-    }
-
-    let options = data.map(v =>
-      `${v.Unit} - ₹${v.Price}`
-    ).join("\n");
-
-    const selected = prompt("Select variant:\n" + options);
-
-    const variant = data.find(v =>
-      `${v.Unit} - ₹${v.Price}` === selected
-    );
-
-    if(variant){
-      addToCart({
-        name: name,
-        unit: variant.Unit,
-        price: Number(variant.Price),
-        qty: 1
-      });
-    }
-
-  });
-}
-
-function toggleVariants(name){
-
-  const box = document.getElementById("variants-" + name);
-
-  if (!box) return;
-
-  // toggle close
-  if (box.innerHTML !== "") {
-    box.innerHTML = "";
-    return;
-  }
-
-  box.innerHTML = "Loading...";
-
-  apiGet("getVariants", { name: name })
-  .then(function(data){
-
-    if(!data || data.length === 0){
-      box.innerHTML = "No variants";
-      return;
-    }
-
-    let html = "";
-
-    data.forEach(v => {
-
-      html += `
-        <div style="margin-top:6px;display:flex;justify-content:space-between;align-items:center;">
-          
-          <span>${v.Unit} - ₹${v.Price}</span>
-
-          <div>
-            <button onclick="changeQty('${name}','${v.Unit}',${v.Price},-1)">-</button>
-            <span id="qty-${name}-${v.Unit}">0</span>
-            <button onclick="changeQty('${name}','${v.Unit}',${v.Price},1)">+</button>
-          </div>
-
-        </div>
-      `;
-
-    });
-
-    box.innerHTML = html;
-
-  });
-
-}
 
   function changeQty(name, unit, price, delta){
 
