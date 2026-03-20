@@ -1638,6 +1638,8 @@ html += `
 
   bindCollectionButtons();
 }
+
+  
 function bindCollectionButtons(){
 
   // 💰 CASH BUTTON
@@ -1647,6 +1649,21 @@ function bindCollectionButtons(){
       const orderNumber = this.getAttribute('data-order');
       const orderDate = this.getAttribute('data-date');
 
+// 🔥 GET ORDER FROM LOCAL DATA
+  const order = window.currentOrdersData.find(o =>
+    o.OrderNumber === orderNumber && o.Date === orderDate
+  );
+
+  const netPayableVal = Number(order?.netpayable) || 0;
+
+  // ❌ BLOCK PAYMENT IF NOT REQUIRED
+  if(netPayableVal <= 0){
+    alert("This order is already settled. No payment required.");
+    return;
+  }
+
+      
+      
       this.disabled = true;
       this.textContent = "Saving...";
 
@@ -1683,6 +1700,22 @@ function bindCollectionButtons(){
       const orderNumber = this.getAttribute('data-order');
       const orderDate = this.getAttribute('data-date');
 
+
+// 🔥 GET ORDER FROM LOCAL DATA
+    const order = window.currentOrdersData.find(o =>
+      o.OrderNumber === orderNumber && o.Date === orderDate
+    );
+
+    const netPayableVal = Number(order?.netpayable) || 0;
+
+    // ❌ BLOCK PAYMENT IF NOT REQUIRED
+    if(netPayableVal <= 0){
+      alert("This order is already settled. No payment required.");
+      return;
+    }
+
+      
+      
       this.disabled = true;
       this.textContent = "Saving...";
 
