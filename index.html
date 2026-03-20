@@ -820,6 +820,7 @@ console.time("DOM render");
     <th>Mobile</th>
     <th>Type</th>
     <th>Address</th>
+    <th>Net Payable</th>
     <th>Status</th>
           <th>Action</th>
           <th>Collection</th>
@@ -866,8 +867,16 @@ Partial
   <td>${order.Mobile || ''}</td>      
       <td>${order["Order Type"] || ""}</td>
 
-        <td>${address}</td>
-      <td class="statusCell">${displayStatus}</td>      
+       <td>${address}</td>
+
+<td style="text-align:right; color:${
+  Number(order.netpayable) > 0 ? 'red' : 'green'
+}">
+  ${formatCurrency(order.netpayable)}
+</td>
+
+<td class="statusCell">${displayStatus}</td>
+
       <td class="actionCell">
 <div class="actionWrap">
         ${
