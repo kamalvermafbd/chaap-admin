@@ -760,7 +760,7 @@ Partial
         <td>${address}</td>
       <td class="statusCell">${displayStatus}</td>
       <td class="actionCell">
-
+<div class="actionWrap">
         ${
   order.OrderStatus === "Pending"
   ? `<button class="acceptBtn"
@@ -804,7 +804,7 @@ ${
           onclick="generateBill('${order.OrderNumber}', '${order.Date}', this)">
           Generate Bill
         </button>
-
+</div>
       </td>
     </tr>
   `;
