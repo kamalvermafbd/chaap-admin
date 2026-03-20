@@ -1165,7 +1165,12 @@ document.getElementById("collectionBtn").addEventListener("click", function(){
   const data = window.currentOrdersData || [];
 
   if(data.length === 0){
+const today = new Date().toISOString().slice(0,10);
 
+    // 👉 auto fill date inputs
+    document.getElementById("fromDate").value = today;
+    document.getElementById("toDate").value = today;
+    
     // 🔄 First time → load data
     loadOrders();
 
