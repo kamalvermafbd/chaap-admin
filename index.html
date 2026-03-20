@@ -284,8 +284,10 @@ td:nth-child(8) { width: 220px; } /* Action */
         <tr>
           <th>Order</th>
           <th>Date</th>
+          <th>Net Payable</th>
           <th>Cash</th>
           <th>Online</th>
+          <th>Balance</th>
           <th>Collection</th>
         </tr>
       </thead>
@@ -1544,10 +1546,12 @@ function renderCollection(){
 
     let cash = "";
     let online = "";
-
+let netPayable = "";
+let balance = "";
     const cashVal = Number(order.Cash) || 0;
     const onlineVal = Number(order.Online) || 0;
-
+const netPayableVal = Number(order.netpayable) || 0;
+const balanceVal = Number(order.Balance) || 0;
     // 🔴 CASH
     if(cashVal > 0){
       cash = "₹" + formatCurrency(cashVal);
@@ -1557,9 +1561,15 @@ function renderCollection(){
     let actionHTML = "";
 
 if(cashVal > 0){
+  if(netPayableVal > 0){
+  netPayable = "₹" + formatCurrency(netPayableVal);
+}
   actionHTML = `<button disabled>Cash ✔</button>`;
 }
 else if(onlineVal > 0){
+  if(balanceVal > 0){
+  balance = "₹" + formatCurrency(balanceVal);
+}
   actionHTML = `<button disabled>Online ✔</button>`;
 }
 else{
@@ -1588,9 +1598,13 @@ else{
   <tr>
     <td>${order.OrderNumber}</td>
     <td>${formatDateDDMMYY(order.Date)}</td>
-    <td>${cash}</td>
-    <td>${online}</td>
-    <td>${actionHTML}</td>
+   <td style="color:red;">${netPayable}</td>
+<td>${cash}</td>
+<td>${online}</td>
+<td style="color:${balanceVal > 0 ? 'red' : 'green'};">
+  ${balance}
+</td>
+<td>${actionHTML}</td>
   </tr>
 `;
     
@@ -1601,12 +1615,15 @@ html += `
  <tr style="font-weight:bold; background:#e9ecef; border-top:2px solid #000;">
     <td style="color:red;">Total</td>
     <td></td>
+    <td></td>
+    
     <td style="text-align:right; color:red;">
       ${formatCurrency(totalCash)}
     </td>
     <td style="text-align:right; color:red;">
       ${formatCurrency(totalOnline)}
     </td>
+    <td></td>
   </tr>
 `;
   // 👉 Table fill
