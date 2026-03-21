@@ -497,6 +497,19 @@ td:nth-child(8) { width: 220px; } /* Action */
   background: orange;
   color: #fff;
 }
+.pos-order-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.pos-select {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+    
   </style>
 </head>
 <body>
@@ -900,6 +913,24 @@ function selectCategory(cat){
 
   box.innerHTML = html;
 }
+
+function handleOrderTypeChange(){
+
+  const type = document.getElementById("posOrderType").value;
+
+  console.log("Order Type Changed:", type);
+
+  // 🔥 future logic ready
+  if(type === "Home Delivery"){
+    // address show karenge
+  }
+
+  if(type === "Dine In"){
+    // service charge apply logic
+  }
+
+}
+
   
 function renderItemVariants(item){
 
@@ -1141,7 +1172,27 @@ if (pagePOS && !pagePOS.hasChildNodes()) {
       <div class="pos-layout">
 <div class="pos-left">
   <!-- 🔍 Search -->
-  <input type="text" id="posSearch" placeholder="Search item..." />
+
+  <!-- 🔥 ORDER INFO -->
+<div class="pos-order-bar">
+
+  <input type="text" id="posMobile" placeholder="Mobile No" />
+
+ <select id="posOrderType"
+        onchange="handleOrderTypeChange()"
+        class="pos-select">
+        
+    <option value="Dine In">Dine In</option>
+    <option value="Take Away">Take Away</option>
+    <option value="Home Delivery">Home Delivery</option>
+  </select>
+
+</div>
+
+<!-- 🔍 SEARCH -->
+<input type="text" id="posSearch" placeholder="Search item..." />
+ 
+ 
   <!-- 🔥 CATEGORY TABS -->
   <div id="posCategories"></div>
   
