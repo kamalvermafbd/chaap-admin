@@ -383,12 +383,42 @@ td:nth-child(8) { width: 220px; } /* Action */
   border-top: 4px solid #000;
 }
 }
+
+.customer-card {
+  margin-top: 10px;
+  padding: 12px 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #fafafa;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.cust-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.cust-label {
+  width: 70px;
+  font-weight: 600;
+  color: #555;
+}
+
+.cust-value {
+  flex: 1;
+  color: #111;
+}
+
+.cust-row:last-child {
+  margin-bottom: 0;
+}
     
 /* ========================
    MOBILE
 ======================== */
 
-@media (max-width: 480px) {
+@media (max-width: 768px) {
 
   .mini-header {
     display: none;
@@ -429,7 +459,7 @@ td:nth-child(8) { width: 220px; } /* Action */
 .total-amt {
   font-variant-numeric: tabular-nums;
 }
-@media (max-width: 480px) {
+@media (max-width: 768px) {
 
   .values-head {
     display: grid;
@@ -447,17 +477,7 @@ td:nth-child(8) { width: 220px; } /* Action */
   }
 
 }
-  /* total mobile */
-  .total-row {
-    grid-template-columns: 1fr auto;
-  }
-
-  .total-row .total-label {
-    text-align: left;
-  }
-}
-
-
+  
     /* 🔥 SIDEBAR COLLAPSE */
 .nav-side.collapsed {
   display: none;
@@ -511,6 +531,32 @@ td:nth-child(8) { width: 220px; } /* Action */
   border: 1px solid #ccc;
   border-radius: 6px;
 }
+
+@media (max-width: 768px) {
+
+  .customer-card {
+    padding: 6px 0;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .cust-row {
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  .cust-label {
+    display: none; /* 👈 label hata diya */
+  }
+
+  .cust-value {
+    font-size: 13px;
+    color: #333;
+  }
+
+}
+
     
   </style>
 </head>
@@ -934,6 +980,7 @@ function handleOrderTypeChange(){
   
 }
   function fetchLatestOrder(mobile) {
+    const addressRow = document.getElementById("addressRow");
   console.log("📞 Calling API with:", mobile);
 
   apiGet("getLatestOrderByMobile", { mobile: mobile })
@@ -975,11 +1022,11 @@ function handleOrderTypeChange(){
         ].filter(Boolean).join(", ");
 
         addressLine.textContent = fullAddress;
-        addressLine.style.display = "block";
+        addressRow.style.display = "block";
 
       } else {
         addressLine.textContent = "";
-        addressLine.style.display = "none";
+        addressRow.style.display = "none";
       }
 
     })
@@ -1293,12 +1340,22 @@ if (pagePOS && !pagePOS.hasChildNodes()) {
 
 </div>
 <!-- ✅ 👇 YAHAN ADD KARNA HAI -->
-<div id="addressBox" style="display:none; margin-top:10px;">
+<div id="addressBox" class="customer-card" style="display:none;">
 
-  <div id="customerName"></div>
-  <div id="customerEmail"></div>
+  <div class="cust-row">
+    <span class="cust-label">Name</span>
+    <span id="customerName" class="cust-value"></span>
+  </div>
 
-  <div id="customerAddress"></div>
+  <div class="cust-row">
+    <span class="cust-label">Email</span>
+    <span id="customerEmail" class="cust-value"></span>
+  </div>
+
+  <div class="cust-row" id="addressRow">
+    <span class="cust-label">Address</span>
+    <span id="customerAddress" class="cust-value"></span>
+  </div>
 
 </div>
 
