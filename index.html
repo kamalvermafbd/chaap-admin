@@ -335,6 +335,7 @@ td:nth-child(8) { width: 220px; } /* Action */
     display: grid;
     grid-template-columns: 2fr 1fr;
     gap: 20px;
+    width: 100%;
   }
 
   .pos-left {
@@ -358,6 +359,14 @@ td:nth-child(8) { width: 220px; } /* Action */
   height: 80vh;
 }
 
+    /* 🔥 POS FULL WIDTH */
+.pos-full {
+  max-width: 100% !important;
+  width: 100%;
+  margin: 0 !important;      /* 🔥 ADD THIS */
+  padding: 10px !important;  /* optional tight UI */
+}
+      
 /* cart items scroll */
 #cartItems {
   flex: 1;
@@ -465,6 +474,7 @@ td:nth-child(8) { width: 220px; } /* Action */
 
 .nav-content {
   transition: all 0.3s ease;
+   padding: 10px !important;
 }
   </style>
 </head>
@@ -1051,7 +1061,8 @@ if (pagePOS && !pagePOS.hasChildNodes()) {
   const posDiv = document.createElement("div");
 
   posDiv.innerHTML = `
-    <div class="container">
+   <div class="container pos-full">
+    
       <h2>POS System</h2>
       <div class="pos-layout">
 <div class="pos-left">
