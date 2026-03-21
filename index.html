@@ -367,29 +367,9 @@ td:nth-child(8) { width: 220px; } /* Action */
 .total-amt {
   font-variant-numeric: tabular-nums;
 }
-
-    .values {
-  display: grid;
-  grid-template-columns: 60px 80px 80px;
-  column-gap: 6px; /* 👈 add this */
-}
-
-.values-header {
-  display: grid;
-  grid-template-columns: 60px 80px 80px;
-  column-gap: 6px; /* 👈 add this */
-}
-
-    /* hidden in desktop */
 .values-head {
-  grid-template-columns: 50px 1fr 80px;
-}
-
-@media (max-width: 480px) {
-
-  .values-head {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 50px 1fr 80px;
     font-size: 11px;
     color: #888;
     margin-top: 4px;
@@ -397,13 +377,18 @@ td:nth-child(8) { width: 220px; } /* Action */
     border-bottom: 1px solid #eee;
     padding-bottom: 2px;
   }
-
-  .values-head div {
-    text-align: left;
+    
+ .values-head div:last-child {
+    text-align: right;
   }
 
-  .values-head div:last-child {
-    text-align: right;
+  /* total mobile */
+  .total-row {
+    grid-template-columns: 1fr auto;
+  }
+
+  .total-row .total-label {
+    text-align: left;
   }
 }
   </style>
