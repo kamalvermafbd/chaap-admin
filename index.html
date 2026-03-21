@@ -922,24 +922,65 @@ function handleOrderTypeChange(){
   const mobile = document.getElementById("posMobile").value;
 
   console.log("Order Type Changed:", type);
+ // 👉 Safety check
+  if (!/^\d{10}$/.test(mobile) || !orderType) {
+    clearCustomerFields();
+    return;
+  }
 
-  // ❌ no selection
-  if(!type) return;
+  // 🔥 Step 1: Toggle address visibility
+  toggleAddressField();
 
-  // 🔹 1. UI control (address show/hide later)
-  if(type === "Home Delivery"){
-    console.log("Show address");
+  // 🔥 Step 2: Fetch latest order
+  fetchLatestOrder(mobile);
+  
+}
+function toggleAddressField() {
+  const orderType = document.getElementById("orderType").value;
+  const addressBox = document.getElementById("addressBox");
+
+  if (orderType === "Home Delivery") {
+    addressBox.style.display = "block";
   } else {
-    console.log("Hide address");
+    addressBox.style.display = "none";
   }
-
-  // 🔹 2. Re-fetch customer data (IMPORTANT)
-  if(mobile){
-    fetchCustomerDetails(mobile, type);
-  }
-
 }
 
+  function fetchLatestOrder(mobile) {
+
+  apiGet("getLatestOrderByMobile", { mobile: mobile })
+    .then(function (res) {
+
+      if (!res || !res.success || !res.data) {
+        clearCustomerFields();
+        return;
+      }
+
+      const data = res.data;
+
+      // 👉 Fill Name & Email
+      document.getElementById("customerName").textContent = data.name || "";
+      document.getElementById("customerEmail").textContent = data.email || "";
+
+      // 👉 Address (only if delivery)
+      if (document.getElementById("orderType").value === "Home Delivery") {
+
+        const fullAddress = [
+          data.address,
+          data.city,
+          data.state,
+          data.pincode
+        ].filter(Boolean).join(", ");
+
+        document.getElementById("customerAddress").textContent = fullAddress;
+      }
+
+    })
+    .catch(function (err) {
+      console.error("Fetch error:", err);
+      clearCustomerFields();
+    });
+}
   
 function renderItemVariants(item){
 
@@ -1034,7 +1075,41 @@ syncQtyUI();
   renderCart();
 }
 
+function handleMobileInput() {
+  const mobile = document.getElementById("mobileInput").value.trim();
+  const orderType = document.getElementById("orderType");
 
+  // 👉 If mobile is exactly 10 digits
+  if (/^\d{10}$/.test(mobile)) {
+    orderType.disabled = false;
+  } else {
+    orderType.disabled = true;
+
+    // 🔴 RESET EVERYTHING
+    orderType.value = "";
+
+    clearCustomerFields();
+  }
+}
+
+  function clearCustomerFields() {
+  // Name
+  const nameEl = document.getElementById("customerName");
+  if (nameEl) nameEl.textContent = "";
+
+  // Email
+  const emailEl = document.getElementById("customerEmail");
+  if (emailEl) emailEl.textContent = "";
+
+  // Address
+  const addressBox = document.getElementById("addressBox");
+  const addressEl = document.getElementById("customerAddress");
+
+  if (addressEl) addressEl.textContent = "";
+  if (addressBox) addressBox.style.display = "none";
+}
+
+  
   function renderCart(){
 
   const box = document.getElementById("cartItems");
@@ -1186,11 +1261,11 @@ if (pagePOS && !pagePOS.hasChildNodes()) {
 <div class="pos-order-bar">
 
   <!-- 📱 Mobile -->
-  <input type="text" id="posMobile" placeholder="Mobile No" />
+<input type="text" id="posMobile" placeholder="Mobile No" maxlength="10" oninput="handleMobileInput()" />
 
   <!-- 🧾 Order Type -->
-  <select id="posOrderType"
-          onchange="handleOrderTypeChange()"
+  <select id="OrderType"
+         disabled onchange="handleOrderTypeChange()"
           class="pos-select">
           <option value="">Select Order Type</option>
     <option value="Dine In">Dine In</option>
