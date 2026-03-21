@@ -232,13 +232,19 @@ td:nth-child(8) { width: 220px; } /* Action */
   margin-bottom: 6px;
 }
 
-/* small header inside card */
 .mini-header {
   display: grid;
   grid-template-columns: 120px 60px 80px 80px;
   font-size: 11px;
   color: #777;
   margin-bottom: 3px;
+}
+
+/* 👇 IMPORTANT ALIGNMENT FIX */
+.mini-header div:nth-child(2),
+.mini-header div:nth-child(3),
+.mini-header div:nth-child(4) {
+  text-align: right;
 }
 
 /* main row */
