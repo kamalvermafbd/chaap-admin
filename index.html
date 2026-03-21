@@ -981,6 +981,12 @@ function handleOrderTypeChange(){
 }
   function fetchLatestOrder(mobile) {
     const addressRow = document.getElementById("addressRow");
+    const loadingEl = document.getElementById("customerLoading");
+
+if (loadingEl) {
+  loadingEl.style.display = "block";
+  loadingEl.textContent = "Fetching customer details...";
+}
   console.log("📞 Calling API with:", mobile);
 
   apiGet("getLatestOrderByMobile", { mobile: mobile })
@@ -989,6 +995,10 @@ function handleOrderTypeChange(){
       console.log("📦 API RESPONSE:", res);
 
       if (!res || !res.success || !res.data) {
+        if (loadingEl) {
+  loadingEl.textContent = "No customer found";
+loadingEl.style.display = "block";
+}
         console.log("❌ No data मिला");
 
         clearCustomerFields();
@@ -1000,7 +1010,7 @@ addressRow.style.display = "none"; // ✅ ADD THIS
       }
 
       const data = res.data;
-
+if (loadingEl) loadingEl.style.display = "none";
       // 👉 Fill Name & Email
       document.getElementById("customerName").textContent = data.name || "";
       document.getElementById("customerEmail").textContent = data.email || "";
@@ -1031,6 +1041,12 @@ addressRow.style.display = "none"; // ✅ ADD THIS
 
     })
     .catch(function (err) {
+      if (loadingEl) {
+  loadingEl.style.display = "block";
+  loadingEl.textContent = "Error fetching customer";
+}
+      addressRow.style.display = "none"; // ✅ ADD
+
       console.error("Fetch error:", err);
       clearCustomerFields();
     });
@@ -1341,7 +1357,7 @@ if (pagePOS && !pagePOS.hasChildNodes()) {
 </div>
 <!-- ✅ 👇 YAHAN ADD KARNA HAI -->
 <div id="addressBox" class="customer-card" style="display:none;">
-
+<div id="customerLoading" style="display:none; font-size:13px; color:#666;"></div>
   <div class="cust-row">
     <span class="cust-label">Name</span>
     <span id="customerName" class="cust-value"></span>
