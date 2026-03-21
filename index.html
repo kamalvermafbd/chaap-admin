@@ -753,8 +753,17 @@ syncQtyUI();
           </div>
 
           <div class="item-total">
-            ₹${formatCurrency(amt)}
-          </div>
+
+  <div style="font-size:13px;color:#666;">
+    ₹${formatCurrency(item.price)} × ${item.qty}
+  </div>
+
+  <div style="font-weight:bold;">
+    ₹${formatCurrency(amt)}
+  </div>
+
+</div>
+
 
         </div>
 
