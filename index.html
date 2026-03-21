@@ -219,7 +219,7 @@ td:nth-child(8) { width: 220px; } /* Action */
   text-align: right;
 }
 
-    .cart-card {
+  .cart-card {
   background: #fff;
   border-radius: 10px;
   padding: 12px;
@@ -227,48 +227,47 @@ td:nth-child(8) { width: 220px; } /* Action */
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
-.cart-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-}
-
 .item-name {
   font-weight: 600;
-  font-size: 15px;
+  margin-bottom: 6px;
 }
 
-.item-unit {
-  font-size: 13px;
+/* small header inside card */
+.mini-header {
+  display: grid;
+  grid-template-columns: 120px 60px 80px 80px;
+  font-size: 11px;
   color: #777;
+  margin-bottom: 3px;
 }
 
-.item-price {
-  font-weight: 600;
-}
-
-.cart-bottom {
-  display: flex;
-  justify-content: space-between;
+/* main row */
+.cart-row {
+  display: grid;
+  grid-template-columns: 120px 60px 80px 80px;
   align-items: center;
-  margin-top: 10px;
 }
 
+/* qty buttons */
 .qty-box {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
 }
 
 .qty-box button {
-  padding: 4px 10px;
+  padding: 3px 8px;
   border: none;
   background: #ddd;
-  border-radius: 5px;
-  font-size: 16px;
+  border-radius: 4px;
 }
 
-.item-total {
+/* columns */
+.col {
+  text-align: right;
+}
+
+.amt {
   font-weight: bold;
 }
     
@@ -728,48 +727,45 @@ syncQtyUI();
     const amt = item.price * item.qty;
     total += amt;
 
-    html += `
-      <div class="cart-card">
+  html += `
+  <div class="cart-card">
 
-        <!-- TOP -->
-        <div class="cart-top">
-          <div>
-            <div class="item-name">${item.name}</div>
-            <div class="item-unit">${item.unit}</div>
-          </div>
+    <!-- ITEM -->
+    <div class="item-name">
+      ${item.name} - ${item.unit}
+    </div>
 
-          <div class="item-price">
-            ₹${formatCurrency(item.price)}
-          </div>
-        </div>
+    <!-- HEADER (small labels) -->
+    <div class="mini-header">
+      <div></div>
+      <div>Qty</div>
+      <div>Rate</div>
+      <div>Amt</div>
+    </div>
 
-        <!-- BOTTOM -->
-        <div class="cart-bottom">
+    <!-- DATA ROW -->
+    <div class="cart-row">
 
-          <div class="qty-box">
-            <button onclick="changeQty('${item.name}','${item.unit}',${item.price},-1)">−</button>
-            <span>${item.qty}</span>
-            <button onclick="changeQty('${item.name}','${item.unit}',${item.price},1)">+</button>
-          </div>
-
-          <div class="item-total">
-
-  <div style="font-size:13px;color:#666;">
-    ₹${formatCurrency(item.price)} × ${item.qty}
-  </div>
-
-  <div style="font-weight:bold;">
-    ₹${formatCurrency(amt)}
-  </div>
-
-</div>
-
-
-        </div>
-
+      <!-- QTY CONTROL -->
+      <div class="qty-box">
+        <button onclick="changeQty('${item.name}','${item.unit}',${item.price},-1)">−</button>
+        <span>${item.qty}</span>
+        <button onclick="changeQty('${item.name}','${item.unit}',${item.price},1)">+</button>
       </div>
-    `;
-  });
+
+      <!-- QTY -->
+      <div class="col">${item.qty}</div>
+
+      <!-- RATE -->
+      <div class="col">₹${formatCurrency(item.price)}</div>
+
+      <!-- AMT -->
+      <div class="col amt">₹${formatCurrency(amt)}</div>
+
+    </div>
+
+  </div>
+`;
 
   html += `</div>`;
 
