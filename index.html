@@ -1074,19 +1074,23 @@ syncQtyUI();
 
   renderCart();
 }
-
 function handleMobileInput() {
-  const mobile = document.getElementById("mobileInput").value.trim();
-  const orderType = document.getElementById("orderType");
+  const mobileEl = document.getElementById("posMobile");
+  const orderTypeEl = document.getElementById("orderType");
 
-  // 👉 If mobile is exactly 10 digits
+  // 🔴 Safety check
+  if (!mobileEl || !orderTypeEl) {
+    console.warn("Mobile or OrderType element not found");
+    return;
+  }
+
+  const mobile = mobileEl.value.trim();
+
   if (/^\d{10}$/.test(mobile)) {
-    orderType.disabled = false;
+    orderTypeEl.disabled = false;
   } else {
-    orderType.disabled = true;
-
-    // 🔴 RESET EVERYTHING
-    orderType.value = "";
+    orderTypeEl.disabled = true;
+    orderTypeEl.value = "";
 
     clearCustomerFields();
   }
