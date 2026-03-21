@@ -363,7 +363,49 @@ td:nth-child(8) { width: 220px; } /* Action */
     text-align: left;
   }
 }
-    
+    .col,
+.total-amt {
+  font-variant-numeric: tabular-nums;
+}
+
+    .values {
+  display: grid;
+  grid-template-columns: 60px 80px 80px;
+  column-gap: 6px; /* 👈 add this */
+}
+
+.values-header {
+  display: grid;
+  grid-template-columns: 60px 80px 80px;
+  column-gap: 6px; /* 👈 add this */
+}
+
+    /* hidden in desktop */
+.values-head {
+  display: none;
+}
+
+@media (max-width: 480px) {
+
+  .values-head {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    font-size: 11px;
+    color: #888;
+    margin-top: 4px;
+    margin-bottom: 2px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 2px;
+  }
+
+  .values-head div {
+    text-align: left;
+  }
+
+  .values-head div:last-child {
+    text-align: right;
+  }
+}
   </style>
 </head>
 <body>
@@ -847,6 +889,14 @@ syncQtyUI();
             <span>${item.qty}</span>
             <button onclick="changeQty(\`${item.name}\`,\`${item.unit}\`,${item.price},1)">+</button>
           </div>
+
+            <!-- ✅ MOBILE HEADER (NEW ADD) -->
+          <div class="values-head">
+            <div>Qty</div>
+            <div>Rate</div>
+            <div>Amt</div>
+          </div>
+          
 <div class="values">
           <div class="col">${item.qty}</div>
           <div class="col">₹${formatCurrency(item.price)}</div>
