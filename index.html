@@ -919,16 +919,23 @@ function selectCategory(cat){
 function handleOrderTypeChange(){
 
   const type = document.getElementById("posOrderType").value;
+  const mobile = document.getElementById("posMobile").value;
 
   console.log("Order Type Changed:", type);
 
-  // 🔥 future logic ready
+  // ❌ no selection
+  if(!type) return;
+
+  // 🔹 1. UI control (address show/hide later)
   if(type === "Home Delivery"){
-    // address show karenge
+    console.log("Show address");
+  } else {
+    console.log("Hide address");
   }
 
-  if(type === "Dine In"){
-    // service charge apply logic
+  // 🔹 2. Re-fetch customer data (IMPORTANT)
+  if(mobile){
+    fetchCustomerDetails(mobile, type);
   }
 
 }
@@ -1185,6 +1192,7 @@ if (pagePOS && !pagePOS.hasChildNodes()) {
   <select id="posOrderType"
           onchange="handleOrderTypeChange()"
           class="pos-select">
+          <option value="">Select Order Type</option>
     <option value="Dine In">Dine In</option>
     <option value="Take Away">Take Away</option>
     <option value="Home Delivery">Home Delivery</option>
