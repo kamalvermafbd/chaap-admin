@@ -476,6 +476,27 @@ td:nth-child(8) { width: 220px; } /* Action */
   transition: all 0.3s ease;
    padding: 10px !important;
 }
+
+    #posCategories {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  margin: 10px 0;
+}
+
+.cat-tab {
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: #eee;
+  cursor: pointer;
+  white-space: nowrap;
+  font-size: 13px;
+}
+
+.cat-tab.active {
+  background: orange;
+  color: #fff;
+}
   </style>
 </head>
 <body>
@@ -757,7 +778,7 @@ let cart = [];
     }
 
     menuItems = data;
-
+renderCategories(menuItems);   // 🔥 ADD THIS LINE
     renderPOSItems(menuItems);
 
   })
@@ -826,6 +847,32 @@ function renderPOSItems(items){
   });
 }
 
+  function renderCategories(items){
+
+  const box = document.getElementById("posCategories");
+
+  if(!box) return;
+
+  // 🔹 unique categories
+  let cats = [...new Set(items.map(i => i.Category).filter(Boolean))];
+
+  // 🔹 add ALL at top
+  cats.unshift("All");
+
+  let html = "";
+
+  cats.forEach((cat, index) => {
+
+    html += `
+      <div class="cat-tab ${index === 0 ? 'active' : ''}" 
+           onclick="selectCategory('${cat}')">
+        ${cat}
+      </div>
+    `;
+  });
+
+  box.innerHTML = html;
+}
   
 function renderItemVariants(item){
 
@@ -1068,7 +1115,9 @@ if (pagePOS && !pagePOS.hasChildNodes()) {
 <div class="pos-left">
   <!-- 🔍 Search -->
   <input type="text" id="posSearch" placeholder="Search item..." />
-
+  <!-- 🔥 CATEGORY TABS -->
+  <div id="posCategories"></div>
+  
   <!-- 🧾 Items -->
   <div id="posItems" style="margin-top:10px;">
     Items will load here...
