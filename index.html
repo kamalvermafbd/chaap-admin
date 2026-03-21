@@ -933,23 +933,24 @@ function handleOrderTypeChange(){
   fetchLatestOrder(mobile);
   
 }
-  
-
   function fetchLatestOrder(mobile) {
- console.log("📞 Calling API with:", mobile);
+  console.log("📞 Calling API with:", mobile);
+
   apiGet("getLatestOrderByMobile", { mobile: mobile })
     .then(function (res) {
-console.log("📦 API RESPONSE:", res); // 🔥 ADD THIS
+
+      console.log("📦 API RESPONSE:", res);
+
       if (!res || !res.success || !res.data) {
-        console.log("❌ No data मिला"); // 🔥 ADD THIS
-  clearCustomerFields();
+        console.log("❌ No data मिला");
 
-  const addressBox = document.getElementById("addressBox");
-        
-  if (addressBox) addressBox.style.display = "none"; // ✅ FIX
+        clearCustomerFields();
 
-  return;
-}
+        const addressBox = document.getElementById("addressBox");
+        if (addressBox) addressBox.style.display = "block";
+
+        return;
+      }
 
       const data = res.data;
 
@@ -957,25 +958,29 @@ console.log("📦 API RESPONSE:", res); // 🔥 ADD THIS
       document.getElementById("customerName").textContent = data.name || "";
       document.getElementById("customerEmail").textContent = data.email || "";
 
-      // 👉 Address (only if delivery)
-    const addressBox = document.getElementById("addressBox");
+      // 👉 Address logic
+      const addressBox = document.getElementById("addressBox");
+      const addressLine = document.getElementById("customerAddress");
 
-if (document.getElementById("OrderType").value === "Home Delivery") {
+      // ✅ box always visible
+      if (addressBox) addressBox.style.display = "block";
 
-  const fullAddress = [
-    data.address,
-    data.city,
-    data.state,
-    data.pincode
-  ].filter(Boolean).join(", ");
+      if (document.getElementById("OrderType").value === "Home Delivery") {
 
-  document.getElementById("customerAddress").textContent = fullAddress;
+        const fullAddress = [
+          data.address,
+          data.city,
+          data.state,
+          data.pincode
+        ].filter(Boolean).join(", ");
 
-  if (addressBox) addressBox.style.display = "block";
+        addressLine.textContent = fullAddress;
+        addressLine.style.display = "block";
 
-} else {
-  if (addressBox) addressBox.style.display = "none"; // ✅ FIX
-}
+      } else {
+        addressLine.textContent = "";
+        addressLine.style.display = "none";
+      }
 
     })
     .catch(function (err) {
