@@ -277,6 +277,23 @@ td:nth-child(8) { width: 220px; } /* Action */
   font-weight: bold;
 }
     
+.total-row {
+  display: grid;
+  grid-template-columns: 120px 60px 80px 80px; /* SAME AS cart-row */
+  margin-top: 10px;
+  font-size: 16px;
+  align-items: center;
+}
+
+.total-label {
+  text-align: right;
+  font-weight: 600;
+}
+
+.total-amt {
+  text-align: right;
+  font-weight: bold;
+}    
   </style>
 </head>
 <body>
@@ -774,10 +791,13 @@ syncQtyUI();
   box.innerHTML = html;
 
   totalBox.innerHTML = `
-    <div style="text-align:right;margin-top:10px;font-size:16px;">
-      <b>Total: ₹${formatCurrency(total)}</b>
-    </div>
-  `;
+  <div class="total-row">
+    <div></div>
+    <div></div>
+    <div class="total-label">Total</div>
+    <div class="total-amt">₹${formatCurrency(total)}</div>
+  </div>
+`;
 }
   
   function changeQty(name, unit, price, delta){
