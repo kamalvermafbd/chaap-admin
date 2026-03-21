@@ -934,16 +934,6 @@ function handleOrderTypeChange(){
   
 }
   
-function toggleAddressField() {
-  const orderType = document.getElementById("OrderType").value;
-  const addressBox = document.getElementById("addressBox");
-
-  if (orderType === "Home Delivery") {
-    addressBox.style.display = "block";
-  } else {
-    addressBox.style.display = "none";
-  }
-}
 
   function fetchLatestOrder(mobile) {
 
@@ -951,9 +941,13 @@ function toggleAddressField() {
     .then(function (res) {
 
       if (!res || !res.success || !res.data) {
-        clearCustomerFields();
-        return;
-      }
+  clearCustomerFields();
+
+  const addressBox = document.getElementById("addressBox");
+  if (addressBox) addressBox.style.display = "none"; // ✅ FIX
+
+  return;
+}
 
       const data = res.data;
 
