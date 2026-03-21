@@ -276,13 +276,15 @@ td:nth-child(8) { width: 220px; } /* Action */
 .amt {
   font-weight: bold;
 }
-    
+   .cart-total-wrap {
+  padding: 12px; /* SAME as .cart-card */
+}
+
 .total-row {
   display: grid;
   grid-template-columns: 120px 60px 80px 80px; /* SAME AS cart-row */
-  margin-top: 10px;
-  font-size: 16px;
   align-items: center;
+  font-size: 16px;
 }
 
 .total-label {
@@ -293,7 +295,7 @@ td:nth-child(8) { width: 220px; } /* Action */
 .total-amt {
   text-align: right;
   font-weight: bold;
-}    
+}
   </style>
 </head>
 <body>
@@ -791,11 +793,13 @@ syncQtyUI();
   box.innerHTML = html;
 
   totalBox.innerHTML = `
+   <div class="cart-total-wrap">
   <div class="total-row">
     <div></div>
     <div></div>
     <div class="total-label">Total</div>
     <div class="total-amt">₹${formatCurrency(total)}</div>
+  </div>
   </div>
 `;
 }
