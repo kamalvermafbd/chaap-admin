@@ -1009,7 +1009,7 @@ loadingEl.style.display = "block";
 
         const addressBox = document.getElementById("addressBox");
         if (addressBox) addressBox.style.display = "block";
-addressRow.style.display = "none"; // ✅ ADD THIS
+      if (addressRow) addressRow.style.display = "none";
         return;
       }
 
@@ -1049,8 +1049,7 @@ if (loadingEl) loadingEl.style.display = "none";
   loadingEl.style.display = "block";
   loadingEl.textContent = "Error fetching customer";
 }
-      addressRow.style.display = "none"; // ✅ ADD
-
+      if (addressRow) addressRow.style.display = "none";
       console.error("Fetch error:", err);
       clearCustomerFields();
     });
