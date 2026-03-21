@@ -923,7 +923,7 @@ function handleOrderTypeChange(){
 
   console.log("Order Type Changed:", type);
  // 👉 Safety check
-  if (!/^\d{10}$/.test(mobile) || !orderType) {
+  if (!/^\d{10}$/.test(mobile) || !OrderType) {
     clearCustomerFields();
     return;
   }
@@ -935,8 +935,9 @@ function handleOrderTypeChange(){
   fetchLatestOrder(mobile);
   
 }
+  
 function toggleAddressField() {
-  const orderType = document.getElementById("orderType").value;
+  const orderType = document.getElementById("OrderType").value;
   const addressBox = document.getElementById("addressBox");
 
   if (orderType === "Home Delivery") {
@@ -963,7 +964,7 @@ function toggleAddressField() {
       document.getElementById("customerEmail").textContent = data.email || "";
 
       // 👉 Address (only if delivery)
-      if (document.getElementById("orderType").value === "Home Delivery") {
+      if (document.getElementById("OrderType").value === "Home Delivery") {
 
         const fullAddress = [
           data.address,
@@ -1074,9 +1075,10 @@ syncQtyUI();
 
   renderCart();
 }
+  
 function handleMobileInput() {
   const mobileEl = document.getElementById("posMobile");
-  const orderTypeEl = document.getElementById("orderType");
+  const orderTypeEl = document.getElementById("OrderType");
 
   // 🔴 Safety check
   if (!mobileEl || !orderTypeEl) {
