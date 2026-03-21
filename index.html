@@ -296,6 +296,83 @@ td:nth-child(8) { width: 220px; } /* Action */
   text-align: right;
   font-weight: bold;
 }
+
+/* ✅ Default (desktop same rahega) */
+.cart-row,
+.mini-header,
+.total-row {
+  display: grid;
+  grid-template-columns: 120px 60px 80px 80px;
+}
+
+/* ✅ MOBILE FIX */
+@media (max-width: 480px) {
+
+  .mini-header {
+    display: none; /* header hata do mobile me */
+  }
+
+  .cart-row {
+    grid-template-columns: 1fr; /* ek column */
+    gap: 6px;
+  }
+
+  /* qty box full width */
+  .qty-box {
+    justify-content: flex-start;
+  }
+
+  /* new row for values */
+  .cart-row .col {
+    display: inline-block;
+    width: 32%;
+    text-align: left;
+    font-size: 13px;
+  }
+
+  .cart-row .amt {
+    text-align: right;
+    width: 36%;
+    font-weight: bold;
+  }
+
+  /* wrap values in one line */
+  .cart-row {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .cart-row::after {
+    content: "";
+  }
+
+  /* second line layout */
+  .cart-row .col:nth-child(2),
+  .cart-row .col:nth-child(3),
+  .cart-row .col:nth-child(4) {
+    display: inline-block;
+  }
+
+  /* total fix */
+  .total-row {
+    grid-template-columns: 1fr auto;
+  }
+
+  .total-row div:nth-child(1),
+  .total-row div:nth-child(2) {
+    display: none;
+  }
+
+  .total-label {
+    text-align: left;
+  }
+
+  .total-amt {
+    text-align: right;
+  }
+}
+
+    
   </style>
 </head>
 <body>
