@@ -320,7 +320,9 @@ td:nth-child(8) { width: 220px; } /* Action */
   text-align: right;
   font-weight: bold;
 }
-
+.values-head {
+  display: none;   /* 🔥 ALWAYS hidden in desktop */
+}
 
 /* ========================
    MOBILE
@@ -367,7 +369,9 @@ td:nth-child(8) { width: 220px; } /* Action */
 .total-amt {
   font-variant-numeric: tabular-nums;
 }
-.values-head {
+@media (max-width: 480px) {
+
+  .values-head {
     display: grid;
     grid-template-columns: 50px 1fr 80px;
     font-size: 11px;
@@ -377,11 +381,12 @@ td:nth-child(8) { width: 220px; } /* Action */
     border-bottom: 1px solid #eee;
     padding-bottom: 2px;
   }
-    
- .values-head div:last-child {
+
+  .values-head div:last-child {
     text-align: right;
   }
 
+}
   /* total mobile */
   .total-row {
     grid-template-columns: 1fr auto;
