@@ -1202,6 +1202,27 @@ if (savedLogin !== "true") {
 if (savedLogin !== "true") {
   showPage('pageLogin');
 }
+
+      // 🔥 SIDEBAR TOGGLE FINAL
+const navSide = document.getElementById("navSide");
+const closeBtn = document.getElementById("closeSidebar");
+const openBtn = document.getElementById("openSidebar");
+
+if(closeBtn){
+  closeBtn.onclick = function(){
+    navSide.style.display = "none";
+    openBtn.style.display = "block";
+  };
+}
+
+if(openBtn){
+  openBtn.onclick = function(){
+    navSide.style.display = "";
+    openBtn.style.display = "none";
+  };
+}
+      
+      
     } catch (e) {
       console.error('Nav injection failed:', e);
     }
@@ -1396,32 +1417,7 @@ function formatCurrency(num){
     maximumFractionDigits: 2
   });
 }
-  // 🔥 SIDEBAR TOGGLE
-document.addEventListener("DOMContentLoaded", function(){
 
-  const navSide = document.getElementById("navSide");
-  const navWrap = document.getElementById("navWrap");
-
-  const closeBtn = document.getElementById("closeSidebar");
-  const openBtn = document.getElementById("openSidebar");
-
-  if(closeBtn){
-    closeBtn.addEventListener("click", function(){
-      navSide.classList.add("collapsed");
-      navWrap.classList.add("full");
-      openBtn.style.display = "block";
-    });
-  }
-
-  if(openBtn){
-    openBtn.addEventListener("click", function(){
-      navSide.classList.remove("collapsed");
-      navWrap.classList.remove("full");
-      openBtn.style.display = "none";
-    });
-  }
-
-});
 function formatDateDDMMYY(dateStr){
   if(!dateStr) return "";
 
