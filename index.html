@@ -980,13 +980,17 @@ function handleOrderTypeChange(){
   
 }
   function fetchLatestOrder(mobile) {
-    const addressRow = document.getElementById("addressRow");
-    const loadingEl = document.getElementById("customerLoading");
+  const addressBox = document.getElementById("addressBox"); // ✅ ADD THIS
+  const loadingEl = document.getElementById("customerLoading");
+  const addressRow = document.getElementById("addressRow");
 
-if (loadingEl) {
-  loadingEl.style.display = "block";
-  loadingEl.textContent = "Fetching customer details...";
-}
+  // 🔥 show box immediately
+  if (addressBox) addressBox.style.display = "block";
+
+  if (loadingEl) {
+    loadingEl.style.display = "block";
+    loadingEl.textContent = "Fetching customer details...";
+  }
   console.log("📞 Calling API with:", mobile);
 
   apiGet("getLatestOrderByMobile", { mobile: mobile })
@@ -1181,7 +1185,7 @@ function handleMobileInput() {
   const addressEl = document.getElementById("customerAddress");
 
   if (addressEl) addressEl.textContent = "";
-  if (addressBox) addressBox.style.display = "none";
+  if (addressBox) addressBox.style.display = "block"; // ✅ KEEP VISIBLE
 }
 
   
