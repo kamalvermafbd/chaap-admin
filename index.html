@@ -923,13 +923,11 @@ function handleOrderTypeChange(){
 
   console.log("Order Type Changed:", type);
  // 👉 Safety check
-  if (!/^\d{10}$/.test(mobile) || !OrderType) {
+  if (!/^\d{10}$/.test(mobile) || !type) {
     clearCustomerFields();
     return;
   }
 
-  // 🔥 Step 1: Toggle address visibility
-  toggleAddressField();
 
   // 🔥 Step 2: Fetch latest order
   fetchLatestOrder(mobile);
@@ -964,17 +962,24 @@ function toggleAddressField() {
       document.getElementById("customerEmail").textContent = data.email || "";
 
       // 👉 Address (only if delivery)
-      if (document.getElementById("OrderType").value === "Home Delivery") {
+    const addressBox = document.getElementById("addressBox");
 
-        const fullAddress = [
-          data.address,
-          data.city,
-          data.state,
-          data.pincode
-        ].filter(Boolean).join(", ");
+if (document.getElementById("OrderType").value === "Home Delivery") {
 
-        document.getElementById("customerAddress").textContent = fullAddress;
-      }
+  const fullAddress = [
+    data.address,
+    data.city,
+    data.state,
+    data.pincode
+  ].filter(Boolean).join(", ");
+
+  document.getElementById("customerAddress").textContent = fullAddress;
+
+  if (addressBox) addressBox.style.display = "block";
+
+} else {
+  if (addressBox) addressBox.style.display = "none"; // ✅ FIX
+}
 
     })
     .catch(function (err) {
