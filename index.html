@@ -247,11 +247,39 @@ td:nth-child(8) { width: 220px; } /* Action */
   text-align: right;
 }
 
+    /* ========================
+   DESKTOP
+======================== */
+
 /* main row */
 .cart-row {
   display: grid;
-  grid-template-columns: 120px 60px 80px 80px;
+  grid-template-columns: 120px 1fr;
   align-items: center;
+}
+
+/* values columns */
+.values {
+  display: grid;
+  grid-template-columns: 60px 80px 80px;
+}
+
+/* header same structure */
+.mini-header {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  font-size: 11px;
+  color: #777;
+  margin-bottom: 3px;
+}
+
+.values-header {
+  display: grid;
+  grid-template-columns: 60px 80px 80px;
+}
+
+.values-header div {
+  text-align: right;
 }
 
 /* qty buttons */
@@ -259,13 +287,6 @@ td:nth-child(8) { width: 220px; } /* Action */
   display: flex;
   align-items: center;
   gap: 6px;
-}
-
-.qty-box button {
-  padding: 3px 8px;
-  border: none;
-  background: #ddd;
-  border-radius: 4px;
 }
 
 /* columns */
@@ -276,102 +297,72 @@ td:nth-child(8) { width: 220px; } /* Action */
 .amt {
   font-weight: bold;
 }
-   .cart-total-wrap {
-  padding: 12px; /* SAME as .cart-card */
+
+/* total */
+.cart-total-wrap {
+  padding: 12px;
 }
 
 .total-row {
   display: grid;
-  grid-template-columns: 120px 60px 80px 80px; /* SAME AS cart-row */
+  grid-template-columns: 120px 1fr;
   align-items: center;
   font-size: 16px;
 }
 
-.total-label {
+.total-row .total-label {
   text-align: right;
+  padding-right: 10px;
   font-weight: 600;
 }
 
-.total-amt {
+.total-row .total-amt {
   text-align: right;
   font-weight: bold;
 }
 
-/* ✅ Default (desktop same rahega) */
-.cart-row,
-.mini-header,
-.total-row {
-  display: grid;
-  grid-template-columns: 120px 60px 80px 80px;
-}
 
-/* ✅ MOBILE FIX */
+/* ========================
+   MOBILE
+======================== */
+
 @media (max-width: 480px) {
 
   .mini-header {
-    display: none; /* header hata do mobile me */
+    display: none;
   }
 
   .cart-row {
-    grid-template-columns: 1fr; /* ek column */
-    gap: 6px;
+    grid-template-columns: 1fr;
+    gap: 8px;
   }
 
-  /* qty box full width */
   .qty-box {
-    justify-content: flex-start;
+    justify-content: center;
   }
 
-  /* new row for values */
-  .cart-row .col {
-    display: inline-block;
-    width: 32%;
+  .values {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .values .col {
     text-align: left;
     font-size: 13px;
   }
 
-  .cart-row .amt {
+  .values .amt {
     text-align: right;
-    width: 36%;
-    font-weight: bold;
   }
 
-  /* wrap values in one line */
-  .cart-row {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .cart-row::after {
-    content: "";
-  }
-
-  /* second line layout */
-  .cart-row .col:nth-child(2),
-  .cart-row .col:nth-child(3),
-  .cart-row .col:nth-child(4) {
-    display: inline-block;
-  }
-
-  /* total fix */
+  /* total mobile */
   .total-row {
     grid-template-columns: 1fr auto;
   }
 
-  .total-row div:nth-child(1),
-  .total-row div:nth-child(2) {
-    display: none;
-  }
-
-  .total-label {
+  .total-row .total-label {
     text-align: left;
   }
-
-  .total-amt {
-    text-align: right;
-  }
 }
-
     
   </style>
 </head>
@@ -841,9 +832,11 @@ syncQtyUI();
         <!-- HEADER -->
         <div class="mini-header">
           <div></div>
+          <div class="values-header">
           <div>Qty</div>
           <div>Rate</div>
           <div>Amt</div>
+          </div>
         </div>
 
         <!-- ROW -->
@@ -854,13 +847,13 @@ syncQtyUI();
             <span>${item.qty}</span>
             <button onclick="changeQty(\`${item.name}\`,\`${item.unit}\`,${item.price},1)">+</button>
           </div>
-
+<div class="values">
           <div class="col">${item.qty}</div>
           <div class="col">₹${formatCurrency(item.price)}</div>
           <div class="col amt">₹${formatCurrency(amt)}</div>
 
         </div>
-
+</div>
       </div>
     `;
   });
