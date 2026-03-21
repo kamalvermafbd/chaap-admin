@@ -343,7 +343,34 @@ td:nth-child(8) { width: 220px; } /* Action */
     max-width: 500px;
     margin-left: auto;   /* 🔥 correct place */
   }
+/* SCROLL + STICKY TOTAL (DESKTOP ONLY) */
+.pos-left {
+  max-height: 80vh;
+  overflow-y: auto;
+  padding-right: 10px;
+}
 
+#posCart {
+  display: flex;
+  flex-direction: column;
+  height: 80vh;
+}
+
+/* cart items scroll */
+#cartItems {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+/* total fixed */
+#cartTotal {
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  padding-top: 10px;
+  border-top: 2px solid #ddd;
+}
 }
     
 /* ========================
