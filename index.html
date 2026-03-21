@@ -919,7 +919,7 @@ function selectCategory(cat){
 function handleOrderTypeChange(){
 
   const type = document.getElementById("OrderType").value;
-  const mobile = document.getElementById("posMobile").value;
+ const mobile = document.getElementById("posMobile").value.trim();
 
   console.log("Order Type Changed:", type);
  // 👉 Safety check
@@ -936,14 +936,16 @@ function handleOrderTypeChange(){
   
 
   function fetchLatestOrder(mobile) {
-
+ console.log("📞 Calling API with:", mobile);
   apiGet("getLatestOrderByMobile", { mobile: mobile })
     .then(function (res) {
-
+console.log("📦 API RESPONSE:", res); // 🔥 ADD THIS
       if (!res || !res.success || !res.data) {
+        console.log("❌ No data मिला"); // 🔥 ADD THIS
   clearCustomerFields();
 
   const addressBox = document.getElementById("addressBox");
+        
   if (addressBox) addressBox.style.display = "none"; // ✅ FIX
 
   return;
