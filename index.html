@@ -324,23 +324,24 @@ td:nth-child(8) { width: 220px; } /* Action */
   display: none;   /* 🔥 ALWAYS hidden in desktop */
 }
 
-    /* DESKTOP ONLY */
-@media (min-width: 481px) {
+  
 
-  #cartItems {
-    max-width: 500px;   /* width control (adjust kar sakta hai) */
-    margin-left: auto;  /* 🔥 pushes cart to right */
+
+    @media (min-width: 768px) {
+
+  .pos-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
   }
 
-}
+  .pos-left {
+    width: 100%;
+  }
 
- @media (min-width: 481px) {
-
-  #cartItems,
-  #cartTotal,
-  h3 {   /* ya jo bhi Cart heading ka tag hai */
+  .pos-right {
     max-width: 500px;
-    margin-left: auto;
+    margin-left: auto;   /* 🔥 correct place */
   }
 
 }
@@ -997,7 +998,7 @@ if (pagePOS && !pagePOS.hasChildNodes()) {
     <div class="container">
       <h2>POS System</h2>
       <div class="pos-layout">
-
+<div class="pos-left">
   <!-- 🔍 Search -->
   <input type="text" id="posSearch" placeholder="Search item..." />
 
@@ -1005,7 +1006,8 @@ if (pagePOS && !pagePOS.hasChildNodes()) {
   <div id="posItems" style="margin-top:10px;">
     Items will load here...
   </div>
-
+</div>
+<div class="pos-right">
   <!-- 🛒 Cart -->
   <div id="posCart" style="margin-top:20px; border-top:1px solid #ccc; padding-top:10px;">
     <h3>Cart</h3>
@@ -1014,6 +1016,7 @@ if (pagePOS && !pagePOS.hasChildNodes()) {
   </div>
 
 </div>
+    </div>
     </div>
   `;
 
