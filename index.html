@@ -497,13 +497,15 @@ td:nth-child(8) { width: 220px; } /* Action */
   background: orange;
   color: #fff;
 }
+    
 .pos-order-bar {
   display: flex;
   gap: 10px;
   margin-bottom: 10px;
 }
 
-.pos-select {
+.pos-order-bar input,
+.pos-order-bar select {
   flex: 1;
   padding: 8px;
   border: 1px solid #ccc;
@@ -1176,15 +1178,22 @@ if (pagePOS && !pagePOS.hasChildNodes()) {
   <!-- 🔥 ORDER INFO -->
 <div class="pos-order-bar">
 
+  <!-- 📱 Mobile -->
   <input type="text" id="posMobile" placeholder="Mobile No" />
 
- <select id="posOrderType"
-        onchange="handleOrderTypeChange()"
-        class="pos-select">
-        
+  <!-- 🧾 Order Type -->
+  <select id="posOrderType"
+          onchange="handleOrderTypeChange()"
+          class="pos-select">
     <option value="Dine In">Dine In</option>
     <option value="Take Away">Take Away</option>
     <option value="Home Delivery">Home Delivery</option>
+  </select>
+
+  <!-- 💳 Payment Type -->
+  <select id="posPaymentType" class="pos-select">
+    <option value="Cash">Cash</option>
+    <option value="Online">Online</option>
   </select>
 
 </div>
