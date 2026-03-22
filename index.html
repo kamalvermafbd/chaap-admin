@@ -1719,6 +1719,12 @@ if (!window.ZXing) {
         if(result){
 
           const code = String(result.text).replace(/\D/g, "").trim();
+          console.log("🔍 SCANNED CODE:", code);   
+
+          // 👇 YAHI ADD KARNA HAI (IMPORTANT)
+  menuItems.forEach(i => {
+    console.log("📦 ITEM:", i.Name, i.Barcode);
+  });
           
         const item = menuItems.find(i => {
 
