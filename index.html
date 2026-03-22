@@ -1615,6 +1615,22 @@ document.addEventListener("input", function(e){
   }
 
 });
+
+      // ⌨️ ESC → reset search
+document.addEventListener("keydown", function(e){
+
+  if(e.key === "Escape"){
+
+    const input = document.getElementById("posSearch");
+    if(!input) return;
+
+    input.value = "";
+    applySearchFilter();
+    input.blur(); // optional
+
+  }
+
+});
       
     } catch (e) {
       console.error('Nav injection failed:', e);
