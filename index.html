@@ -1743,7 +1743,14 @@ if (!window.ZXing) {
   1
 );
           } else {
-            alert("❌ Item not found");
+            alert(
+  "❌ Item not found\n\n" +
+  "Scanned Code: " + code + "\n\n" +
+  "Check:\n" +
+  "- Sheet me barcode hai?\n" +
+  "- Same number hai?\n" +
+  "- Extra space to nahi?"
+);
           }
 
           codeReader.reset();
