@@ -1713,11 +1713,21 @@ document.addEventListener("click", async function(e){
 const cameraId = backCamera ? backCamera.id : devices[0].id;
 
         await html5QrCode.start(
-          cameraId,
-          {
-            fps: 10,
-            qrbox: { width: 250, height: 120 } // barcode shape
-          },
+  { facingMode: "environment" }, // 🔥 rear camera direct
+  {
+    fps: 15, // 🔥 faster scan
+
+    qrbox: (viewfinderWidth, viewfinderHeight) => {
+
+      const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
+
+      return {
+        width: minEdge * 0.9,
+        height: minEdge * 0.4 // 🔥 wide box for barcode
+      };
+    }
+
+  },
           (decodedText) => {
 
             console.log("Scanned:", decodedText);
