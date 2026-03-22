@@ -1441,17 +1441,41 @@ if (pagePOS && !pagePOS.hasChildNodes()) {
 <!-- 🔍 SEARCH -->
 <div style="position:relative;">
 
-  <input type="text" id="posSearch" placeholder="Search item..." 
-         style="width:100%; padding-right:40px;" />
-
-  <!-- 🔫 Scanner Icon -->
-  <span id="scanBtn"
-        style="position:absolute; right:10px; top:50%; transform:translateY(-50%);
-               cursor:pointer; font-size:18px;">
-    📷
+  <!-- 🔍 Icon (LEFT) -->
+  <span style="
+    position:absolute;
+    left:10px;
+    top:50%;
+    transform:translateY(-50%);
+    font-size:16px;
+    color:#888;
+    pointer-events:none;
+  ">
+    🔍
   </span>
 
-</div> 
+  <!-- 📦 Barcode Icon -->
+  <span id="scanBtn" style="
+    position:absolute;
+    right:10px;
+    top:50%;
+    transform:translateY(-50%);
+    font-size:16px;
+    cursor:pointer;
+  ">
+    📦
+  </span>
+
+  <!-- 🔍 Input -->
+  <input type="text" id="posSearch" placeholder="Search or scan item..."
+         style="
+           width:100%;
+           padding:10px 40px 10px 35px;
+           border:1px solid #ccc;
+           border-radius:8px;
+         " />
+
+</div>
  
   <!-- 🔥 CATEGORY TABS -->
   <div id="posCategories"></div>
