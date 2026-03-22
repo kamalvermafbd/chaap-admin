@@ -984,9 +984,20 @@ function handleOrderTypeChange(){
   const loadingEl = document.getElementById("customerLoading");
   const addressRow = document.getElementById("addressRow");
 
+      // 🔴 ADD: row elements
+  const nameRow = document.getElementById("nameRow");
+  const emailRow = document.getElementById("emailRow");
+
+    
   // 🔥 show box immediately
   if (addressBox) addressBox.style.display = "block";
 
+// 🔴 ADD: hide all rows initially (no blank labels)
+  if (nameRow) nameRow.style.display = "none";
+  if (emailRow) emailRow.style.display = "none";
+  if (addressRow) addressRow.style.display = "none";
+    
+    
   if (loadingEl) {
     loadingEl.style.display = "block";
      loadingEl.style.color = "red";   // ✅ ADD THIS
@@ -1008,6 +1019,10 @@ loadingEl.style.display = "block";
         console.log("❌ No data मिला");
 
         clearCustomerFields();
+// 🔴 ADD: keep rows hidden
+        if (nameRow) nameRow.style.display = "none";
+        if (emailRow) emailRow.style.display = "none";
+        if (addressRow) addressRow.style.display = "none";
 
         const addressBox = document.getElementById("addressBox");
         if (addressBox) addressBox.style.display = "block";
@@ -1017,16 +1032,32 @@ loadingEl.style.display = "block";
 
       const data = res.data;
 if (loadingEl) loadingEl.style.display = "none";
-      // 👉 Fill Name & Email
-      document.getElementById("customerName").textContent = data.name || "";
-      document.getElementById("customerEmail").textContent = data.email || "";
+   // =========================
+      // ✅ NAME
+      // =========================
+      if (data.name) {
+        document.getElementById("customerName").textContent = data.name;
+        if (nameRow) nameRow.style.display = "flex"; // 🔴 show only if exists
+      }
+   
+      // =========================
+      // ✅ EMAIL
+      // =========================
+      if (data.email) {
+        document.getElementById("customerEmail").textContent = data.email;
+        if (emailRow) emailRow.style.display = "flex"; // 🔴 show only if exists
+      }
 
       // 👉 Address logic
       const addressBox = document.getElementById("addressBox");
-      const addressLine = document.getElementById("customerAddress");
-
+     
       // ✅ box always visible
       if (addressBox) addressBox.style.display = "block";
+
+  // =========================
+      // ✅ ADDRESS (ONLY DELIVERY)
+      // =========================
+     const addressLine = document.getElementById("customerAddress");
 
       if (document.getElementById("OrderType").value === "Home Delivery") {
 
@@ -1037,12 +1068,13 @@ if (loadingEl) loadingEl.style.display = "none";
           data.pincode
         ].filter(Boolean).join(", ");
 
-        addressLine.textContent = fullAddress;
-        addressRow.style.display = "block";
-
+   if (fullAddress) {
+          addressLine.textContent = fullAddress;
+          if (addressRow) addressRow.style.display = "flex"; // 🔴 FIX: flex instead of block
+        }
       } else {
-        addressLine.textContent = "";
-        addressRow.style.display = "none";
+   if (addressLine) addressLine.textContent = "";
+        if (addressRow) addressRow.style.display = "none";
       }
 
     })
@@ -1051,6 +1083,8 @@ if (loadingEl) loadingEl.style.display = "none";
   loadingEl.style.display = "block";
   loadingEl.textContent = "Error fetching customer";
 }
+      if (nameRow) nameRow.style.display = "none";
+      if (emailRow) emailRow.style.display = "none"; 
       if (addressRow) addressRow.style.display = "none";
       console.error("Fetch error:", err);
       clearCustomerFields();
@@ -1363,17 +1397,17 @@ if (pagePOS && !pagePOS.hasChildNodes()) {
 <!-- ✅ 👇 YAHAN ADD KARNA HAI -->
 <div id="addressBox" class="customer-card" style="display:none;">
 <div id="customerLoading" style="display:none; font-size:13px; color:#666;"></div>
-  <div class="cust-row">
+ <div class="cust-row" id="nameRow" style="display:none;">
     <span class="cust-label">Name</span>
     <span id="customerName" class="cust-value"></span>
   </div>
 
-  <div class="cust-row">
+  <div class="cust-row" id="emailRow" style="display:none;">
     <span class="cust-label">Email</span>
     <span id="customerEmail" class="cust-value"></span>
   </div>
 
-  <div class="cust-row" id="addressRow">
+  <div class="cust-row" id="addressRow" style="display:none;">
     <span class="cust-label">Address</span>
     <span id="customerAddress" class="cust-value"></span>
   </div>
