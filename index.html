@@ -989,6 +989,8 @@ function handleOrderTypeChange(){
 
   if (loadingEl) {
     loadingEl.style.display = "block";
+     loadingEl.style.color = "red";   // ✅ ADD THIS
+  loadingEl.style.fontWeight = "600"; // optional for visibility
     loadingEl.textContent = "Fetching customer details...";
   }
   console.log("📞 Calling API with:", mobile);
