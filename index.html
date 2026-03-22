@@ -11,7 +11,7 @@
   <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#343a40">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://unpkg.com/@zxing/browser@0.1.5/umd/index.min.js"></script>
+ <script src="https://cdn.jsdelivr.net/npm/@zxing/browser@0.1.5/umd/index.min.js"></script>
   <style>
     /* ==== Your original visual styles - kept and expanded ==== */
     body { font-family:sans-serif; padding:20px; background:#f5f5f5; margin:0; }
@@ -1698,8 +1698,12 @@ document.addEventListener("click", async function(e){
     }
 
     scannerBox.style.display = "block";
-
-    codeReader = new ZXing.BrowserMultiFormatReader();
+if (!window.ZXing) {
+  alert("Scanner library not loaded");
+  return;
+}
+    
+    codeReader = new window.ZXing.BrowserMultiFormatReader();
 
     try {
 
