@@ -870,8 +870,29 @@ renderCategories(menuItems);   // 🔥 ADD THIS LINE
 
   return +(p - (p * d / 100)).toFixed(2);
 }
-  
-function renderPOSItems(items){
+  function applySearchFilter(){
+
+  const input = document.getElementById("posSearch");
+  if(!input) return;
+
+  const searchValue = input.value.toLowerCase().trim();
+  const items = document.querySelectorAll(".menu-card");
+
+  items.forEach(function(item){
+
+    const name = (item.getAttribute("data-name") || "").toLowerCase();
+
+    if(name.includes(searchValue)){
+      item.style.display = "block";
+    } else {
+      item.style.display = "none";
+    }
+
+  });
+
+}
+
+  function renderPOSItems(items){
 
   const box = document.getElementById("posItems");
 
@@ -881,9 +902,10 @@ function renderPOSItems(items){
 
     const type = (item.Cat2 || "").toLowerCase().trim();
 
-    html += `
-      <div style="border:2px solid #000;padding:12px;border-radius:10px;">
-
+html += `
+  <div class="menu-card" data-name="${item.Name}" 
+       style="border:2px solid #000;padding:12px;border-radius:10px;">
+       
         <img src="${item['Image Url'] || ''}" 
              style="width:100%;height:120px;object-fit:cover;border-radius:8px;" />
 
@@ -906,6 +928,8 @@ function renderPOSItems(items){
   items.forEach(item => {
     renderItemVariants(item);
   });
+    // 🔴 ADD THIS LINE
+applySearchFilter();
 }
 
 
@@ -1584,7 +1608,13 @@ if(openBtn){
     openBtn.style.display = "none";
   };
 }
-      
+document.addEventListener("input", function(e){
+
+  if(e.target && e.target.id === "posSearch"){
+    applySearchFilter(); // 🔥 बस ये call
+  }
+
+});
       
     } catch (e) {
       console.error('Nav injection failed:', e);
