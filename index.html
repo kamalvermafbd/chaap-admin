@@ -1439,8 +1439,19 @@ if (pagePOS && !pagePOS.hasChildNodes()) {
 </div>
 
 <!-- 🔍 SEARCH -->
-<input type="text" id="posSearch" placeholder="Search item..." />
- 
+<div style="position:relative;">
+
+  <input type="text" id="posSearch" placeholder="Search item..." 
+         style="width:100%; padding-right:40px;" />
+
+  <!-- 🔫 Scanner Icon -->
+  <span id="scanBtn"
+        style="position:absolute; right:10px; top:50%; transform:translateY(-50%);
+               cursor:pointer; font-size:18px;">
+    📷
+  </span>
+
+</div> 
  
   <!-- 🔥 CATEGORY TABS -->
   <div id="posCategories"></div>
