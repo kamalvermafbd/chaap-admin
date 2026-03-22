@@ -1708,14 +1708,12 @@ if (!window.ZXing) {
 
     try {
 
-      const videoInputDevices = await codeReader.listVideoInputDevices();
+      codeReader.decodeFromVideoDevice(
+  { facingMode: "environment" }, // 🔥 BACK CAMERA
+  "scannerBox",
+  (result, err) => {
 
-      const selectedDeviceId = videoInputDevices.find(d =>
-        d.label.toLowerCase().includes("back")
-      )?.deviceId || videoInputDevices[0].deviceId;
-
-      codeReader.decodeFromVideoDevice(selectedDeviceId, "scannerBox", (result, err) => {
-
+    
         if(result){
 
           const code = result.text.replace(/\D/g, "");
