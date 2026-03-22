@@ -1724,11 +1724,28 @@ const cameraId = backCamera ? backCamera.id : devices[0].id;
 
             const input = document.getElementById("posSearch");
 
-            // 🔴 fill search
-            input.value = decodedText;
+           const code = decodedText.trim();
 
-            // 🔴 apply filter
-            applySearchFilter();
+// 🔍 find item by barcode
+const item = menuItems.find(i => (i.Barcode || "") == code);
+
+if(item){
+
+  console.log("Item found:", item.Name);
+
+  // 👉 add to cart
+  changeQty(item.Name, item.Unit, item.Price, 1);
+
+  // 🔥 optional feedback
+  alert("Added: " + item.Name);
+
+} else {
+
+  console.warn("Barcode not found");
+
+  alert("❌ Item not found for barcode: " + code);
+
+}
 
             // 🔴 stop camera
             html5QrCode.stop();
