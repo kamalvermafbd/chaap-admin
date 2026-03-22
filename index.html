@@ -1724,10 +1724,12 @@ const cameraId = backCamera ? backCamera.id : devices[0].id;
 
             const input = document.getElementById("posSearch");
 
-           const code = decodedText.trim();
+           const code = decodedText.replace(/\D/g, ""); // 🔥 only numbers
 
 // 🔍 find item by barcode
-const item = menuItems.find(i => (i.Barcode || "") == code);
+const item = menuItems.find(i => 
+  (i.Barcode || "").toString().replace(/\D/g, "") === code
+);
 
 if(item){
 
