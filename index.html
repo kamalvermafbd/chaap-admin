@@ -1681,7 +1681,6 @@ document.addEventListener("keydown", function(e){
 
 });
 
-
 let codeReader;
 let scannerRunning = false;
 
@@ -1691,6 +1690,7 @@ document.addEventListener("click", async function(e){
 
     const scannerBox = document.getElementById("scannerBox");
 
+    // 🔁 Toggle
     if(scannerRunning){
       codeReader.reset();
       scannerBox.style.display = "none";
@@ -1699,60 +1699,76 @@ document.addEventListener("click", async function(e){
     }
 
     scannerBox.style.display = "block";
-if (!window.ZXing) {
-  alert("Scanner library not loaded");
-  return;
-}
-    
+
+    if (typeof ZXing === "undefined") {
+      alert("Scanner library not loaded");
+      return;
+    }
+
     codeReader = new ZXing.BrowserMultiFormatReader();
 
     try {
 
-      const videoInputDevices = await codeReader.listVideoInputDevices();
+      // 🔥 TRY rear camera first
+      try {
+        await codeReader.decodeFromVideoDevice(
+          { facingMode: "environment" },
+          "scannerBox",
+          handleScan
+        );
+      } catch(err) {
 
-      const selectedDeviceId = videoInputDevices.find(d =>
-        d.label.toLowerCase().includes("back")
-      )?.deviceId || videoInputDevices[0].deviceId;
+        console.warn("Rear camera failed → fallback");
 
-      codeReader.decodeFromVideoDevice(selectedDeviceId, "scannerBox", (result, err) => {
+        // 🔥 fallback
+        const devices = await codeReader.listVideoInputDevices();
 
-        if(result){
-
-          const code = result.text.replace(/\D/g, "");
-
-          const item = menuItems.find(i =>
-            (i.Barcode || "").toString().replace(/\D/g, "") === code
+        if(devices.length){
+          await codeReader.decodeFromVideoDevice(
+            devices[0].deviceId,
+            "scannerBox",
+            handleScan
           );
-
-          if(item){
-            changeQty(item.Name, item.Unit, item.Price, 1);
-          } else {
-            alert("❌ Item not found");
-          }
-
-          codeReader.reset();
-          scannerBox.style.display = "none";
-          scannerRunning = false;
+        } else {
+          throw new Error("No camera found");
         }
-
-      });
+      }
 
       scannerRunning = true;
 
     } catch(err){
       console.error(err);
-      alert("Camera error");
+      alert("Camera not supported");
+      scannerBox.style.display = "none";
     }
 
   }
 
-});      
-    } catch (e) {
-      console.error('Nav injection failed:', e);
-    }
-  });
-})();
+});
 
+// 🔥 scan handler
+function handleScan(result, err){
+
+  if(result){
+
+    const code = result.text.replace(/\D/g, "");
+
+    const item = menuItems.find(i =>
+      (i.Barcode || "").toString().replace(/\D/g, "") === code
+    );
+
+    if(item){
+      changeQty(item.Name, item.Unit, item.Price, 1);
+    } else {
+      alert("❌ Item not found");
+    }
+
+    codeReader.reset();
+    document.getElementById("scannerBox").style.display = "none";
+    scannerRunning = false;
+  }
+
+}
 let chartInstance = null;
 window.CATEGORY_OPTIONS = [];
 window.category_options = window.CATEGORY_OPTIONS;
