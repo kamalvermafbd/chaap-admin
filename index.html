@@ -1718,14 +1718,24 @@ if (!window.ZXing) {
 
         if(result){
 
-          const code = result.text.replace(/\D/g, "");
+          const code = String(result.text).replace(/\D/g, "").trim();
+          
+        const item = menuItems.find(i => {
 
-          const item = menuItems.find(i =>
-            (i.Barcode || "").toString().replace(/\D/g, "") === code
-          );
+  if(!i.Barcode) return false;
+
+  const b = String(i.Barcode).replace(/\D/g, "").trim();
+
+  return b === code;
+});
 
           if(item){
-            changeQty(item.Name, item.Unit, item.Price, 1);
+            changeQty(
+  item.Name,
+  item.Unit,
+  getNetPrice(item.Price, item.Discount_Percent),
+  1
+);
           } else {
             alert("❌ Item not found");
           }
