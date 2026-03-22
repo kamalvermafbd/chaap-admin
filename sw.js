@@ -1,4 +1,4 @@
-const CACHE_NAME = "chaap-admin-cache-v49";
+const CACHE_NAME = "chaap-admin-cache-v50";
 
 const URLS_TO_CACHE = [
   "/",
