@@ -1720,54 +1720,92 @@ if (!window.ZXing) {
         d.label.toLowerCase().includes("back")
       )?.deviceId || videoInputDevices[0].deviceId;
 
-      codeReader.decodeFromVideoDevice(selectedDeviceId, "scannerBox", (result, err) => {
-
+      codeReader.decodeFromVideoDevice(selectedDeviceId, "scannerBox", async (result, err) => {
+    if(err && !(err instanceof ZXing.NotFoundException)){
+  console.error(err);
+}
         if(result){
 
           const code = String(result.text).replace(/\D/g, "").trim();
-          console.log("🔍 SCANNED CODE:", code);   
-const statusBox = document.getElementById("scanStatus");
-if(!statusBox) return;
+          showScanMessage("🔍 Code: " + code, "blue");   
           
           // 👇 YAHI ADD KARNA HAI (IMPORTANT)
- 
+  // =========================
+    // 🔴 NEW: item variable define
+    // =========================
+    let item = null;
+
+    // =========================
+    // 🔴 STEP 1: cat_allocation search
+    // =========================
+    try {
+
+      const variants = await apiGet("getVariantsByBarcode", { barcode: code });
+
+      if (variants && variants.length > 0) {
+
+        const v = variants[0];
+
+        item = {
+          Name: v.Name,
+          Unit: v.Unit,
+          Price: v.Price,
+          Discount_Percent: v.Discount_Percent
+        };
+
+        showScanMessage("✅ Variant: " + item.Name + " (" + item.Unit + ")", "green");
+      }
+
+    } catch (err) {
+      showScanMessage("❌ Variant API Error", "red");
+    }
           
-  const item = menuItems.find(i => {
+ // =========================
+    // 🔴 STEP 2: menu fallback (EXISTING LOGIC SAFE)
+    // =========================
+    if(!item){
 
-  if(!i.Barcode) return false;
+      item = menuItems.find(i => {
 
-  const b = String(i.Barcode).replace(/\D/g, "").trim();
+        if(!i.Barcode) return false;
 
-  return b === code;
-});
+        const b = String(i.Barcode).replace(/\D/g, "").trim();
 
-          if(item){
-            changeQty(
-  item.Name,
-  item.Unit,
-  getNetPrice(item.Price, item.Discount_Percent),
-  1
-);
-            
-   statusBox.innerText = "✅ Added: " + item.Name;
-  statusBox.style.color = "green";
-          }
-          
-         else {
-
-  statusBox.innerText = "❌ Not Found: " + code;
-  statusBox.style.color = "red";
-}
-  // 🔥 AUTO CLEAR AFTER 1.5 SEC
-          setTimeout(() => {
-            statusBox.innerText = "";
-          }, 1500);
-codeReader.reset();
-scannerBox.style.display = "none";
-scannerRunning = false;
-        }
-
+        return b === code;
       });
+
+      if(item){
+        showScanMessage("✅ Menu: " + item.Name, "green");
+      }
+    }
+
+    // =========================
+    // 🔴 STEP 3: add to cart
+    // =========================
+    if(item){
+
+      changeQty(
+        item.Name,
+        item.Unit,
+        getNetPrice(item.Price, item.Discount_Percent),
+        1
+      );
+
+       showScanMessage("✅ Added: " + item.Name + " (" + item.Unit + ")", "green");
+
+    } else {
+
+     showScanMessage("❌ Not Found: " + code, "red");
+    }
+    // =========================
+    // 🔴 STOP SCANNER
+    // =========================
+    codeReader.reset();
+    scannerBox.style.display = "none";
+    scannerRunning = false;
+  }
+
+});
 
       scannerRunning = true;
 
@@ -1908,7 +1946,18 @@ function loadCouponStatus() {
     });
   // 🟢 NEW API VERSION END
 }
+function showScanMessage(msg, color = "black") {
+  const box = document.getElementById("scanStatus");
+  if (!box) return;
 
+  box.innerText = msg;
+  box.style.color = color;
+
+  // auto clear
+  setTimeout(() => {
+    box.innerText = "";
+  }, 2000);
+}
 function renderStatusCell(r) {
   if (r.payment_status !== "pending") {
     return `<b>${r.payment_status}</b>`;
