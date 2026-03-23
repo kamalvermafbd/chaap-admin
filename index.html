@@ -1279,10 +1279,28 @@ console.log("GST DEBUG → SGT:", restaurantInfo.SGT);
     restaurantInfo.SGST || restaurantInfo.SGT || 0
   );
 
-  const deliveryCharge = Number(restaurantInfo.minchg) || 0;
+const orderType = document.getElementById("OrderType")?.value || "";
 
+const rule = (deliveryRules || []).find(r =>
+  r.orderType === orderType && String(r.active).toUpperCase() === "TRUE"
+);
+
+//const deliveryCharge = rule ? Number(rule.deliveryCharge || 0) : 0;
+  let deliveryCharge = 0;
+
+if(rule){
+  const minOrder = Number(rule.minOrderAmount || 0);
+
+  if(baseTotal < minOrder){
+    console.warn("Below minimum order");
+    deliveryCharge = 0; // 🔥 IMPORTANT
+  } else {
+    deliveryCharge = Number(rule.deliveryCharge || 0);
+  }
+}
+  
   const isDeliveryTaxable =
-    (restaurantInfo.delivery_taxable || "").toLowerCase() === "yes";
+    (restaurantInfo.delivery_taxable || "").trim().toLowerCase() === "yes";
 
   let taxableAmount = 0;
 
