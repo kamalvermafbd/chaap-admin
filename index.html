@@ -1478,8 +1478,14 @@ if (pagePOS && !pagePOS.hasChildNodes()) {
       border:1px solid #ccc;
       border-radius:8px;
     " />
-
 </div>
+
+<div id="scanStatus" style="
+  margin-top:8px;
+  font-weight:bold;
+  color:green;
+"></div>
+
  <!-- 🔴 STEP 2 ADD HERE -->
 <video id="scannerBox" style="
   display:none;
@@ -1720,11 +1726,9 @@ if (!window.ZXing) {
 
           const code = String(result.text).replace(/\D/g, "").trim();
           console.log("🔍 SCANNED CODE:", code);   
-
+const statusBox = document.getElementById("scanStatus");
           // 👇 YAHI ADD KARNA HAI (IMPORTANT)
-  menuItems.forEach(i => {
-    console.log("📦 ITEM:", i.Name, i.Barcode);
-  });
+ 
           
         const item = menuItems.find(i => {
 
@@ -1742,20 +1746,23 @@ if (!window.ZXing) {
   getNetPrice(item.Price, item.Discount_Percent),
   1
 );
-          } else {
-            alert(
-  "❌ Item not found\n\n" +
-  "Scanned Code: " + code + "\n\n" +
-  "Check:\n" +
-  "- Sheet me barcode hai?\n" +
-  "- Same number hai?\n" +
-  "- Extra space to nahi?"
-);
+            
+   statusBox.innerText = "✅ Added: " + item.Name;
+  statusBox.style.color = "green";
           }
+          
+         else {
 
-          codeReader.reset();
-          scannerBox.style.display = "none";
-          scannerRunning = false;
+  statusBox.innerText = "❌ Not Found: " + code;
+  statusBox.style.color = "red";
+}
+  // 🔥 AUTO CLEAR AFTER 1.5 SEC
+          setTimeout(() => {
+            statusBox.innerText = "";
+          }, 1500);
+codeReader.reset();
+scannerBox.style.display = "none";
+scannerRunning = false;
         }
 
       });
