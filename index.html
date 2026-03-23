@@ -791,8 +791,8 @@ if (pageId === 'pageCouponStatus') {
 
   if (pageId === 'pagePOS') {
     loadRestaurantInfo(); // 🔥 ADD THIS
+    loadDeliveryRules(); // 🔥 MUST
   loadPOSItems();
-
      // 🔥 ADD THIS
   const savedCart = localStorage.getItem("posCart");
   if(savedCart){
@@ -1251,6 +1251,8 @@ function handleMobileInput() {
   if (addressBox) addressBox.style.display = "block"; // ✅ KEEP VISIBLE
 }
 
+
+  
 let restaurantInfo = {};
   
 function loadRestaurantInfo(){
@@ -1267,6 +1269,21 @@ function loadRestaurantInfo(){
     });
 
 }
+
+let deliveryRules = [];
+
+  function loadDeliveryRules(){
+  apiGet("getDeliveryRules")
+    .then(res => {
+      deliveryRules = res || [];
+      console.log("Delivery Rules Loaded:", deliveryRules);
+    })
+    .catch(err => {
+      console.error("Delivery Rules Error:", err);
+      deliveryRules = [];
+    });
+}
+
   
 function calculateBill(baseTotal, restaurantInfo){
 console.log("GST DEBUG → CGST:", restaurantInfo.CGST);
