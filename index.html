@@ -1727,10 +1727,12 @@ if (!window.ZXing) {
           const code = String(result.text).replace(/\D/g, "").trim();
           console.log("🔍 SCANNED CODE:", code);   
 const statusBox = document.getElementById("scanStatus");
+if(!statusBox) return;
+          
           // 👇 YAHI ADD KARNA HAI (IMPORTANT)
  
           
-        const item = menuItems.find(i => {
+  const item = menuItems.find(i => {
 
   if(!i.Barcode) return false;
 
