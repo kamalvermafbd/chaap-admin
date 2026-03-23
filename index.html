@@ -1783,7 +1783,11 @@ if (!window.ZXing) {
     // 🔴 STEP 3: add to cart
     // =========================
     if(item){
-
+// 🔴 CHECK BEFORE ADD
+  const existing = cart.find(c =>
+    c.name === item.Name && c.unit === item.Unit
+  );
+      
       changeQty(
         item.Name,
         item.Unit,
@@ -1791,8 +1795,18 @@ if (!window.ZXing) {
         1
       );
 
-       showScanMessage("✅ Added: " + item.Name + " (" + item.Unit + ")", "green");
-
+       if(existing){
+    showScanMessage(
+      "🔁 Qty Updated: " + item.Name + " (" + (existing.qty) + ")",
+      "green"
+    );
+  } else {
+    showScanMessage(
+      "🆕 Added: " + item.Name + " (" + item.Unit + ")",
+      "green"
+    );
+  }
+    
     } else {
 
      showScanMessage("❌ Not Found: " + code, "red");
