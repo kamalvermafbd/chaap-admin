@@ -1249,7 +1249,53 @@ function handleMobileInput() {
   if (addressEl) addressEl.textContent = "";
   if (addressBox) addressBox.style.display = "block"; // ✅ KEEP VISIBLE
 }
+  
+function calculateBill(baseTotal, restaurantInfo){
 
+  const cgstPercent = Number(restaurantInfo.CGST) || 0;
+  const sgstPercent = Number(restaurantInfo.SGST) || 0;
+  const deliveryCharge = Number(restaurantInfo.minchg) || 0;
+
+  const isDeliveryTaxable =
+    (restaurantInfo.delivery_taxable || "").toLowerCase() === "yes";
+
+  let taxableAmount = 0;
+
+  // ✅ Taxable logic
+  if(isDeliveryTaxable){
+    taxableAmount = baseTotal + deliveryCharge;
+  } else {
+    taxableAmount = baseTotal;
+  }
+
+  // ✅ GST
+  let cgst = taxableAmount * (cgstPercent / 100);
+  let sgst = taxableAmount * (sgstPercent / 100);
+
+  // ✅ rounding
+  cgst = Number(cgst.toFixed(2));
+  sgst = Number(sgst.toFixed(2));
+
+  // ✅ Final Bill
+  let billValue = 0;
+
+  if(isDeliveryTaxable){
+    billValue = taxableAmount + cgst + sgst;
+  } else {
+    billValue = taxableAmount + cgst + sgst + deliveryCharge;
+  }
+
+  billValue = Number(billValue.toFixed(2));
+
+  return {
+    baseTotal,
+    deliveryCharge,
+    taxableAmount,
+    cgst,
+    sgst,
+    billValue
+  };
+}
   
   function renderCart(){
 
@@ -1267,6 +1313,7 @@ function handleMobileInput() {
   let html = `<div class="cart-list">`;
 
   cart.forEach((item, index) => {
+// 🔥 ADD THIS LINE HERE
 
     const amt = item.price * item.qty;
     total += amt;
@@ -1319,14 +1366,28 @@ function handleMobileInput() {
   html += `</div>`;  // ✅ loop ke baad close
 
   box.innerHTML = html;
-
+ // 🔹 STEP 2: FINAL BILL CALCULATE (IMPORTANT)
+  const bill = calculateBill(total, restaurantInfo || {});
+    
   totalBox.innerHTML = `
    <div class="cart-total-wrap">
+   <div>Base: ₹${formatCurrency(bill.baseTotal)}</div>
+    ${
+      bill.deliveryCharge > 0
+      ? `<div>Delivery: ₹${formatCurrency(bill.deliveryCharge)}</div>`
+      : ""
+    }
+
+    <div>CGST: ₹${formatCurrency(bill.cgst)}</div>
+    <div>SGST: ₹${formatCurrency(bill.sgst)}</div>
+
+    <hr>
+
   <div class="total-row">
     <div></div>
     <div></div>
     <div class="total-label">Total</div>
-    <div class="total-amt">₹${formatCurrency(total)}</div>
+  <div class="total-amt">₹${formatCurrency(bill.billValue)}</div>
   </div>
   </div>
 `;
