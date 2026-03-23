@@ -1005,7 +1005,7 @@ function handleOrderTypeChange(){
 
   // 🔥 Step 2: Fetch latest order
   fetchLatestOrder(mobile);
-  
+  renderCart(); // 🔥 ADD THIS (MOST IMPORTANT)
 }
   function fetchLatestOrder(mobile) {
   const addressBox = document.getElementById("addressBox"); // ✅ ADD THIS
