@@ -1267,7 +1267,10 @@ function loadRestaurantInfo(){
 }
   
 function calculateBill(baseTotal, restaurantInfo){
-
+console.log("GST DEBUG → CGST:", restaurantInfo.CGST);
+console.log("GST DEBUG → SGST:", restaurantInfo.SGST);
+console.log("GST DEBUG → SGT:", restaurantInfo.SGT);
+  
   const cgstPercent = Number(restaurantInfo.CGST) || 0;
     // 🔥 SGT + SGST dono support
   const sgstPercent = Number(
@@ -1318,7 +1321,7 @@ function calculateBill(baseTotal, restaurantInfo){
 }
   
   function renderCart(){
-
+console.log("renderCart → restaurantInfo:", restaurantInfo);
   const box = document.getElementById("cartItems");
   const totalBox = document.getElementById("cartTotal");
 
@@ -1388,6 +1391,7 @@ function calculateBill(baseTotal, restaurantInfo){
   box.innerHTML = html;
  // 🔹 STEP 2: FINAL BILL CALCULATE (IMPORTANT)
   const bill = calculateBill(total, restaurantInfo || {});
+    console.log("FINAL BILL:", bill);
     
   totalBox.innerHTML = `
    <div class="cart-total-wrap">
