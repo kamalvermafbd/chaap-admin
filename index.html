@@ -1310,11 +1310,10 @@ if(rule){
   const minOrder = Number(rule.minOrderAmount || 0);
 
   if(baseTotal < minOrder){
-    console.warn("Below minimum order");
-    deliveryCharge = 0; // 🔥 IMPORTANT
-  } else {
-    deliveryCharge = Number(rule.deliveryCharge || 0);
-  }
+  console.warn("Below minimum order");
+  deliveryCharge = Number(rule.deliveryCharge || 0); // 🔥 APPLY CHARGE
+} else {
+  deliveryCharge = 0; // 🔥 FREE DELIVERY
 }
   
   const isDeliveryTaxable =
