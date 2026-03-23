@@ -561,6 +561,17 @@ td:nth-child(8) { width: 220px; } /* Action */
  #scanBtn:hover svg {
   stroke: #007bff;
 }   
+
+    .bill-row {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  margin: 4px 0;
+}
+
+.bill-row div:last-child {
+  text-align: right;
+  font-weight: 500;
+}
   </style>
 </head>
 <body>
@@ -1358,8 +1369,8 @@ console.log("isDeliveryTaxable:", isDeliveryTaxable);
     billValue
   };
 }
-  
-  function renderCart(){
+
+function renderCart(){
 if (!restaurantInfo || Object.keys(restaurantInfo).length === 0) {
     console.warn("Restaurant info not ready");
     return;
@@ -1439,39 +1450,36 @@ console.log("renderCart → restaurantInfo:", restaurantInfo);
     
   const isDeliveryTaxable =
   (restaurantInfo.delivery_taxable || "").trim().toLowerCase() === "yes";
-
+// ✅ ADD THIS HERE
+const row = (label, value) => `
+  <div class="bill-row">
+    <div>${label}</div>
+    <div class="bill-amt">₹${formatCurrency(value)}</div>
+  </div>
+`;
 let totalsHTML = `<div class="cart-total-wrap">`;
 
 if(isDeliveryTaxable){
 
-  // ✅ CURRENT STYLE (no change)
-  totalsHTML += `
-    <div>Base: ₹${formatCurrency(bill.baseTotal)}</div>
-    ${
-      bill.deliveryCharge > 0
-      ? `<div>Delivery: ₹${formatCurrency(bill.deliveryCharge)}</div>`
-      : ""
-    }
-    <div>CGST: ₹${formatCurrency(bill.cgst)}</div>
-    <div>SGST: ₹${formatCurrency(bill.sgst)}</div>
-  `;
+  totalsHTML += row("Base", bill.baseTotal);
+
+  if(bill.deliveryCharge > 0){
+    totalsHTML += row("Delivery", bill.deliveryCharge);
+  }
+
+  totalsHTML += row("CGST", bill.cgst);
+  totalsHTML += row("SGST", bill.sgst);
 
 } else {
 
-  // 🔥 NEW STYLE (as per your requirement)
-  totalsHTML += `
-    <div>Base: ₹${formatCurrency(bill.baseTotal)}</div>
+  totalsHTML += row("Base", bill.baseTotal);
+  totalsHTML += row("Total Taxable", bill.taxableAmount);
+  totalsHTML += row("CGST", bill.cgst);
+  totalsHTML += row("SGST", bill.sgst);
 
-    <div style="margin-top:6px;">Total Taxable: ₹${formatCurrency(bill.taxableAmount)}</div>
-    <div>CGST: ₹${formatCurrency(bill.cgst)}</div>
-    <div>SGST: ₹${formatCurrency(bill.sgst)}</div>
-
-    ${
-      bill.deliveryCharge > 0
-      ? `<div style="margin-top:6px;">Delivery: ₹${formatCurrency(bill.deliveryCharge)}</div>`
-      : ""
-    }
-  `;
+  if(bill.deliveryCharge > 0){
+    totalsHTML += row("Delivery", bill.deliveryCharge);
+  }
 }
 
 // ✅ COMMON FOOTER
