@@ -1690,7 +1690,9 @@ document.addEventListener("keydown", function(e){
 
 let codeReader;
 let scannerRunning = false;
-
+let lastScannedCode = "";
+let lastScanTime = 0;
+      
 document.addEventListener("click", async function(e){
 
   if(e.target.closest("#scanBtn")){
@@ -1727,6 +1729,16 @@ if (!window.ZXing) {
         if(result){
 
           const code = String(result.text).replace(/\D/g, "").trim();
+
+          // 🔴 DUPLICATE SCAN BLOCK
+const now = Date.now();
+
+if(code === lastScannedCode && (now - lastScanTime < 1500)){
+  return; // ignore duplicate
+}
+
+lastScannedCode = code;
+lastScanTime = now;
           showScanMessage("🔍 Code: " + code, "blue");   
           
           // 👇 YAHI ADD KARNA HAI (IMPORTANT)
@@ -1796,10 +1808,18 @@ if (!window.ZXing) {
       );
 
        if(existing){
+
+         const el = document.getElementById(`qty-${item.Name}-${item.Unit}`);
+  const latestQty = el ? el.textContent : existing.qty;
+         
     showScanMessage(
-      "🔁 Qty Updated: " + item.Name + " (" + (existing.qty) + ")",
-      "green"
-    );
+    "🔁 Qty Updated: " + item.Name + " (" + latestQty + ")",
+    "green"
+  );
+if (navigator.vibrate) {
+  navigator.vibrate(100);
+}
+         
   } else {
     showScanMessage(
       "🆕 Added: " + item.Name + " (" + item.Unit + ")",
