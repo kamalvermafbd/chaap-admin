@@ -1259,6 +1259,7 @@ function loadRestaurantInfo(){
     .then(res => {
       restaurantInfo = res || {};
       console.log("Restaurant Info Loaded:", restaurantInfo);
+      renderCart(); // 🔥 VERY IMPORTANT
     })
     .catch(err => {
       console.error("Restaurant Info Error:", err);
@@ -1322,6 +1323,11 @@ console.log("GST DEBUG → SGT:", restaurantInfo.SGT);
 }
   
   function renderCart(){
+if (!restaurantInfo || Object.keys(restaurantInfo).length === 0) {
+    console.warn("Restaurant info not ready");
+    return;
+  }
+    
 console.log("renderCart → restaurantInfo:", restaurantInfo);
   const box = document.getElementById("cartItems");
   const totalBox = document.getElementById("cartTotal");
