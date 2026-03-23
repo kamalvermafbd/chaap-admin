@@ -1318,7 +1318,9 @@ if(rule){
 }
   const isDeliveryTaxable =
     (restaurantInfo.delivery_taxable || "").trim().toLowerCase() === "yes";
-
+console.log("delivery_taxable RAW:", restaurantInfo.delivery_taxable);
+console.log("delivery_taxable CHECK:", (restaurantInfo.delivery_taxable || "").trim().toLowerCase());
+console.log("isDeliveryTaxable:", isDeliveryTaxable);
   let taxableAmount = 0;
 
   // ✅ Taxable logic
