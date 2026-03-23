@@ -1691,7 +1691,6 @@ document.addEventListener("keydown", function(e){
 let codeReader;
 let scannerRunning = false;
 let lastScannedCode = "";
-let lastScanTime = 0;
       
 document.addEventListener("click", async function(e){
 
@@ -1731,14 +1730,12 @@ if (!window.ZXing) {
           const code = String(result.text).replace(/\D/g, "").trim();
 
           // 🔴 DUPLICATE SCAN BLOCK
-const now = Date.now();
-
-if(code === lastScannedCode && (now - lastScanTime < 1500)){
-  return; // ignore duplicate
+// 🔴 SAME CODE LOCK (NEW LOGIC)
+if(code === lastScannedCode){
+  return; // ignore same continuous scan
 }
 
 lastScannedCode = code;
-lastScanTime = now;
           showScanMessage("🔍 Code: " + code, "blue");   
           
           // 👇 YAHI ADD KARNA HAI (IMPORTANT)
