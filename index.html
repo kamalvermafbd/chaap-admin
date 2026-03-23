@@ -1253,7 +1253,11 @@ function handleMobileInput() {
 function calculateBill(baseTotal, restaurantInfo){
 
   const cgstPercent = Number(restaurantInfo.CGST) || 0;
-  const sgstPercent = Number(restaurantInfo.SGST) || 0;
+    // 🔥 SGT + SGST dono support
+  const sgstPercent = Number(
+    restaurantInfo.SGST || restaurantInfo.SGT || 0
+  );
+
   const deliveryCharge = Number(restaurantInfo.minchg) || 0;
 
   const isDeliveryTaxable =
