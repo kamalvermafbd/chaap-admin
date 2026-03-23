@@ -1249,6 +1249,22 @@ function handleMobileInput() {
   if (addressEl) addressEl.textContent = "";
   if (addressBox) addressBox.style.display = "block"; // ✅ KEEP VISIBLE
 }
+
+let restaurantInfo = {};
+  
+function loadRestaurantInfo(){
+
+  apiGet("getRestaurantInfo")
+    .then(res => {
+      restaurantInfo = res || {};
+      console.log("Restaurant Info Loaded:", restaurantInfo);
+    })
+    .catch(err => {
+      console.error("Restaurant Info Error:", err);
+      restaurantInfo = {};
+    });
+
+}
   
 function calculateBill(baseTotal, restaurantInfo){
 
