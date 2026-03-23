@@ -1296,10 +1296,11 @@ console.log("GST DEBUG → SGT:", restaurantInfo.SGT);
     restaurantInfo.SGST || restaurantInfo.SGT || 0
   );
 
-const orderType = document.getElementById("OrderType")?.value || "";
+const orderType = (document.getElementById("OrderType")?.value || "").trim();
 
 const rule = (deliveryRules || []).find(r =>
-  r.orderType === orderType && String(r.active).toUpperCase() === "TRUE"
+  r.orderType === orderType &&
+  (r.active === true || String(r.active).toUpperCase() === "TRUE")
 );
 
 //const deliveryCharge = rule ? Number(rule.deliveryCharge || 0) : 0;
