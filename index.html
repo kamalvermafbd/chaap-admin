@@ -826,7 +826,7 @@ if(savedCart){
 }
 
 isCartLoading = false;  // 🔥 loading complete
-renderCart();           // 🔥 final render
+
     
 }
 
@@ -1390,9 +1390,12 @@ let isCartLoading = true;
   
 function renderCart(){
 if (!restaurantInfo || Object.keys(restaurantInfo).length === 0) {
-    console.warn("Restaurant info not ready");
-    return;
+  if(isCartLoading){
+    document.getElementById("cartItems").innerHTML = "Loading...";
+    document.getElementById("cartTotal").innerHTML = "";
   }
+  return;
+}
     
 console.log("renderCart → restaurantInfo:", restaurantInfo);
   const box = document.getElementById("cartItems");
