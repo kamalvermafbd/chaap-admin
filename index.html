@@ -1365,7 +1365,13 @@ console.log("isDeliveryTaxable:", isDeliveryTaxable);
 } else {
   taxableAmount = baseTotal + serviceCharge;
 }
+// 🔥 ITEM GST (IMPORTANT FIX)
+let itemGST = 0;
 
+cart.forEach(item => {
+  itemGST += (Number(item.gstAmt || 0) * item.qty);
+});
+  
 // 🔥 EXTRA GST (ONLY ON SERVICE + DELIVERY)
 let extraGST = 0;
 
@@ -1383,8 +1389,10 @@ if(isDeliveryTaxable && deliveryCharge > 0){
 extraGST = Number(extraGST.toFixed(2));
 
 // split
-let cgst = Number((extraGST / 2).toFixed(2));
-let sgst = Number((extraGST / 2).toFixed(2));
+let totalGST = itemGST + extraGST;
+
+let cgst = Number((totalGST / 2).toFixed(2));
+let sgst = Number((totalGST / 2).toFixed(2));
 
   // ✅ rounding
   cgst = Number(cgst.toFixed(2));
