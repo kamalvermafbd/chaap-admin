@@ -1671,12 +1671,24 @@ if (pagePOS && !pagePOS.hasChildNodes()) {
   <input type="text" id="posSearch" placeholder="Search or scan item..."
     style="
       width:100%;
-      padding:10px 40px 10px 35px;
+      padding:10px 65px 10px 35px;
       border:1px solid #ccc;
       border-radius:8px;
     " />
 </div>
-
+<!-- ❌ CLEAR BUTTON -->
+<span id="clearSearchBtn" style="
+  position:absolute;
+  right:35px;
+  top:50%;
+  transform:translateY(-50%);
+  cursor:pointer;
+  font-size:16px;
+  color:#999;
+  display:none;
+">
+  ✖
+</span>
 <div id="scanStatus" style="
   margin-top:8px;
   font-weight:bold;
