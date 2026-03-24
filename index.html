@@ -1366,9 +1366,14 @@ console.log("isDeliveryTaxable:", isDeliveryTaxable);
   taxableAmount = baseTotal + serviceCharge;
 }
 
-  // ✅ GST
-  let cgst = taxableAmount * (cgstPercent / 100);
-  let sgst = taxableAmount * (sgstPercent / 100);
+ let totalGST = 0;
+
+cart.forEach(item => {
+  totalGST += (Number(item.gstAmt || 0) * item.qty);
+});
+
+let cgst = Number((totalGST / 2).toFixed(2));
+let sgst = Number((totalGST / 2).toFixed(2));
 
   // ✅ rounding
   cgst = Number(cgst.toFixed(2));
