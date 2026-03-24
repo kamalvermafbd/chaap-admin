@@ -572,6 +572,10 @@ td:nth-child(8) { width: 220px; } /* Action */
   text-align: right;
   font-weight: 500;
 }
+
+    .bold-row {
+  font-weight: 700;
+}
   </style>
 </head>
 <body>
@@ -1473,7 +1477,12 @@ if(isDeliveryTaxable){
 } else {
 
   totalsHTML += row("Base", bill.baseTotal);
-  totalsHTML += row("Total Taxable", bill.taxableAmount);
+totalsHTML += `
+  <div class="bill-row bold-row">
+    <div>Total Taxable</div>
+    <div class="bill-amt">₹${formatCurrency(bill.taxableAmount)}</div>
+  </div>
+`;
   totalsHTML += row("CGST", bill.cgst);
   totalsHTML += row("SGST", bill.sgst);
 
