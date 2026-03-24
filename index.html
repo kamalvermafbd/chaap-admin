@@ -1585,7 +1585,23 @@ totalBox.innerHTML = totalsHTML;
     }
   } else {
     if (qty > 0) {
-      cart.push({ name, unit, price, qty });
+// 🔥 MENU ITEM FIND
+      const menuItem = menuItems.find(i =>
+        i.Name === name && i.Unit === unit
+      );
+
+      // 🔥 GST EXTRACT
+      const gstRate = menuItem ? menuItem.GST_Rate : 0;
+      const gstAmt  = menuItem ? Number(menuItem.GST_Amt || 0) : 0;
+       // 🔥 PUSH WITH GST
+      cart.push({
+        name,
+        unit,
+        price,
+        qty,
+        gstRate,   // 🔥 NEW
+        gstAmt     // 🔥 NEW (per unit)
+      });
     }
   }
 
