@@ -1604,7 +1604,28 @@ totalsHTML += `
 
 totalBox.innerHTML = totalsHTML;
 }
-  function generatePosBill(){
+
+function formatLine(left, right, width = 32) {
+  left = left || "";
+  right = right || "";
+
+  if (left.length > width) {
+    // 🔥 wrap logic
+    let lines = [];
+    while (left.length > width) {
+      lines.push(left.substring(0, width));
+      left = left.substring(width);
+    }
+    lines.push(left);
+
+    return lines.join("\n");
+  }
+
+  const space = width - left.length - right.length;
+  return left + " ".repeat(space > 0 ? space : 1) + right;
+}  
+  
+function generatePosBill(){
 
   if(cart.length === 0){
     alert("Cart empty");
@@ -1639,29 +1660,38 @@ const mobile = document.getElementById("posMobile")?.value || "";
   cart.forEach(item => {
     const amt = item.price * item.qty;
 
-    html += `${item.name} (${item.unit})\n`;
-    html += `${item.qty} x ₹${formatCurrency(item.price)} = ₹${formatCurrency(amt)}\n\n`;
+    const itemName = `${item.name} (${item.unit})`;
+
+// 🔥 name wrap
+html += formatLine(itemName, "");
+
+// 🔥 qty x rate
+const qtyRate = `${item.qty} x ${formatCurrency(item.price)}`;
+const amount = formatCurrency(amt);
+
+html += "\n" + formatLine(qtyRate, amount) + "\n\n";
+    
   });
 
   html += "----------------------\n";
 
-  html += `Base: ₹${formatCurrency(bill.baseTotal)}\n`;
+html += formatLine("Base", formatCurrency(bill.baseTotal)) + "\n";
 
-  if(bill.serviceCharge > 0){
-    html += `Service: ₹${formatCurrency(bill.serviceCharge)}\n`;
-  }
+if(bill.serviceCharge > 0){
+  html += formatLine("Service", formatCurrency(bill.serviceCharge)) + "\n";
+}
 
-  if(bill.deliveryCharge > 0){
-    html += `Delivery: ₹${formatCurrency(bill.deliveryCharge)}\n`;
-  }
+if(bill.deliveryCharge > 0){
+  html += formatLine("Delivery", formatCurrency(bill.deliveryCharge)) + "\n";
+}
 
-  html += `CGST: ₹${formatCurrency(bill.cgst)}\n`;
-  html += `SGST: ₹${formatCurrency(bill.sgst)}\n`;
+html += formatLine("CGST", formatCurrency(bill.cgst)) + "\n";
+html += formatLine("SGST", formatCurrency(bill.sgst)) + "\n";
 
-  html += "----------------------\n";
-  html += `TOTAL: ₹${formatCurrency(bill.billValue)}\n`;
-  html += "----------------------\n";
+html += "--------------------------------\n";
 
+html += formatLine("TOTAL", formatCurrency(bill.billValue)) + "\n";
+ 
 const modal = document.getElementById("billModal");
 const content = document.getElementById("modalBillContent");
 
