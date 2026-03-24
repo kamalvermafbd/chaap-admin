@@ -580,6 +580,25 @@ td:nth-child(8) { width: 220px; } /* Action */
    .bold-row div:last-child {
   font-weight: 700 !important;
 }
+
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+    
   </style>
 </head>
 <body>
@@ -1643,11 +1662,40 @@ totalBox.innerHTML = totalsHTML;
   html += `TOTAL: ₹${formatCurrency(bill.billValue)}\n`;
   html += "----------------------\n";
 
-const preview = document.getElementById("posThermalPreview");
-    
-  preview.style.display = "block";
-  preview.textContent = html;
+const modal = document.getElementById("billModal");
+const content = document.getElementById("modalBillContent");
+
+if(!modal || !content){
+  console.error("Modal not found");
+  return;
 }
+
+content.textContent = html;
+modal.classList.add("active");
+    
+}
+
+function closeBillModal(){
+  const modal = document.getElementById("billModal");
+  if(modal){
+    modal.classList.remove("active");
+  }
+}
+
+function printBill(){
+
+  const content = document.getElementById("modalBillContent");
+
+  const win = window.open('', '', 'width=300,height=600');
+
+  win.document.write(`
+    <pre style="font-family:monospace;">${content.textContent}</pre>
+  `);
+
+  win.document.close();
+  win.print();
+}
+  
   function changeQty(name, unit, price, delta){
 
   const id = `qty-${name}-${unit}`;
@@ -5198,6 +5246,43 @@ if ("serviceWorker" in navigator) {
   </div>
 
 </div>
+
+<div id="billModal" class="modal-overlay">
+  <div class="modal-box">
+
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <h3>Bill Preview</h3>
+      <button onclick="closeBillModal()" style="
+        border:none;
+        background:red;
+        color:#fff;
+        padding:5px 10px;
+        border-radius:4px;
+      ">X</button>
+    </div>
+
+    <div id="modalBillContent" style="
+      margin-top:10px;
+      white-space:pre-wrap;
+      font-family:monospace;
+    "></div>
+
+    <button onclick="printBill()" style="
+      width:100%;
+      margin-top:10px;
+      padding:10px;
+      background:#000;
+      color:#fff;
+      border:none;
+      border-radius:6px;
+    ">
+      Print
+    </button>
+
+  </div>
+</div>
+  
+
   
 </body>
 </html>
