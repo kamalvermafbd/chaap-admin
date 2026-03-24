@@ -781,12 +781,20 @@ function apiPost(api, body = {}) {
 
 function showPage(pageId){
 
-  // 🔥 ALWAYS HIDE BILL ON PAGE CHANGE
-  const preview = document.getElementById('thermalPreview');
-  if (preview) {
-    preview.style.display = 'none';
-    preview.textContent = '';
-  }
+  
+// 🔥 ADMIN PREVIEW
+const preview1 = document.getElementById('thermalPreview');
+if (preview1) {
+  preview1.style.display = 'none';
+  preview1.textContent = '';
+}
+
+// 🔥 POS PREVIEW
+const preview2 = document.getElementById('posThermalPreview');
+if (preview2) {
+  preview2.style.display = 'none';
+  preview2.textContent = '';
+}
   
 if (window.isLoggedIn) {
   localStorage.setItem("adminActivePage", pageId);
@@ -824,9 +832,8 @@ if(savedCart){
 } else {
   cart = [];
 }
-
 isCartLoading = false;  // 🔥 loading complete
-
+renderCart();           // 🔥 ADD THIS (FINAL FIX)
     
 }
 
