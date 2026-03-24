@@ -813,11 +813,20 @@ if (pageId === 'pageCouponStatus') {
     loadDeliveryRules(); // 🔥 MUST
   loadPOSItems();
      // 🔥 ADD THIS
-  const savedCart = localStorage.getItem("posCart");
-  if(savedCart){
-    cart = JSON.parse(savedCart);
-    renderCart();
-  }
+  isCartLoading = true;   // 🔥 ADD THIS (start loading)
+
+renderCart();           // 🔥 show "Loading..."
+
+const savedCart = localStorage.getItem("posCart");
+
+if(savedCart){
+  cart = JSON.parse(savedCart);
+} else {
+  cart = [];
+}
+
+isCartLoading = false;  // 🔥 loading complete
+renderCart();           // 🔥 final render
     
 }
 
@@ -1377,7 +1386,8 @@ console.log("isDeliveryTaxable:", isDeliveryTaxable);
     billValue
   };
 }
-
+let isCartLoading = true;
+  
 function renderCart(){
 if (!restaurantInfo || Object.keys(restaurantInfo).length === 0) {
     console.warn("Restaurant info not ready");
@@ -1388,11 +1398,17 @@ console.log("renderCart → restaurantInfo:", restaurantInfo);
   const box = document.getElementById("cartItems");
   const totalBox = document.getElementById("cartTotal");
 
-  if(cart.length === 0){
-    box.innerHTML = "No items";
-    totalBox.innerHTML = "<b>Total: ₹0</b>";
-    return;
-  }
+ if(isCartLoading){
+  box.innerHTML = "Loading...";
+  totalBox.innerHTML = "";
+  return;
+}
+
+if(cart.length === 0){
+  box.innerHTML = "No items";
+  totalBox.innerHTML = "<b>Total: ₹0</b>";
+  return;
+}
 
   let total = 0;
 
