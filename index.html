@@ -1325,7 +1325,15 @@ console.log("GST DEBUG → SGT:", restaurantInfo.SGT);
   );
 
 const orderType = (document.getElementById("OrderType")?.value || "").trim();
+// 🔥 SERVICE CHARGE (DINE IN ONLY)
+let servicePercent = Number(restaurantInfo["Service Charges"] || 0);
+let serviceCharge = 0;
 
+if(orderType === "Dine In" && servicePercent > 0){
+  serviceCharge = (baseTotal * servicePercent) / 100;
+}
+
+  
 const rule = (deliveryRules || []).find(r =>
   r.orderType === orderType &&
   (r.active === true || String(r.active).toUpperCase() === "TRUE")
@@ -1352,11 +1360,11 @@ console.log("isDeliveryTaxable:", isDeliveryTaxable);
   let taxableAmount = 0;
 
   // ✅ Taxable logic
-  if(isDeliveryTaxable){
-    taxableAmount = baseTotal + deliveryCharge;
-  } else {
-    taxableAmount = baseTotal;
-  }
+ if(isDeliveryTaxable){
+  taxableAmount = baseTotal + deliveryCharge + serviceCharge;
+} else {
+  taxableAmount = baseTotal + serviceCharge;
+}
 
   // ✅ GST
   let cgst = taxableAmount * (cgstPercent / 100);
@@ -1377,14 +1385,16 @@ console.log("isDeliveryTaxable:", isDeliveryTaxable);
 
   billValue = Number(billValue.toFixed(2));
 
-  return {
-    baseTotal,
-    deliveryCharge,
-    taxableAmount,
-    cgst,
-    sgst,
-    billValue
-  };
+ return {
+  baseTotal,
+  deliveryCharge,
+  serviceCharge,      // 🔥 NEW
+  servicePercent,     // 🔥 NEW
+  taxableAmount,
+  cgst,
+  sgst,
+  billValue
+};
 }
 let isCartLoading = true;
   
@@ -1490,16 +1500,37 @@ if(isDeliveryTaxable){
 
   totalsHTML += row("Base", bill.baseTotal);
 
+  // 🔥 ADD THIS (service charge show)
+  if(bill.serviceCharge > 0){
+    totalsHTML += `
+      <div class="bill-row">
+        <div>Add: Service charges @ ${bill.servicePercent}%</div>
+        <div class="bill-amt">₹${formatCurrency(bill.serviceCharge)}</div>
+      </div>
+    `;
+  }
+
   if(bill.deliveryCharge > 0){
     totalsHTML += row("Delivery", bill.deliveryCharge);
   }
 
   totalsHTML += row("CGST", bill.cgst);
   totalsHTML += row("SGST", bill.sgst);
+}
 
-} else {
+else {
 
   totalsHTML += row("Base", bill.baseTotal);
+  // 🔥 SERVICE CHARGE SHOW (ONLY IF >0)
+if(bill.serviceCharge > 0){
+  totalsHTML += `
+    <div class="bill-row">
+      <div>Add: Service charges @ ${bill.servicePercent}%</div>
+      <div class="bill-amt">₹${formatCurrency(bill.serviceCharge)}</div>
+    </div>
+  `;
+}
+
 totalsHTML += `
   <div class="bill-row bold-row">
     <div>Total Taxable</div>
