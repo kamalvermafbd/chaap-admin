@@ -1619,10 +1619,10 @@ totalBox.innerHTML = totalsHTML;
   let html = "";
 
   // 🔥 CUSTOMER DETAILS (ADD THIS BLOCK)
-  const name = document.querySelector(".cust-row:nth-child(1) .cust-value")?.textContent || "";
-  const email = document.querySelector(".cust-row:nth-child(2) .cust-value")?.textContent || "";
-  const address = document.querySelector(".cust-row:nth-child(3) .cust-value")?.textContent || "";
-  const mobile = document.getElementById("posMobile")?.value || "";
+const name = document.getElementById("customerName")?.textContent || "";
+const email = document.getElementById("customerEmail")?.textContent || "";
+const address = document.getElementById("customerAddress")?.textContent || "";
+const mobile = document.getElementById("posMobile")?.value || "";
 
   html += "******** BILL ********\n";
   html += "----------------------\n";
