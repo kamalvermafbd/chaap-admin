@@ -1578,7 +1578,7 @@ totalsHTML += `
 
 totalBox.innerHTML = totalsHTML;
 }
-  function generateBill(){
+  function generatePosBill(){
 
   if(cart.length === 0){
     alert("Cart empty");
@@ -1636,8 +1636,8 @@ totalBox.innerHTML = totalsHTML;
   html += `TOTAL: ₹${formatCurrency(bill.billValue)}\n`;
   html += "----------------------\n";
 
-  const preview = document.getElementById("thermalPreview");
-
+const preview = document.getElementById("posThermalPreview");
+    
   preview.style.display = "block";
   preview.textContent = html;
 }
@@ -1846,7 +1846,7 @@ if (pagePOS && !pagePOS.hasChildNodes()) {
 <div class="pos-right">
 
 <!-- 🔥 GENERATE BILL BUTTON -->
-<button onclick="generateBill()" style="
+<button onclick="generatePosBill()" style="
   width:100%;
   padding:10px;
   margin:8px 0;
@@ -1865,6 +1865,16 @@ if (pagePOS && !pagePOS.hasChildNodes()) {
     <div id="cartItems">No items</div>
     <div id="cartTotal"><b>Total: ₹0</b></div>
   </div>
+
+<div id="posThermalPreview" style="
+  display:none;
+  white-space:pre-wrap;
+  background:#fff;
+  padding:10px;
+  border:1px solid #ccc;
+  margin-top:10px;
+  font-family:monospace;
+"></div>
 
 </div>
     </div>
