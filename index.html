@@ -1578,7 +1578,69 @@ totalsHTML += `
 
 totalBox.innerHTML = totalsHTML;
 }
-  
+  function generateBill(){
+
+  if(cart.length === 0){
+    alert("Cart empty");
+    return;
+  }
+
+  const bill = calculateBill(
+    cart.reduce((sum, i) => sum + (i.price * i.qty), 0),
+    restaurantInfo || {}
+  );
+
+  let html = "";
+
+  // 🔥 CUSTOMER DETAILS (ADD THIS BLOCK)
+  const name = document.querySelector(".cust-row:nth-child(1) .cust-value")?.textContent || "";
+  const email = document.querySelector(".cust-row:nth-child(2) .cust-value")?.textContent || "";
+  const address = document.querySelector(".cust-row:nth-child(3) .cust-value")?.textContent || "";
+  const mobile = document.getElementById("posMobile")?.value || "";
+
+  html += "******** BILL ********\n";
+  html += "----------------------\n";
+
+  html += `Name: ${name}\n`;
+  html += `Mobile: ${mobile}\n`;
+
+  if(email) html += `Email: ${email}\n`;
+  if(address) html += `Address: ${address}\n`;
+
+  html += "----------------------\n";
+
+  // 🔥 ITEMS
+  cart.forEach(item => {
+    const amt = item.price * item.qty;
+
+    html += `${item.name} (${item.unit})\n`;
+    html += `${item.qty} x ₹${formatCurrency(item.price)} = ₹${formatCurrency(amt)}\n\n`;
+  });
+
+  html += "----------------------\n";
+
+  html += `Base: ₹${formatCurrency(bill.baseTotal)}\n`;
+
+  if(bill.serviceCharge > 0){
+    html += `Service: ₹${formatCurrency(bill.serviceCharge)}\n`;
+  }
+
+  if(bill.deliveryCharge > 0){
+    html += `Delivery: ₹${formatCurrency(bill.deliveryCharge)}\n`;
+  }
+
+  html += `CGST: ₹${formatCurrency(bill.cgst)}\n`;
+  html += `SGST: ₹${formatCurrency(bill.sgst)}\n`;
+
+  html += "----------------------\n";
+  html += `TOTAL: ₹${formatCurrency(bill.billValue)}\n`;
+  html += "----------------------\n";
+
+  const preview = document.getElementById("thermalPreview");
+
+  preview.style.display = "block";
+  preview.textContent = html;
+}
   function changeQty(name, unit, price, delta){
 
   const id = `qty-${name}-${unit}`;
