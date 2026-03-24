@@ -1675,7 +1675,7 @@ if (pagePOS && !pagePOS.hasChildNodes()) {
       border:1px solid #ccc;
       border-radius:8px;
     " />
-</div>
+
 <!-- ❌ CLEAR BUTTON -->
 <span id="clearSearchBtn" style="
   position:absolute;
@@ -1689,6 +1689,7 @@ if (pagePOS && !pagePOS.hasChildNodes()) {
 ">
   ✖
 </span>
+</div>
 <div id="scanStatus" style="
   margin-top:8px;
   font-weight:bold;
@@ -1880,6 +1881,25 @@ document.addEventListener("input", function(e){
 
 });
 
+      const searchInput = document.getElementById("posSearch");
+const clearBtn = document.getElementById("clearSearchBtn");
+
+if(searchInput && clearBtn){
+
+  // 🔥 show/hide button
+  searchInput.addEventListener("input", function(){
+    clearBtn.style.display = this.value ? "block" : "none";
+  });
+
+  // 🔥 clear click
+  clearBtn.addEventListener("click", function(){
+    searchInput.value = "";
+    clearBtn.style.display = "none";
+    applySearchFilter();
+    searchInput.focus();
+  });
+
+}
       // ⌨️ ESC → reset search
 document.addEventListener("keydown", function(e){
 
