@@ -1653,11 +1653,18 @@ const mobile = document.getElementById("posMobile")?.value || "";
   html += "******** BILL ********\n";
   html += "----------------------\n";
 
-  html += `Name: ${name}\n`;
-  html += `Mobile: ${mobile}\n`;
+html += formatLine("Name:", name) + "\n";
+html += formatLine("Mobile:", mobile) + "\n";
 
-  if(email) html += `Email: ${email}\n`;
-  if(address) html += `Address: ${address}\n`;
+if(email){
+  html += formatLine("Email:", "") + "\n";
+  html += formatLine(email, "") + "\n";
+}
+
+if(address){
+  html += formatLine("Address:", "") + "\n";
+  html += formatLine(address, "") + "\n";
+}
 
   html += "----------------------\n";
 
