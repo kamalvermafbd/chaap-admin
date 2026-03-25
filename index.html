@@ -1760,7 +1760,51 @@ html += formatLine("SGST", formatCurrency(bill.sgst)) + "\n";
 html += "--------------------------------\n";
 
 html += formatLine("TOTAL", formatCurrency(bill.billValue)) + "\n";
- 
+
+
+// 🔥 GST BREAKDOWN START
+html += "\n--- TAX DETAILS ---\n";
+
+// group GST by rate
+let gstMap = {};
+
+cart.forEach(item => {
+  const rate = item.gstRate || 0;
+  const gst = (item.gstAmt || 0) * item.qty;
+
+  if(!gstMap[rate]){
+    gstMap[rate] = 0;
+  }
+
+  gstMap[rate] += gst;
+});
+
+// print item GST
+Object.keys(gstMap).forEach(rate => {
+  const totalGST = gstMap[rate];
+  const half = (totalGST / 2).toFixed(2);
+
+  html += formatLine(`Items (${rate}%)`, "") + "\n";
+  html += formatLine("CGST", half) + "\n";
+  html += formatLine("SGST", half) + "\n";
+});
+
+// 🔥 delivery GST
+if(bill.deliveryCharge > 0){
+  const deliveryGST = (bill.cgst + bill.sgst) - Object.values(gstMap).reduce((a,b)=>a+b,0);
+  const half = (deliveryGST / 2).toFixed(2);
+
+  if(deliveryGST > 0){
+    html += formatLine("Delivery GST", "") + "\n";
+    html += formatLine("CGST", half) + "\n";
+    html += formatLine("SGST", half) + "\n";
+  }
+}
+
+html += "--------------------------\n";
+// 🔥 GST BREAKDOWN END
+
+  
 const modal = document.getElementById("billModal");
 const content = document.getElementById("modalBillContent");
 
