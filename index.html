@@ -1629,6 +1629,25 @@ function formatLine(left, right, width = 32) {
   const space = width - left.length - right.length;
   return left + " ".repeat(space > 0 ? space : 1) + right;
 }  
+
+  function formatLabelValue(label, value, width = 32) {
+  const labelPart = label.padEnd(10, " "); // fixed label width
+  const lines = [];
+
+  while (value.length > 0) {
+    const chunk = value.substring(0, width - labelPart.length);
+    value = value.substring(width - labelPart.length);
+
+    if (lines.length === 0) {
+      lines.push(labelPart + chunk);
+    } else {
+      lines.push(" ".repeat(labelPart.length) + chunk);
+    }
+  }
+
+  return lines.join("\n");
+}
+                                            
   
 function generatePosBill(){
 
@@ -1653,19 +1672,17 @@ const mobile = document.getElementById("posMobile")?.value || "";
   html += "******** BILL ********\n";
   html += "----------------------\n";
 
-html += formatLine("Name:", name) + "\n";
-html += formatLine("Mobile:", mobile) + "\n";
+html += formatLabelValue("Name:", name) + "\n";
+html += formatLabelValue("Mobile:", mobile) + "\n";
 
 if(email){
-  html += formatLine("Email:", "") + "\n";
-  html += formatLine(email, "") + "\n";
+  html += formatLabelValue("Email:", email) + "\n";
 }
 
 if(address){
-  html += formatLine("Address:", "") + "\n";
-  html += formatLine(address, "") + "\n";
+  html += formatLabelValue("Address:", address) + "\n";
 }
-
+  
   html += "----------------------\n";
 
   // 🔥 ITEMS
