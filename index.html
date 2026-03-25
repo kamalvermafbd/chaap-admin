@@ -1770,7 +1770,9 @@ html += formatLine("Type   Value  Rate  CGST  SGST", "") + "\n";
 let gstGroup = {};
 
 cart.forEach(item => {
-  const rate = item.gstRate || 0;
+let rate = item.gstRate || 0;
+rate = rate < 1 ? rate * 100 : rate;   // 🔥 FIX
+  
   const value = item.price * item.qty;
   const gst = (item.gstAmt || 0) * item.qty;
 
