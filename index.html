@@ -1453,7 +1453,7 @@ let sgst = Number((totalGST / 2).toFixed(2));
 
   // ✅ Final Bill
   let billValue = 0;
-billValue = baseTotal + serviceCharge + deliveryCharge + extraGST;
+billValue = baseTotal + serviceCharge + deliveryCharge + itemGST + extraGST;
 
   billValue = Number(billValue.toFixed(2));
 
