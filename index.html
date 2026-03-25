@@ -1762,16 +1762,50 @@ if(bill.serviceCharge > 0){
   html += formatLine("Service", formatCurrency(bill.serviceCharge)) + "\n";
 }
 
-if(bill.deliveryCharge > 0){
-  html += formatLine("Delivery", formatCurrency(bill.deliveryCharge)) + "\n";
+const isDeliveryTaxable =
+  (restaurantInfo.delivery_taxable || "").trim().toLowerCase() === "yes";
+
+// 🔹 Base
+html += formatLine("Base", formatCurrency(bill.baseTotal)) + "\n";
+
+// 🔹 Service (if any)
+if(bill.serviceCharge > 0){
+  html += formatLine("Service", formatCurrency(bill.serviceCharge)) + "\n";
 }
 
-html += formatLine("CGST", formatCurrency(bill.cgst)) + "\n";
-html += formatLine("SGST", formatCurrency(bill.sgst)) + "\n";
+if(isDeliveryTaxable){
 
-html += "--------------------------------\n";
+  // ✅ Delivery taxable = YES
+  if(bill.deliveryCharge > 0){
+    html += formatLine("Delivery", formatCurrency(bill.deliveryCharge)) + "\n";
+  }
 
-html += formatLine("TOTAL", formatCurrency(bill.billValue)) + "\n";
+  html += formatLine("CGST", formatCurrency(bill.cgst)) + "\n";
+  html += formatLine("SGST", formatCurrency(bill.sgst)) + "\n";
+
+  html += "--------------------------------\n";
+
+  html += formatLine("BILL AMT", formatCurrency(bill.billValue)) + "\n";
+
+} else {
+
+  // ✅ Delivery taxable = NO
+  html += formatLine("CGST", formatCurrency(bill.cgst)) + "\n";
+  html += formatLine("SGST", formatCurrency(bill.sgst)) + "\n";
+
+  html += "--------------------------------\n";
+
+  const totalTaxable =
+    bill.baseTotal + bill.serviceCharge + bill.cgst + bill.sgst;
+
+  html += formatLine("Total", formatCurrency(totalTaxable)) + "\n";
+
+  if(bill.deliveryCharge > 0){
+    html += formatLine("Delivery", formatCurrency(bill.deliveryCharge)) + "\n";
+  }
+
+  html += formatLine("BILL AMT", formatCurrency(bill.billValue)) + "\n";
+}
 
 // 🔥 GST TABLE FORMAT
   html += "\n<span class='tax-small'>\n";
