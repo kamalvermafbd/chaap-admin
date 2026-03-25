@@ -1065,8 +1065,11 @@ function handleOrderTypeChange(){
   // 🔥 Step 2: Fetch latest order
   fetchLatestOrder(mobile);
   renderCart(); // 🔥 ADD THIS (MOST IMPORTANT)
+  checkBillReady();
 }
-  function fetchLatestOrder(mobile) {
+
+
+function fetchLatestOrder(mobile) {
   const addressBox = document.getElementById("addressBox"); // ✅ ADD THIS
   const loadingEl = document.getElementById("customerLoading");
   const addressRow = document.getElementById("addressRow");
@@ -1090,6 +1093,7 @@ function handleOrderTypeChange(){
      loadingEl.style.color = "red";   // ✅ ADD THIS
   loadingEl.style.fontWeight = "600"; // optional for visibility
     loadingEl.textContent = "Fetching customer details...";
+    checkBillReady();
   }
   console.log("📞 Calling API with:", mobile);
 
@@ -1113,12 +1117,14 @@ loadingEl.style.display = "block";
 
         const addressBox = document.getElementById("addressBox");
         if (addressBox) addressBox.style.display = "block";
+        checkBillReady();   // 🔥 ADD THIS (VERY IMPORTANT)
+
       if (addressRow) addressRow.style.display = "none";
+        
         return;
       }
 
-      const data = res.data;
-if (loadingEl) loadingEl.style.display = "none";
+      const data = res.data;     
    // =========================
       // ✅ NAME
       // =========================
@@ -1164,6 +1170,12 @@ if (loadingEl) loadingEl.style.display = "none";
         if (addressRow) addressRow.style.display = "none";
       }
 
+if (loadingEl) {
+  loadingEl.style.display = "none";
+}
+
+checkBillReady();
+      
     })
     .catch(function (err) {
       if (loadingEl) {
@@ -1175,6 +1187,8 @@ if (loadingEl) loadingEl.style.display = "none";
       if (addressRow) addressRow.style.display = "none";
       console.error("Fetch error:", err);
       clearCustomerFields();
+      checkBillReady();   // 🔥 ADD THIS (VERY IMPORTANT)
+
     });
 }
   
@@ -1290,6 +1304,7 @@ function handleMobileInput() {
     orderTypeEl.value = "";
 
     clearCustomerFields();
+    checkBillReady();
   }
 }
 
@@ -1648,6 +1663,31 @@ function formatLine(left, right, width = 32) {
   return lines.join("\n");
 }
                                             
+function checkBillReady(){
+
+  const mobile = document.getElementById("posMobile")?.value.trim();
+  const orderType = document.getElementById("OrderType")?.value;
+  const loadingEl = document.getElementById("customerLoading");
+
+  const btn = document.getElementById("generateBillBtn");
+  if(!btn) return;
+
+  const isMobileValid = /^\d{10}$/.test(mobile);
+  const isOrderSelected = !!orderType;
+
+  // 🔥 MOST IMPORTANT: loading check
+  const isLoading = loadingEl && loadingEl.style.display !== "none";
+
+  if(isMobileValid && isOrderSelected && !isLoading){
+    btn.disabled = false;
+    btn.style.opacity = "1";
+    btn.style.cursor = "pointer";
+  } else {
+    btn.disabled = true;
+    btn.style.opacity = "0.6";
+    btn.style.cursor = "not-allowed";
+  }
+}
   
 function generatePosBill(){
 
@@ -1965,8 +2005,7 @@ if (pagePOS && !pagePOS.hasChildNodes()) {
 </div>
 <div class="pos-right">
 
-<!-- 🔥 GENERATE BILL BUTTON -->
-<button onclick="generatePosBill()" style="
+<button id="generateBillBtn" onclick="generatePosBill()" disabled style="
   width:100%;
   padding:10px;
   margin:8px 0;
@@ -1975,6 +2014,7 @@ if (pagePOS && !pagePOS.hasChildNodes()) {
   border:none;
   border-radius:6px;
   font-weight:600;
+  opacity:0.6;
 ">
   Generate Bill
 </button>
