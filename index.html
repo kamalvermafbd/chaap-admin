@@ -604,9 +604,12 @@ td:nth-child(8) { width: 220px; } /* Action */
   word-break: break-word;
   overflow-wrap: break-word;
 }
-    .tax-small {
+    #modalBillContent pre {
+  font-size: 10px;
+}
+
+#modalBillContent .tax-small {
   font-size: 8px;
-  line-height: 1.3;
 }
   </style>
 </head>
@@ -1766,6 +1769,7 @@ html += "--------------------------------\n";
 html += formatLine("TOTAL", formatCurrency(bill.billValue)) + "\n";
 
 // 🔥 GST TABLE FORMAT
+  html += "\n<span class='tax-small'>\n";
 html += "\n--- TAX DETAILS ---\n";
 
 // header
@@ -1837,6 +1841,7 @@ html +=
   "Total".padEnd(23) +
   bill.cgst.toFixed(2).padStart(8) +
   bill.sgst.toFixed(2).padStart(8) + "\n";
+  html += "</span>\n";
 // 🔥 GST BREAKDOWN END
 
   
@@ -1848,7 +1853,7 @@ if(!modal || !content){
   return;
 }
 
-content.textContent = html;
+content.innerHTML = "<pre>" + html + "</pre>";
 modal.classList.add("active");
     
 }
