@@ -598,7 +598,12 @@ td:nth-child(8) { width: 220px; } /* Action */
 .modal-overlay.active {
   display: flex;
 }
-    
+
+    #modalBillContent {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
   </style>
 </head>
 <body>
@@ -1719,8 +1724,14 @@ function printBill(){
   const win = window.open('', '', 'width=300,height=600');
 
   win.document.write(`
-    <pre style="font-family:monospace;">${content.textContent}</pre>
-  `);
+  <pre style="
+    font-family:monospace;
+    white-space: pre-wrap;
+    word-break: break-word;
+  ">
+${content.textContent}
+  </pre>
+`);
 
   win.document.close();
   win.print();
