@@ -1761,47 +1761,59 @@ html += "--------------------------------\n";
 
 html += formatLine("TOTAL", formatCurrency(bill.billValue)) + "\n";
 
-
-// 🔥 GST BREAKDOWN START
+// 🔥 GST TABLE FORMAT
 html += "\n--- TAX DETAILS ---\n";
 
-// group GST by rate
-let gstMap = {};
+html += formatLine("Type   Value  Rate  CGST  SGST", "") + "\n";
+
+// 🔹 group items by GST rate
+let gstGroup = {};
 
 cart.forEach(item => {
   const rate = item.gstRate || 0;
+  const value = item.price * item.qty;
   const gst = (item.gstAmt || 0) * item.qty;
 
-  if(!gstMap[rate]){
-    gstMap[rate] = 0;
+  if(!gstGroup[rate]){
+    gstGroup[rate] = { value: 0, gst: 0 };
   }
 
-  gstMap[rate] += gst;
+  gstGroup[rate].value += value;
+  gstGroup[rate].gst += gst;
 });
 
-// print item GST
-Object.keys(gstMap).forEach(rate => {
-  const totalGST = gstMap[rate];
-  const half = (totalGST / 2).toFixed(2);
+// 🔹 print item rows
+Object.keys(gstGroup).forEach(rate => {
+  const row = gstGroup[rate];
+  const cgst = (row.gst / 2).toFixed(2);
+  const sgst = (row.gst / 2).toFixed(2);
 
-  html += formatLine(`Items (${rate}%)`, "") + "\n";
-  html += formatLine("CGST", half) + "\n";
-  html += formatLine("SGST", half) + "\n";
+  html += formatLine(
+    `Items ${row.value.toFixed(2)} ${rate}%`,
+    `${cgst} ${sgst}`
+  ) + "\n";
 });
 
-// 🔥 delivery GST
+// 🔹 delivery row
 if(bill.deliveryCharge > 0){
-  const deliveryGST = (bill.cgst + bill.sgst) - Object.values(gstMap).reduce((a,b)=>a+b,0);
-  const half = (deliveryGST / 2).toFixed(2);
+  const deliveryGST = (bill.cgst + bill.sgst) - Object.values(gstGroup).reduce((a,b)=>a+b.gst,0);
 
-  if(deliveryGST > 0){
-    html += formatLine("Delivery GST", "") + "\n";
-    html += formatLine("CGST", half) + "\n";
-    html += formatLine("SGST", half) + "\n";
-  }
+  const cgst = (deliveryGST / 2).toFixed(2);
+  const sgst = (deliveryGST / 2).toFixed(2);
+
+  html += formatLine(
+    `Delivery ${bill.deliveryCharge.toFixed(2)} 5%`,
+    `${cgst} ${sgst}`
+  ) + "\n";
 }
 
-html += "--------------------------\n";
+// 🔹 total row
+html += "--------------------------------\n";
+
+html += formatLine(
+  "Total",
+  `${bill.cgst.toFixed(2)} ${bill.sgst.toFixed(2)}`
+) + "\n";
 // 🔥 GST BREAKDOWN END
 
   
