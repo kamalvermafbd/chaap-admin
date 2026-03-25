@@ -604,6 +604,10 @@ td:nth-child(8) { width: 220px; } /* Action */
   word-break: break-word;
   overflow-wrap: break-word;
 }
+    .tax-small {
+  font-size: 11px;
+  line-height: 1.3;
+}
   </style>
 </head>
 <body>
@@ -1762,17 +1766,19 @@ html += "--------------------------------\n";
 html += formatLine("TOTAL", formatCurrency(bill.billValue)) + "\n";
 
 // 🔥 GST TABLE FORMAT
+  html += "\n<span class='tax-small'>\n";
 html += "\n--- TAX DETAILS ---\n";
 
-html += formatLine("Type   Value  Rate  CGST  SGST", "") + "\n";
+// 🔹 header (fixed spacing)
+html += "Type     Value   Rate   CGST   SGST\n";
 
-// 🔹 group items by GST rate
+// 🔹 group items
 let gstGroup = {};
 
 cart.forEach(item => {
-let rate = item.gstRate || 0;
-rate = rate < 1 ? rate * 100 : rate;   // 🔥 FIX
-  
+  let rate = item.gstRate || 0;
+  rate = rate < 1 ? rate * 100 : rate;
+
   const value = item.price * item.qty;
   const gst = (item.gstAmt || 0) * item.qty;
 
@@ -1784,38 +1790,45 @@ rate = rate < 1 ? rate * 100 : rate;   // 🔥 FIX
   gstGroup[rate].gst += gst;
 });
 
-// 🔹 print item rows
+// 🔹 print items (aligned columns)
 Object.keys(gstGroup).forEach(rate => {
   const row = gstGroup[rate];
+
   const cgst = (row.gst / 2).toFixed(2);
   const sgst = (row.gst / 2).toFixed(2);
 
-  html += formatLine(
-    `Items ${row.value.toFixed(2)} ${rate}%`,
-    `${cgst} ${sgst}`
-  ) + "\n";
+  html +=
+    "Items".padEnd(8) +
+    row.value.toFixed(2).padStart(8) +
+    (rate + "%").padStart(7) +
+    cgst.padStart(8) +
+    sgst.padStart(8) + "\n";
 });
 
-// 🔹 delivery row
+// 🔹 delivery
 if(bill.deliveryCharge > 0){
   const deliveryGST = (bill.cgst + bill.sgst) - Object.values(gstGroup).reduce((a,b)=>a+b.gst,0);
 
   const cgst = (deliveryGST / 2).toFixed(2);
   const sgst = (deliveryGST / 2).toFixed(2);
 
-  html += formatLine(
-    `Delivery ${bill.deliveryCharge.toFixed(2)} 5%`,
-    `${cgst} ${sgst}`
-  ) + "\n";
+  html +=
+    "Delivery".padEnd(8) +
+    bill.deliveryCharge.toFixed(2).padStart(8) +
+    "5%".padStart(7) +
+    cgst.padStart(8) +
+    sgst.padStart(8) + "\n";
 }
 
-// 🔹 total row
+// 🔹 line
 html += "--------------------------------\n";
 
-html += formatLine(
-  "Total",
-  `${bill.cgst.toFixed(2)} ${bill.sgst.toFixed(2)}`
-) + "\n";
+// 🔹 total
+html +=
+  "Total".padEnd(23) +
+  bill.cgst.toFixed(2).padStart(8) +
+  bill.sgst.toFixed(2).padStart(8) + "\n";
+  html += "\n<span class='tax-small'>\n";
 // 🔥 GST BREAKDOWN END
 
   
