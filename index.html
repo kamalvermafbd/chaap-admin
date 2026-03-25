@@ -1766,10 +1766,10 @@ html += "--------------------------------\n";
 html += formatLine("TOTAL", formatCurrency(bill.billValue)) + "\n";
 
 // 🔥 GST TABLE FORMAT
-  html += "\n<span class='tax-small'>\n";
-html += "\n--- TAX DETAILS ---\n";
+html += "\n<span class='tax-small'>\n";
+html += "--- TAX DETAILS ---\n";
 
-// 🔹 header (fixed spacing)
+// header
 html += "Type     Value   Rate   CGST   SGST\n";
 
 // 🔹 group items
@@ -1790,7 +1790,7 @@ cart.forEach(item => {
   gstGroup[rate].gst += gst;
 });
 
-// 🔹 print items (aligned columns)
+// 🔹 items rows
 Object.keys(gstGroup).forEach(rate => {
   const row = gstGroup[rate];
 
@@ -1818,17 +1818,18 @@ if(bill.deliveryCharge > 0){
     "5%".padStart(7) +
     cgst.padStart(8) +
     sgst.padStart(8) + "\n";
-}
+});
 
-// 🔹 line
+// line
 html += "--------------------------------\n";
 
-// 🔹 total
+// total
 html +=
   "Total".padEnd(23) +
   bill.cgst.toFixed(2).padStart(8) +
   bill.sgst.toFixed(2).padStart(8) + "\n";
-  html += "\n<span class='tax-small'>\n";
+
+html += "</span>\n";
 // 🔥 GST BREAKDOWN END
 
   
