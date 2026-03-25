@@ -1766,13 +1766,12 @@ html += "--------------------------------\n";
 html += formatLine("TOTAL", formatCurrency(bill.billValue)) + "\n";
 
 // 🔥 GST TABLE FORMAT
-html += "\n<span class='tax-small'>\n";
-html += "--- TAX DETAILS ---\n";
+html += "\n--- TAX DETAILS ---\n";
 
 // header
 html += "Type     Value   Rate   CGST   SGST\n";
 
-// 🔹 group items
+// 🔹 group items by GST rate
 let gstGroup = {};
 
 cart.forEach(item => {
@@ -1790,7 +1789,7 @@ cart.forEach(item => {
   gstGroup[rate].gst += gst;
 });
 
-// 🔹 items rows
+// 🔹 print items
 Object.keys(gstGroup).forEach(rate => {
   const row = gstGroup[rate];
 
@@ -1805,31 +1804,39 @@ Object.keys(gstGroup).forEach(rate => {
     sgst.padStart(8) + "\n";
 });
 
-// 🔹 delivery
+// 🔹 DELIVERY (dynamic GST detect)
 if(bill.deliveryCharge > 0){
-  const deliveryGST = (bill.cgst + bill.sgst) - Object.values(gstGroup).reduce((a,b)=>a+b.gst,0);
 
-  const cgst = (deliveryGST / 2).toFixed(2);
-  const sgst = (deliveryGST / 2).toFixed(2);
+  const totalItemGST = Object.values(gstGroup).reduce((a,b)=>a+b.gst,0);
+  const totalGST = bill.cgst + bill.sgst;
 
-  html +=
-    "Delivery".padEnd(8) +
-    bill.deliveryCharge.toFixed(2).padStart(8) +
-    "5%".padStart(7) +
-    cgst.padStart(8) +
-    sgst.padStart(8) + "\n";
-});
+  const deliveryGST = totalGST - totalItemGST;
 
-// line
+  if(deliveryGST > 0){
+
+    const cgst = (deliveryGST / 2).toFixed(2);
+    const sgst = (deliveryGST / 2).toFixed(2);
+
+    // 🔥 dynamic rate calculate
+    const deliveryRate = (deliveryGST / bill.deliveryCharge) * 100;
+
+    html +=
+      "Delivery".padEnd(8) +
+      bill.deliveryCharge.toFixed(2).padStart(8) +
+      (deliveryRate.toFixed(0) + "%").padStart(7) +
+      cgst.padStart(8) +
+      sgst.padStart(8) + "\n";
+  }
+}
+
+// 🔹 line
 html += "--------------------------------\n";
 
-// total
+// 🔹 total
 html +=
   "Total".padEnd(23) +
   bill.cgst.toFixed(2).padStart(8) +
   bill.sgst.toFixed(2).padStart(8) + "\n";
-
-html += "</span>\n";
 // 🔥 GST BREAKDOWN END
 
   
