@@ -1736,7 +1736,12 @@ if(address){
   cart.forEach(item => {
     const amt = item.price * item.qty;
 
-    const itemName = `${item.name} (${item.unit})`;
+    let rate = item.gstRate || 0;
+rate = rate < 1 ? rate * 100 : rate;
+
+const gstLabel = rate > 0 ? ` (${rate}%)` : "";
+
+const itemName = `${item.name} (${item.unit})${gstLabel}`;
 
 // 🔥 name wrap
 html += formatLine(itemName, "");
