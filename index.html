@@ -1778,7 +1778,12 @@ html += formatLine("TOTAL", formatCurrency(bill.billValue)) + "\n";
 html += "\n--- TAX DETAILS ---\n";
 
 // header
-html += "Type     Value   Rate   CGST   SGST\n";
+html +=
+  "Type".padEnd(8) +
+  "Value".padStart(8) +
+  "Rate".padStart(7) +
+  "CGST".padStart(8) +
+  "SGST".padStart(8) + "\n";
 
 // 🔹 group items by GST rate
 let gstGroup = {};
