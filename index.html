@@ -1073,6 +1073,7 @@ function handleOrderTypeChange(){
   fetchLatestOrder(mobile);
   renderCart(); // 🔥 ADD THIS (MOST IMPORTANT)
   checkBillReady();
+  saveCustomerState();
 }
 
 
@@ -1195,7 +1196,7 @@ checkBillReady();
       console.error("Fetch error:", err);
       clearCustomerFields();
       checkBillReady();   // 🔥 ADD THIS (VERY IMPORTANT)
-
+saveCustomerState();
     });
 }
   
@@ -1468,6 +1469,72 @@ billValue = baseTotal + serviceCharge + deliveryCharge + itemGST + extraGST;
   billValue
 };
 }
+
+
+function saveCustomerState(){
+
+  const name = document.getElementById("customerName")?.textContent || "";
+  const email = document.getElementById("customerEmail")?.textContent || "";
+  const address = document.getElementById("customerAddress")?.textContent || "";
+  const orderType = document.getElementById("OrderType")?.value || "";
+  const mobile = document.getElementById("posMobile")?.value || "";
+  const payment = document.getElementById("posPaymentType")?.value || "";
+
+  const data = {
+    name,
+    email,
+    address,
+    orderType,
+    mobile,
+    payment
+  };
+
+  localStorage.setItem("posCustomer", JSON.stringify(data));
+}
+  
+  function loadCustomerState(){
+
+  const saved = localStorage.getItem("posCustomer");
+
+  if(!saved) return;
+
+  const data = JSON.parse(saved);
+
+  // 🔥 Mobile
+  if(data.mobile){
+    document.getElementById("posMobile").value = data.mobile;
+  }
+
+  // 🔥 Order Type
+  if(data.orderType){
+    document.getElementById("OrderType").value = data.orderType;
+    document.getElementById("OrderType").disabled = false;
+  }
+
+  // 🔥 Payment
+  if(data.payment){
+    document.getElementById("posPaymentType").value = data.payment;
+  }
+
+  // 🔥 Customer details
+  if(data.name){
+    document.getElementById("customerName").textContent = data.name;
+    document.getElementById("nameRow").style.display = "flex";
+  }
+
+  if(data.email){
+    document.getElementById("customerEmail").textContent = data.email;
+    document.getElementById("emailRow").style.display = "flex";
+  }
+
+  if(data.address){
+    document.getElementById("customerAddress").textContent = data.address;
+    document.getElementById("addressRow").style.display = "flex";
+  }
+
+  document.getElementById("addressBox").style.display = "block";
+}
+  
 let isCartLoading = true;
   
 function renderCart(){
@@ -2028,7 +2095,7 @@ if (pagePOS && !pagePOS.hasChildNodes()) {
   </select>
 
   <!-- 💳 Payment Type -->
-  <select id="posPaymentType" class="pos-select">
+  <select id="posPaymentType" class="pos-select" onchange="saveCustomerState()">
     <option value="Cash">Cash</option>
     <option value="Online">Online</option>
   </select>
