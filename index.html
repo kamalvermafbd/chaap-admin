@@ -866,6 +866,7 @@ if(savedCart){
 isCartLoading = false;  // 🔥 loading complete
 renderCart();           // 🔥 ADD THIS (FINAL FIX)
 // 🔥🔥🔥 ADD THIS (MOST IMPORTANT)
+    loadPOSItems();
   setTimeout(loadCustomerState, 300);
 
     
@@ -1311,12 +1312,18 @@ function handleMobileInput() {
 
   if (/^\d{10}$/.test(mobile)) {
     orderTypeEl.disabled = false;
+     // 🔥 SAVE (valid mobile)
+    saveCustomerState();
+    
   } else {
     orderTypeEl.disabled = true;
     orderTypeEl.value = "";
 
     clearCustomerFields();
     checkBillReady();
+    // 🔥 SAVE (invalid state bhi save karo)
+    saveCustomerState();
+  }
   }
 }
 
@@ -1523,10 +1530,9 @@ function saveCustomerState(){
   localStorage.setItem("posCustomer", JSON.stringify(data));
 }
   
-  function loadCustomerState(){
+function loadCustomerState(){
 
   const saved = localStorage.getItem("posCustomer");
-
   if(!saved) return;
 
   const data = JSON.parse(saved);
@@ -1534,12 +1540,16 @@ function saveCustomerState(){
   // 🔥 Mobile
   if(data.mobile){
     document.getElementById("posMobile").value = data.mobile;
+
+    // 🔥 IMPORTANT (trigger logic)
+    handleMobileInput();
   }
 
   // 🔥 Order Type
   if(data.orderType){
-    document.getElementById("OrderType").value = data.orderType;
-    document.getElementById("OrderType").disabled = false;
+    const orderEl = document.getElementById("OrderType");
+    orderEl.value = data.orderType;
+    orderEl.disabled = false;
   }
 
   // 🔥 Payment
@@ -1564,6 +1574,9 @@ function saveCustomerState(){
   }
 
   document.getElementById("addressBox").style.display = "block";
+
+  // 🔥 MOST IMPORTANT (buttons update)
+  checkBillReady();
 }
   
 let isCartLoading = true;
