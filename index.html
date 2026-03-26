@@ -2064,11 +2064,22 @@ ${content.textContent}
         i.Name === name && i.Unit === unit
       );
 
+ // 🔴 DEBUG (important)
+      console.log("🧾 Selected Item:", menuItem);
+
+      if(!menuItem){
+        console.error("❌ menuItem NOT FOUND:", name, unit);
+        return;
+      }
+
+      
       // 🔥 GST EXTRACT
       const gstRate = menuItem ? menuItem.GST_Rate : 0;
       const gstAmt  = menuItem ? Number(menuItem.GST_Amt || 0) : 0;
        // 🔥 PUSH WITH GST
       cart.push({
+        itemId: menuItem?.itemId || "",
+  variantId: menuItem?.variantId || "",
         name,
         unit,
         price,
@@ -2076,6 +2087,8 @@ ${content.textContent}
         gstRate,   // 🔥 NEW
         gstAmt     // 🔥 NEW (per unit)
       });
+       // 🔴 DEBUG
+      console.log("🛒 Cart after add:", cart);
     }
   }
 
