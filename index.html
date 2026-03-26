@@ -866,7 +866,6 @@ if(savedCart){
 isCartLoading = false;  // 🔥 loading complete
 renderCart();           // 🔥 ADD THIS (FINAL FIX)
 // 🔥🔥🔥 ADD THIS (MOST IMPORTANT)
-    loadPOSItems();
   setTimeout(loadCustomerState, 300);
 
     
@@ -1262,9 +1261,9 @@ syncQtyUI();
    data.forEach(v => {
 
   // 🔥 ADD THIS (VERY IMPORTANT)
-const key = normalize(name) + "||" + normalize(unit);
-const variant = variantMap[key];
-
+const key = normalize(item.Name) + "||" + normalize(v.Unit);
+variantMap[key] = v;
+     
   console.log("📦 Variant stored:", key, v);
 
   html += `
@@ -2063,9 +2062,10 @@ ${content.textContent}
   if (el) el.textContent = qty;
 
   // 🔥 CART UPDATE
-  const existing = cart.find(c =>
-    c.name === name && c.unit === unit
-  );
+ const existing = cart.find(c =>
+  c.itemId === menuItem.itemId &&
+  c.variantId === variant.variantId
+);
 
   if (existing) {
     existing.qty = qty;
@@ -2093,8 +2093,8 @@ ${content.textContent}
       const gstAmt  = menuItem ? Number(menuItem.GST_Amt || 0) : 0;
        // 🔥 PUSH WITH GST
       // 🔥 VARIANT LOOKUP
-const key = name.trim() + "||" + unit.trim();
-const variant = variantMap[key];
+const key = normalize(item.Name) + "||" + normalize(v.Unit);
+variantMap[key] = v;
 
 console.log("🔍 Variant lookup:", key, variant);
 // 🔴 SAFETY CHECK
