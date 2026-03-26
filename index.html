@@ -1204,6 +1204,16 @@ checkBillReady();
 saveCustomerState();
     });
 }
+
+
+  function normalize(str){
+  return (str || "")
+    .toString()
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, " ");
+}
+  
   let variantMap = {};
 function renderItemVariants(item){
 
@@ -1252,8 +1262,8 @@ syncQtyUI();
    data.forEach(v => {
 
   // 🔥 ADD THIS (VERY IMPORTANT)
-  const key = item.Name + "||" + v.Unit;
-  variantMap[key] = v;
+const key = normalize(name) + "||" + normalize(unit);
+const variant = variantMap[key];
 
   console.log("📦 Variant stored:", key, v);
 
