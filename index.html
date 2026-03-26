@@ -1204,7 +1204,7 @@ checkBillReady();
 saveCustomerState();
     });
 }
-  
+  let variantMap = {};
 function renderItemVariants(item){
 
   const box = document.getElementById("variants-" + item.Name);
@@ -1249,26 +1249,31 @@ syncQtyUI();
 
       let html = "";
 
-      data.forEach(v => {
+   data.forEach(v => {
 
-        html += `
-          <div style="margin-bottom:10px;">
+  // 🔥 ADD THIS (VERY IMPORTANT)
+  const key = item.Name + "||" + v.Unit;
+  variantMap[key] = v;
 
-            <div style="display:flex;justify-content:space-between;">
-              <span>${v.Unit}</span>
-              <span>₹${getNetPrice(v.Price, v.Discount_Percent)}</span>
-            </div>
+  console.log("📦 Variant stored:", key, v);
 
-            <div style="margin-top:4px;">
-              <button onclick="changeQty('${item.Name}','${v.Unit}',${getNetPrice(v.Price, v.Discount_Percent)},-1)">-</button>
-              <span id="qty-${item.Name}-${v.Unit}">0</span>
-              <button onclick="changeQty('${item.Name}','${v.Unit}',${getNetPrice(v.Price, v.Discount_Percent)},1)">+</button>
-            </div>
+  html += `
+    <div style="margin-bottom:10px;">
 
-          </div>
-        `;
+      <div style="display:flex;justify-content:space-between;">
+        <span>${v.Unit}</span>
+        <span>₹${getNetPrice(v.Price, v.Discount_Percent)}</span>
+      </div>
 
-      });
+      <div style="margin-top:4px;">
+        <button onclick="changeQty('${item.Name}','${v.Unit}',${getNetPrice(v.Price, v.Discount_Percent)},-1)">-</button>
+        <span id="qty-${item.Name}-${v.Unit}">0</span>
+        <button onclick="changeQty('${item.Name}','${v.Unit}',${getNetPrice(v.Price, v.Discount_Percent)},1)">+</button>
+      </div>
+
+    </div>
+  `;
+});
 
       box.innerHTML = html;
 
