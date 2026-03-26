@@ -1540,8 +1540,6 @@ function loadCustomerState(){
   // 🔥 Mobile
   if(data.mobile){
     document.getElementById("posMobile").value = data.mobile;
-
-    // 🔥 IMPORTANT (trigger logic)
     handleMobileInput();
   }
 
@@ -1550,6 +1548,9 @@ function loadCustomerState(){
     const orderEl = document.getElementById("OrderType");
     orderEl.value = data.orderType;
     orderEl.disabled = false;
+
+    // 🔥 KEY LINE (game changer)
+    handleOrderTypeChange();
   }
 
   // 🔥 Payment
@@ -1557,25 +1558,10 @@ function loadCustomerState(){
     document.getElementById("posPaymentType").value = data.payment;
   }
 
-  // 🔥 Customer details
-  if(data.name){
-    document.getElementById("customerName").textContent = data.name;
-    document.getElementById("nameRow").style.display = "flex";
-  }
-
-  if(data.email){
-    document.getElementById("customerEmail").textContent = data.email;
-    document.getElementById("emailRow").style.display = "flex";
-  }
-
-  if(data.address){
-    document.getElementById("customerAddress").textContent = data.address;
-    document.getElementById("addressRow").style.display = "flex";
-  }
-
+  // 🔥 UI box show
   document.getElementById("addressBox").style.display = "block";
 
-  // 🔥 MOST IMPORTANT (buttons update)
+  // 🔥 button state
   checkBillReady();
 }
   
