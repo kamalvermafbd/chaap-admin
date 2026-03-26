@@ -2089,7 +2089,9 @@ const variant = variantMap[key];
 console.log("🔍 Variant lookup:", key, variant);
 // 🔴 SAFETY CHECK
 if(!variant){
-  console.warn("⚠️ Variant NOT FOUND:", key);
+  console.error("❌ Variant NOT FOUND:", key);
+  alert("Variant load nahi hua, please retry");
+  return;
 }
 cart.push({
   itemId: menuItem.itemId || "",
