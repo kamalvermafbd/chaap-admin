@@ -2047,83 +2047,78 @@ ${content.textContent}
   win.document.close();
   win.print();
 }
-  
   function changeQty(name, unit, price, delta){
 
   const id = `qty-${name}-${unit}`;
   const el = document.getElementById(id);
 
   let qty = Number(el?.textContent || 0);
-
   qty += delta;
 
   if (qty < 0) qty = 0;
-
   if (el) el.textContent = qty;
 
-  // 🔥 CART UPDATE
- const existing = cart.find(c =>
-  c.itemId === menuItem.itemId &&
-  c.variantId === variant.variantId
-);
+  // 🔥 MENU ITEM FIND
+  const menuItem = menuItems.find(i => i.Name === name);
+
+  if(!menuItem){
+    console.error("❌ menuItem NOT FOUND:", name, unit);
+    return;
+  }
+
+  // 🔥 VARIANT LOOKUP
+  const key = normalize(name) + "||" + normalize(unit);
+  const variant = variantMap[key];
+
+  console.log("🔍 Variant lookup:", key, variant);
+
+  if(!variant){
+    console.error("❌ Variant NOT FOUND:", key);
+    alert("Variant load nahi hua, please retry");
+    return;
+  }
+
+  // 🔥 FIND EXISTING (NOW SAFE)
+  const existing = cart.find(c =>
+    c.itemId === menuItem.itemId &&
+    c.variantId === variant.variantId
+  );
 
   if (existing) {
     existing.qty = qty;
+
     if (existing.qty === 0) {
-      cart = cart.filter(c => !(c.name === name && c.unit === unit));
+      cart = cart.filter(c =>
+        !(c.itemId === menuItem.itemId &&
+          c.variantId === variant.variantId)
+      );
     }
+
   } else {
-    if (qty > 0) {
-// 🔥 MENU ITEM FIND
-      const menuItem = menuItems.find(i =>
-  i.Name === name
-);
+    if (qty > 0){
 
- // 🔴 DEBUG (important)
-      console.log("🧾 Selected Item:", menuItem);
+      const gstRate = menuItem.GST_Rate || 0;
+      const gstAmt  = Number(menuItem.GST_Amt || 0);
 
-      if(!menuItem){
-        console.error("❌ menuItem NOT FOUND:", name, unit);
-        return;
-      }
+      cart.push({
+        itemId: menuItem.itemId || "",
+        variantId: variant.variantId || "",
 
-      
-      // 🔥 GST EXTRACT
-      const gstRate = menuItem ? menuItem.GST_Rate : 0;
-      const gstAmt  = menuItem ? Number(menuItem.GST_Amt || 0) : 0;
-       // 🔥 PUSH WITH GST
-      // 🔥 VARIANT LOOKUP
-const key = normalize(item.Name) + "||" + normalize(v.Unit);
-variantMap[key] = v;
+        name,
+        unit,
+        price,
+        qty,
 
-console.log("🔍 Variant lookup:", key, variant);
-// 🔴 SAFETY CHECK
-if(!variant){
-  console.error("❌ Variant NOT FOUND:", key);
-  alert("Variant load nahi hua, please retry");
-  return;
-}
-cart.push({
-  itemId: menuItem.itemId || "",
-  variantId: variant?.variantId || "",
+        gstRate,
+        gstAmt
+      });
 
-  name,
-  unit,
-  price,
-  qty,
-
-  gstRate,
-  gstAmt
-});
-       // 🔴 DEBUG
       console.log("🛒 Cart after add:", cart);
     }
   }
 
   renderCart();
-
-    // 🔥 ADD THIS LINE
-localStorage.setItem("posCart", JSON.stringify(cart));
+  localStorage.setItem("posCart", JSON.stringify(cart));
 }
 
   
