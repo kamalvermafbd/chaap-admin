@@ -2085,9 +2085,9 @@ ${content.textContent}
   );
 
   if (existing) {
-    existing.qty = qty;
+    existing.qty += delta;
 
-    if (existing.qty === 0) {
+    if (existing.qty <= 0) {
       cart = cart.filter(c =>
         !(c.itemId === menuItem.itemId &&
           c.variantId === variant.variantId)
