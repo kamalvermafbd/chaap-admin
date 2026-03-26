@@ -2082,16 +2082,27 @@ ${content.textContent}
       const gstRate = menuItem ? menuItem.GST_Rate : 0;
       const gstAmt  = menuItem ? Number(menuItem.GST_Amt || 0) : 0;
        // 🔥 PUSH WITH GST
-      cart.push({
-        itemId: menuItem?.itemId || "",
-  variantId: menuItem?.variantId || "",
-        name,
-        unit,
-        price,
-        qty,
-        gstRate,   // 🔥 NEW
-        gstAmt     // 🔥 NEW (per unit)
-      });
+      // 🔥 VARIANT LOOKUP
+const key = name.trim() + "||" + unit.trim();
+const variant = variantMap[key];
+
+console.log("🔍 Variant lookup:", key, variant);
+// 🔴 SAFETY CHECK
+if(!variant){
+  console.warn("⚠️ Variant NOT FOUND:", key);
+}
+cart.push({
+  itemId: menuItem.itemId || "",
+  variantId: variant?.variantId || "",
+
+  name,
+  unit,
+  price,
+  qty,
+
+  gstRate,
+  gstAmt
+});
        // 🔴 DEBUG
       console.log("🛒 Cart after add:", cart);
     }
