@@ -1470,6 +1470,33 @@ billValue = baseTotal + serviceCharge + deliveryCharge + itemGST + extraGST;
 };
 }
 
+function generatePOSOrderNumber(){
+
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Orders");
+const lastRow = sheet.getLastRow();
+const start = Math.max(2, lastRow - 200);
+
+const data = sheet.getRange(start, 2, lastRow - start + 1, 1).getValues();
+  // Column B = OrderNumber
+
+  let max = 0;
+
+  data.forEach(row => {
+
+    const val = row[0];
+
+    if(val && val.startsWith("POS-")){
+      const num = Number(val.replace("POS-",""));
+      if(num > max) max = num;
+    }
+
+  });
+
+  const next = max + 1;
+
+  return "POS-" + String(next).padStart(4, "0"); // POS-0001
+}
+  
 
 function saveCustomerState(){
 
@@ -1743,24 +1770,32 @@ function checkBillReady(){
   const orderType = document.getElementById("OrderType")?.value;
   const loadingEl = document.getElementById("customerLoading");
 
-  const btn = document.getElementById("generateBillBtn");
-  if(!btn) return;
+  const billBtn = document.getElementById("generateBillBtn");
+  const saveBtn = document.getElementById("saveOrderBtn");
 
   const isMobileValid = /^\d{10}$/.test(mobile);
   const isOrderSelected = !!orderType;
 
-  // 🔥 MOST IMPORTANT: loading check
+  // 🔥 loading check
   const isLoading = loadingEl && loadingEl.style.display !== "none";
 
-  if(isMobileValid && isOrderSelected && !isLoading){
-    btn.disabled = false;
-    btn.style.opacity = "1";
-    btn.style.cursor = "pointer";
-  } else {
-    btn.disabled = true;
-    btn.style.opacity = "0.6";
-    btn.style.cursor = "not-allowed";
-  }
+  const isReady = isMobileValid && isOrderSelected && !isLoading;
+
+  // 🔵 APPLY SAME LOGIC TO BOTH BUTTONS
+  [billBtn, saveBtn].forEach(btn => {
+    if(!btn) return;
+
+    if(isReady){
+      btn.disabled = false;
+      btn.style.opacity = "1";
+      btn.style.cursor = "pointer";
+    } else {
+      btn.disabled = true;
+      btn.style.opacity = "0.6";
+      btn.style.cursor = "not-allowed";
+    }
+  });
+
 }
   
 function generatePosBill(){
@@ -2213,6 +2248,20 @@ if (pagePOS && !pagePOS.hasChildNodes()) {
 ">
   Generate Bill
 </button>
+
+<button id="saveOrderBtn" onclick="saveOrder()" style="
+  width:100%;
+  padding:10px;
+  background:#007bff;
+  color:#fff;
+  border:none;
+  border-radius:6px;
+  font-weight:600;
+  margin-top:5px;
+">
+  Save Order
+</button>
+
   
   <!-- 🛒 Cart -->
   <div id="posCart" style="margin-top:20px; border-top:1px solid #ccc; padding-top:10px;">
