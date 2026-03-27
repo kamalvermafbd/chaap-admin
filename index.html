@@ -1636,7 +1636,31 @@ if(fullAddress){
   const bill = calculateBill(baseTotal, restaurantInfo || {});
 
   cart.forEach(item => {
+const key = item.name?.trim() + "||" + item.unit?.trim();
+const variant = variantMap[key];
+const menuItem = menuItems.find(i => i.Name === item.name);
 
+// 🔥 GST fallback
+let gstAmt = item.gstAmt;
+
+if(!gstAmt){
+  if(variant?.GST_Amt){
+    gstAmt = Number(variant.GST_Amt);
+  } else {
+    gstAmt = Number(menuItem?.GST_Amt || 0);
+  }
+}
+
+// 🔥 WEIGHT fallback
+let weight = item.weight;
+
+if(!weight){
+  if(variant?.Weight){
+    weight = Number(variant.Weight);
+  } else {
+    weight = Number(menuItem?.Weight || 0);
+  }
+}
     const discPercent = item.discountPercent || 0;
     const discAmt = 0; // future use
     const netAmt = item.price * item.qty;
@@ -1686,8 +1710,8 @@ Pincode: pincode,
       deliveryTaxable: restaurantInfo.delivery_taxable || "",
 
       // 🔥 IMPORTANT
-      single_item_GST: item.gstAmt || 0
-
+single_item_GST: gstAmt,
+total_weight: weight,
     });
 
   });
@@ -2306,7 +2330,9 @@ cart.push({
   qty,
 
   gstRate,
-  gstAmt
+  gstAmt,
+   // 🔥 ADD THIS
+  weight: Number(variant?.Weight || menuItem.Weight || 0)
 });
        // 🔴 DEBUG
       console.log("🛒 Cart after add:", cart);
