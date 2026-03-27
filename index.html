@@ -778,7 +778,7 @@ td:nth-child(8) { width: 220px; } /* Action */
   </div>
 
 <script>
-  const API_BASE_URL = "https://script.google.com/macros/s/AKfycbziAiTcLSM8hCx-91XCiSCDRRD50O4tHcFWeov9_TtX9RxOtlGfN8bHiqbHz2nMj_MH/exec";
+  const API_BASE_URL = "https://script.google.com/macros/s/AKfycbywgeB3ePpX--Cpggm724CNUzcmBx9fJ_MDYrOnvC20pW7g6SToUlmEkzRPrA8F5UqD/exec";
 
 // =========================
 // GET API
@@ -1634,7 +1634,8 @@ if(fullAddress){
   // 🔥 BILL CALCULATION
   const baseTotal = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
   const bill = calculateBill(baseTotal, restaurantInfo || {});
-
+const cash = bill.billValue;   // full cash
+const online = 0;
   cart.forEach(item => {
 const key = item.name?.trim() + "||" + item.unit?.trim();
 const variant = variantMap[key];
@@ -1698,7 +1699,8 @@ Pincode: pincode,
       PaymentMethod: "Cash",
       OrderStatus: "Pending",
       Date: dateStr,
-
+Cash: cash,
+Online: online,
       itemId: item.itemId || "",
       variantId: item.variantId || "",
 
