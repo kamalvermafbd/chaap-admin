@@ -1605,7 +1605,10 @@ function buildOrderPayload(){
   // 🔥 CUSTOMER DATA
   const name = document.getElementById("customerName")?.textContent || "";
   const mobile = document.getElementById("posMobile")?.value || "";
-  const orderType = document.getElementById("orderType")?.value || "";
+ const orderType =
+  document.getElementById("orderType")?.value ||
+  document.getElementById("orderType")?.textContent ||
+  "";
   const address = document.getElementById("address")?.value || "";
 
   // 🔥 DATE / ORDER
