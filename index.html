@@ -2040,7 +2040,7 @@ function checkBillReady(){
   // 🔥 loading check
   const isLoading = loadingEl && loadingEl.style.display !== "none";
 
-  const isReady = isMobileValid && isOrderSelected && !isLoading;
+const isReady = isMobileValid && isOrderSelected && isCustomerFetched && !isLoading;
 
   // 🔵 APPLY SAME LOGIC TO BOTH BUTTONS
   [billBtn, saveBtn].forEach(btn => {
