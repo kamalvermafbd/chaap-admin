@@ -1603,11 +1603,24 @@ if (!restaurantInfo || Object.keys(restaurantInfo).length === 0) {
   }
   return;
 }
+
+  
     
 console.log("renderCart → restaurantInfo:", restaurantInfo);
   const box = document.getElementById("cartItems");
   const totalBox = document.getElementById("cartTotal");
 
+  // 🔥 MENU LOADING STATE
+if(!isMenuReady){
+  box.innerHTML = `
+    <div style="padding:12px;text-align:center;color:#666;">
+      ⏳ Preparing menu… please wait
+    </div>
+  `;
+  totalBox.innerHTML = "";
+  return;
+}
+  
  if(isCartLoading){
   box.innerHTML = "Loading...";
   totalBox.innerHTML = "";
