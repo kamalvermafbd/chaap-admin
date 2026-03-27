@@ -893,6 +893,8 @@ renderCart();           // 🔥 ADD THIS (FINAL FIX)
 
 let menuItems = [];
 let cart = [];
+  let isMenuReady = false;
+let pendingVariants = 0;
 
   function loadPOSItems(){
 
@@ -1238,13 +1240,17 @@ syncQtyUI();
 
   // 🔹 MULTI ITEM
   else{
-
+pendingVariants++;
     apiGet("getVariants", { name: item.Name })
     .then(function(data){
 
       if(!data || data.length === 0){
         box.innerHTML = "No variants";
+
+        pendingVariants--;       // 🔥 ADD THIS
+  checkMenuReady();        // 🔥 ADD THIS
         return;
+        
       }
 
       let html = "";
@@ -1279,14 +1285,30 @@ syncQtyUI();
 
 // ✅ ADD THIS
 syncQtyUI();
-      
+      pendingVariants--;
+checkMenuReady();
     });
 
   }
 
 }
   
+function checkMenuReady(){
 
+  console.log("⏳ Pending Variants:", pendingVariants);
+
+  if(pendingVariants === 0){
+
+    isMenuReady = true;
+
+    console.log("✅ MENU FULLY READY");
+
+    // 🔥 OPTIONAL: UI update
+    const msg = document.getElementById("menuLoadingMsg");
+    if(msg) msg.style.display = "none";
+
+  }
+}
 
   function addToCart(item){
 
