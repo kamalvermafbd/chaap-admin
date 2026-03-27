@@ -778,7 +778,7 @@ td:nth-child(8) { width: 220px; } /* Action */
   </div>
 
 <script>
-  const API_BASE_URL = "https://script.google.com/macros/s/AKfycbywgeB3ePpX--Cpggm724CNUzcmBx9fJ_MDYrOnvC20pW7g6SToUlmEkzRPrA8F5UqD/exec";
+  const API_BASE_URL = "https://script.google.com/macros/s/AKfycbyI4NvZqN4KJbpOLNox1Q63BMTfllpFUPSFmS-izQ1n0A-mw1Lx39O0-iH4dAx6n_1P/exec";
 
 // =========================
 // GET API
@@ -1634,7 +1634,7 @@ if(fullAddress){
   // 🔥 BILL CALCULATION
   const baseTotal = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
   const bill = calculateBill(baseTotal, restaurantInfo || {});
-const cash = bill.billValue;   // full cash
+const cash = 0;   // full cash
 const online = 0;
   cart.forEach(item => {
 const key = item.name?.trim() + "||" + item.unit?.trim();
