@@ -2263,6 +2263,7 @@ console.log("🔢 Old Qty (UI):", qty);
 //      const gstAmt  = menuItem ? Number(menuItem.GST_Amt || 0) : 0;
 const key = name.trim() + "||" + unit.trim();
 const variant = variantMap[key];
+      console.log("🔍 Weight Source:", variant?.Weight, menuItem?.Weight);
 let gstRate = 0;
 let gstAmt = 0;
 
@@ -2320,6 +2321,11 @@ if(menuItem.Cat2?.toLowerCase().trim() === "multi" && !variant){
   alert("Variant load nahi hua, please retry");
   return;
 }
+
+      // 🔥 DIRECT SAME AS GST
+const weight = Number(variant?.Weight ?? menuItem?.Weight ?? 0);
+console.log("⚖️ Final Weight:", weight);
+      
 cart.push({
   itemId: menuItem.itemId || "",
   variantId: variant?.variantId || "",
@@ -2331,9 +2337,10 @@ cart.push({
 
   gstRate,
   gstAmt,
-    // 🔥 DIRECT SAME AS GST
-  weight: Number(variant?.Weight || menuItem.Weight)
+    
+      weight: weight
 });
+    console.log("🛒 Added Weight:", weight);
        // 🔴 DEBUG
       console.log("🛒 Cart after add:", cart);
     }
