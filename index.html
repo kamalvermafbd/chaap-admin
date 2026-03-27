@@ -810,9 +810,7 @@ function apiPost(api, body = {}) {
   .then(res => res.json());
 }
 
-function showPage(pageId){
-
-  
+function showPage(pageId){  
 // 🔥 ADMIN PREVIEW
 const preview1 = document.getElementById('thermalPreview');
 if (preview1) {
@@ -848,6 +846,9 @@ if (pageId === 'pageCouponStatus') {
 }
 
   if (pageId === 'pagePOS') {
+    isCustomerFetched = false;   // ✅ RESET
+checkBillReady();            // ✅ DISABLE BUTTONS
+    
     loadRestaurantInfo(); // 🔥 ADD THIS
     loadDeliveryRules(); // 🔥 MUST
   loadPOSItems();
@@ -1566,10 +1567,13 @@ function loadCustomerState(){
   }
 
   // 🔥 UI box show
-  document.getElementById("addressBox").style.display = "block";
+  // 🔥 UI box show
+document.getElementById("addressBox").style.display = "block";
 
-  // 🔥 button state
-  checkBillReady();
+// 🔥 RESET after loading saved data
+isCustomerFetched = false;   // ✅ ADD THIS
+checkBillReady();            // ✅ KEEP THIS
+  
 }
 
 function getFormattedDateTime(){
