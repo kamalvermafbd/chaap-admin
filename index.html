@@ -1083,8 +1083,11 @@ function handleOrderTypeChange(){
   saveCustomerState();
 }
 
-
+let isCustomerFetched = false;
+  
 function fetchLatestOrder(mobile) {
+  isCustomerFetched = false;
+checkBillReady();
   const addressBox = document.getElementById("addressBox"); // ✅ ADD THIS
   const loadingEl = document.getElementById("customerLoading");
   const addressRow = document.getElementById("addressRow");
@@ -1132,8 +1135,9 @@ loadingEl.style.display = "block";
 
         const addressBox = document.getElementById("addressBox");
         if (addressBox) addressBox.style.display = "block";
+        
+isCustomerFetched = true;   // ✅ ADD HERE
         checkBillReady();   // 🔥 ADD THIS (VERY IMPORTANT)
-
       if (addressRow) addressRow.style.display = "none";
         
         return;
@@ -1188,11 +1192,12 @@ loadingEl.style.display = "block";
 if (loadingEl) {
   loadingEl.style.display = "none";
 }
-
+isCustomerFetched = true;   // ✅ ADD HERE
 checkBillReady();
       
     })
     .catch(function (err) {
+      isCustomerFetched = true;   // ✅ ADD HERE
       if (loadingEl) {
   loadingEl.style.display = "block";
   loadingEl.textContent = "Error fetching customer";
