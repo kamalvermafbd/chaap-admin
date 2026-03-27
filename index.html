@@ -2331,8 +2331,8 @@ cart.push({
 
   gstRate,
   gstAmt,
-   // 🔥 ADD THIS
-  weight: Number(variant?.Weight || menuItem.Weight || 0)
+    // 🔥 DIRECT SAME AS GST
+  weight: Number(variant?.Weight || menuItem.Weight)
 });
        // 🔴 DEBUG
       console.log("🛒 Cart after add:", cart);
