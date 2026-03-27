@@ -2323,7 +2323,7 @@ if(menuItem.Cat2?.toLowerCase().trim() === "multi" && !variant){
 }
 
       // 🔥 DIRECT SAME AS GST
-const weight = Number(variant?.Weight ?? menuItem?.Weight ?? 0);
+const weight = Number(variant?.cat_weight ?? menuItem?.item_weight ?? 0);
 console.log("⚖️ Final Weight:", weight);
       
 cart.push({
