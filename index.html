@@ -2063,11 +2063,19 @@ ${content.textContent}
   
   function changeQty(name, unit, price, delta){
 if(!isMenuReady){
-  return `<div style="padding:10px;color:#888;">
-    ⏳ Preparing menu… please wait
-  </div>`;
+  const cartBox = document.getElementById("cartItems"); // apna actual id check kar
+
+  if(cartBox){
+    cartBox.innerHTML = `
+      <div style="padding:12px;color:#666;text-align:center;">
+        ⏳ Preparing menu… please wait
+      </div>
+    `;
+  }
+
+  return;
 }
-console.log("👉 changeQty called:", { name, unit, price, delta });
+    console.log("👉 changeQty called:", { name, unit, price, delta });
   const id = `qty-${name}-${unit}`;
   const el = document.getElementById(id);
 
