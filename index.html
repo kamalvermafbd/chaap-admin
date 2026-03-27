@@ -1726,7 +1726,39 @@ total_weight: weight,
 
   return payload;
 }
+  
+function resetQtyUI(){
 
+  // 🔥 ALL qty reset
+  document.querySelectorAll("[id^='qty-']").forEach(el => {
+    el.textContent = "0";
+  });
+
+  // 🔥 ALSO force sync (VERY IMPORTANT)
+  syncQtyUI();
+}
+
+  function resetQtyUI(){
+  document.querySelectorAll("[id^='qty-']").forEach(el => {
+    el.textContent = "0";
+  });
+}
+
+  function resetCustomerUI(){
+
+  document.getElementById("posMobile").value = "";
+
+  const orderEl = document.getElementById("OrderType");
+  orderEl.value = "";
+  orderEl.disabled = true;
+
+  document.getElementById("customerName").textContent = "";
+  document.getElementById("customerEmail").textContent = "";
+  document.getElementById("customerAddress").textContent = "";
+
+  localStorage.removeItem("posCustomer");
+}
+  
 function saveOrder(){
 
   const payload = buildOrderPayload();
@@ -1752,6 +1784,13 @@ function saveOrder(){
         cart = [];
         localStorage.removeItem("posCart");
 
+      // 🔥 RESET UI
+    resetQtyUI();
+    resetCustomerUI();
+
+    // 🔥 FORCE UI REFRESH
+    renderPOSItems(menuItems);
+        
         renderCart();
 
       } else {
