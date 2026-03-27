@@ -1509,33 +1509,7 @@ billValue = baseTotal + serviceCharge + deliveryCharge + itemGST + extraGST;
 };
 }
 
-function generatePOSOrderNumber(){
 
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Orders");
-const lastRow = sheet.getLastRow();
-const start = Math.max(2, lastRow - 200);
-
-const data = sheet.getRange(start, 2, lastRow - start + 1, 1).getValues();
-  // Column B = OrderNumber
-
-  let max = 0;
-
-  data.forEach(row => {
-
-    const val = row[0];
-
-    if(val && val.startsWith("POS-")){
-      const num = Number(val.replace("POS-",""));
-      if(num > max) max = num;
-    }
-
-  });
-
-  const next = max + 1;
-
-  return "POS-" + String(next).padStart(4, "0"); // POS-0001
-}
-  
 
 function saveCustomerState(){
 
@@ -1643,7 +1617,7 @@ const dateStr = now.toLocaleDateString("en-GB"); // dd/mm/yyyy
 const timestamp = getFormattedDateTime(); // 🔥 FIXED
 
   
-  const orderNumber = "ORD-" + Date.now();
+  
   const orderId = Date.now().toString();
 
   // 🔥 BILL CALCULATION
