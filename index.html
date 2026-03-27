@@ -1594,7 +1594,7 @@ function buildOrderPayload(){
   const name = document.getElementById("customerName")?.textContent || "";
   const mobile = document.getElementById("posMobile")?.value || "";
  const orderTypeEl = document.getElementById("OrderType");
-
+const email = document.getElementById("customerEmail")?.textContent || "";
 const orderType = orderTypeEl ? orderTypeEl.value : "";
   const fullAddress = document.getElementById("customerAddress")?.textContent?.trim() || "";
 
@@ -1661,7 +1661,7 @@ if(!weight){
       OrderNumber: "",
 
       CustomerName: name,
-      Email: "",
+      Email: email,
       Mobile: mobile,
       "Order Type": orderType,
       Address: addressLine,
