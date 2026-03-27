@@ -1824,8 +1824,6 @@ if (!restaurantInfo || Object.keys(restaurantInfo).length === 0) {
   }
   return;
 }
-
-  
     
 console.log("renderCart → restaurantInfo:", restaurantInfo);
   const box = document.getElementById("cartItems");
@@ -1839,6 +1837,8 @@ if(!isMenuReady){
     </div>
   `;
   totalBox.innerHTML = "";
+  checkBillReady(); // ✅ ADD THIS
+
   return;
 }
   
@@ -1851,6 +1851,8 @@ if(!isMenuReady){
 if(cart.length === 0){
   box.innerHTML = "No items";
   totalBox.innerHTML = "<b>Total: ₹0</b>";
+  checkBillReady();   // ✅ ADD THIS
+
   return;
 }
 
@@ -1989,6 +1991,7 @@ totalsHTML += `
 `;
 
 totalBox.innerHTML = totalsHTML;
+  checkBillReady();   // ✅ ADD THIS (already bola tha)
 }
 
 function formatLine(left, right, width = 32) {
@@ -2043,8 +2046,10 @@ function checkBillReady(){
 
   // 🔥 loading check
   const isLoading = loadingEl && loadingEl.style.display !== "none";
+const isCartNotEmpty = cart && cart.length > 0;   // ✅ ADD
 
-const isReady = isMobileValid && isOrderSelected && isCustomerFetched && !isLoading;
+const isReady = isMobileValid && isOrderSelected && isCustomerFetched && !isLoading && isCartNotEmpty;
+//const isReady = isMobileValid && isOrderSelected && isCustomerFetched && !isLoading;
 
   // 🔵 APPLY SAME LOGIC TO BOTH BUTTONS
   [billBtn, saveBtn].forEach(btn => {
