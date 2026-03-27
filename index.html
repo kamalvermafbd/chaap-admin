@@ -1722,6 +1722,49 @@ total_weight: weight,
 
   return payload;
 }
+
+function saveOrder(){
+
+  const payload = buildOrderPayload();
+
+  if(!payload.length) return;
+
+  const btn = document.getElementById("saveOrderBtn");
+
+  // 🔒 LOCK BUTTON
+  btn.disabled = true;
+  btn.innerText = "Saving...";
+
+  apiPost("createOrder", payload)
+    .then(res => {
+
+      console.log("📦 API RESPONSE:", res);
+
+      if(res.success){
+
+        alert("✅ Order Saved");
+
+        // 🔥 CLEAR CART
+        cart = [];
+        localStorage.removeItem("posCart");
+
+        renderCart();
+
+      } else {
+        alert("❌ " + res.error);
+      }
+
+    })
+    .catch(err => {
+      console.error("❌ API ERROR:", err);
+      alert("Server error");
+    })
+    .finally(() => {
+      btn.disabled = false;
+      btn.innerText = "Save Order";
+    });
+
+}
   
 let isCartLoading = true;
   
