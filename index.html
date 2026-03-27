@@ -1580,6 +1580,23 @@ function getFormattedDateTime(){
 
   return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
 }
+
+
+function generateOrderId(){
+
+  const now = new Date();
+
+  const day = String(now.getDate()).padStart(2, '0');
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const year = String(now.getFullYear()).slice(-2);
+
+  const datePart = day + month + year;
+
+  // 🔥 random 8 digit
+  const randomPart = Math.floor(10000000 + Math.random() * 90000000);
+
+  return `${datePart}-${randomPart}`;
+}
   
 function buildOrderPayload(){
 
@@ -1596,7 +1613,7 @@ function buildOrderPayload(){
  const orderTypeEl = document.getElementById("OrderType");
 const email = document.getElementById("customerEmail")?.textContent || "";
 const orderType = orderTypeEl ? orderTypeEl.value : "";
-  const fullAddress = document.getElementById("customerAddress")?.textContent?.trim() || "";
+const fullAddress = document.getElementById("customerAddress")?.textContent?.trim() || "";
 
 let addressLine = "";
 let city = "";
@@ -1616,9 +1633,7 @@ const now = new Date();
 const dateStr = now.toLocaleDateString("en-GB"); // dd/mm/yyyy
 const timestamp = getFormattedDateTime(); // 🔥 FIXED
 
-  
-  
-  const orderId = Date.now().toString();
+const orderId = generateOrderId();
 
   // 🔥 BILL CALCULATION
   const baseTotal = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
