@@ -1608,8 +1608,21 @@ function buildOrderPayload(){
  const orderTypeEl = document.getElementById("OrderType");
 
 const orderType = orderTypeEl ? orderTypeEl.value : "";
-  const address = document.getElementById("address")?.value || "";
+  const fullAddress = document.getElementById("customerAddress")?.textContent?.trim() || "";
 
+let addressLine = "";
+let city = "";
+let state = "";
+let pincode = "";
+
+if(fullAddress){
+  const parts = fullAddress.split(",");
+
+  addressLine = parts[0]?.trim() || "";
+  city = parts[1]?.trim() || "";
+  state = parts[2]?.trim() || "";
+  pincode = parts[3]?.trim() || "";
+}
   // 🔥 DATE / ORDER
   const now = new Date();
   const dateStr = now.toLocaleDateString("en-GB"); // dd-mm-yyyy
@@ -1637,8 +1650,10 @@ const orderType = orderTypeEl ? orderTypeEl.value : "";
       Email: "",
       Mobile: mobile,
       "Order Type": orderType,
-      Address: address,
-
+      Address: addressLine,
+city: city,
+state: state,
+Pincode: pincode,
       Items: item.name,
       Unit: item.unit,
       Qty: item.qty,
@@ -1664,11 +1679,6 @@ const orderType = orderTypeEl ? orderTypeEl.value : "";
       variantId: item.variantId || "",
 
       orderId: orderId,
-
-      city: restaurantInfo.City || "",
-      state: restaurantInfo.State || "",
-      Pincode: restaurantInfo.Pin || "",
-
       userType: "pos",
 
       DeliveryCharges: bill.deliveryCharge || 0,
