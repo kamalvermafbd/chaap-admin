@@ -1592,6 +1592,98 @@ function loadCustomerState(){
   // 🔥 button state
   checkBillReady();
 }
+
+function buildOrderPayload(){
+
+  if(cart.length === 0){
+    alert("Cart empty");
+    return [];
+  }
+
+  const payload = [];
+
+  // 🔥 CUSTOMER DATA
+  const name = document.getElementById("customerName")?.textContent || "";
+  const mobile = document.getElementById("posMobile")?.value || "";
+  const orderType = document.getElementById("orderType")?.value || "";
+  const address = document.getElementById("address")?.value || "";
+
+  // 🔥 DATE / ORDER
+  const now = new Date();
+  const dateStr = now.toLocaleDateString("en-GB"); // dd-mm-yyyy
+  const timestamp = now;
+
+  const orderNumber = "ORD-" + Date.now();
+  const orderId = Date.now().toString();
+
+  // 🔥 BILL CALCULATION
+  const baseTotal = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+  const bill = calculateBill(baseTotal, restaurantInfo || {});
+
+  cart.forEach(item => {
+
+    const discPercent = item.discountPercent || 0;
+    const discAmt = 0; // future use
+    const netAmt = item.price * item.qty;
+
+    payload.push({
+
+      Timestamp: timestamp,
+      OrderNumber: orderNumber,
+
+      CustomerName: name,
+      Email: "",
+      Mobile: mobile,
+      "Order Type": orderType,
+      Address: address,
+
+      Items: item.name,
+      Unit: item.unit,
+      Qty: item.qty,
+      Rate: item.price,
+
+      Discount_Percent: discPercent,
+      Disc_Amt: discAmt,
+      Net_Amt: netAmt,
+
+      "Base Total": bill.baseTotal,
+      "Service Charges": bill.serviceCharge,
+      Taxable: bill.taxableAmount,
+      CGST: bill.cgst,
+      SGST: bill.sgst,
+      IGST: bill.igst || 0,
+      TotalAmount: bill.billValue,
+
+      PaymentMethod: "Cash",
+      OrderStatus: "Pending",
+      Date: dateStr,
+
+      itemId: item.itemId || "",
+      variantId: item.variantId || "",
+
+      orderId: orderId,
+
+      city: restaurantInfo.City || "",
+      state: restaurantInfo.State || "",
+      Pincode: restaurantInfo.Pin || "",
+
+      userType: "pos",
+
+      DeliveryCharges: bill.deliveryCharge || 0,
+      CourierCharges: 0,
+      deliveryTaxable: restaurantInfo.delivery_taxable || "",
+
+      // 🔥 IMPORTANT
+      single_item_GST: item.gstAmt || 0
+
+    });
+
+  });
+
+  console.log("📦 FINAL ORDER PAYLOAD:", payload);
+
+  return payload;
+}
   
 let isCartLoading = true;
   
