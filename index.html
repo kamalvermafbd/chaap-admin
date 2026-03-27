@@ -2075,7 +2075,7 @@ ${content.textContent}
   win.print();
 }
   
-  function changeQty(name, unit, price, delta){
+function changeQty(name, unit, price, delta){
 if(!isMenuReady){
   const cartBox = document.getElementById("cartItems"); // apna actual id check kar
 
@@ -2133,7 +2133,8 @@ console.log("🔢 Old Qty (UI):", qty);
       // 🔥 GST EXTRACT
  //     const gstRate = menuItem ? menuItem.GST_Rate : 0;
 //      const gstAmt  = menuItem ? Number(menuItem.GST_Amt || 0) : 0;
-
+const key = name.trim() + "||" + unit.trim();
+const variant = variantMap[key];
 let gstRate = 0;
 let gstAmt = 0;
 
@@ -2181,13 +2182,12 @@ console.log("🔥 FINAL GST APPLIED:", {
       
        // 🔥 PUSH WITH GST
       // 🔥 VARIANT LOOKUP
-const key = name.trim() + "||" + unit.trim();
-const variant = variantMap[key];
+
   console.log("🔍 Variant lookup key:", key);
       console.log("🔍 Variant object:", variant);
       console.log("✅ VariantId:", variant?.variantId);
-// 🔴 SAFETY CHECK
-if(!variant){
+// 🔥 ONLY BLOCK IF MULTI ITEM EXPECTED BUT MISSING
+if(menuItem.Cat2?.toLowerCase().trim() === "multi" && !variant){
   console.error("❌ Variant NOT FOUND:", key);
   alert("Variant load nahi hua, please retry");
   return;
