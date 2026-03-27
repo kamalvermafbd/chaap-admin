@@ -2131,8 +2131,54 @@ console.log("🔢 Old Qty (UI):", qty);
 
       
       // 🔥 GST EXTRACT
-      const gstRate = menuItem ? menuItem.GST_Rate : 0;
-      const gstAmt  = menuItem ? Number(menuItem.GST_Amt || 0) : 0;
+ //     const gstRate = menuItem ? menuItem.GST_Rate : 0;
+//      const gstAmt  = menuItem ? Number(menuItem.GST_Amt || 0) : 0;
+
+let gstRate = 0;
+let gstAmt = 0;
+
+// 🔴 DEBUG START
+console.log("🧾 MENU GST:", {
+  name: menuItem.Name,
+  menuGST_Rate: menuItem.GST_Rate,
+  menuGST_Amt: menuItem.GST_Amt
+});
+
+console.log("📦 VARIANT GST:", variant);
+
+// 🔥 MULTI ITEM
+if(variant && variant.GST_Amt){
+
+  gstRate = variant.GST_Rate || 0;
+  gstAmt  = Number(variant.GST_Amt || 0);
+
+  console.log("✅ USING VARIANT GST:", {
+    gstRate,
+    gstAmt
+  });
+
+}
+// 🔥 SINGLE ITEM
+else{
+
+  gstRate = menuItem.GST_Rate || 0;
+  gstAmt  = Number(menuItem.GST_Amt || 0);
+
+  console.log("✅ USING MENU GST:", {
+    gstRate,
+    gstAmt
+  });
+}
+
+// 🔴 FINAL CHECK
+console.log("🔥 FINAL GST APPLIED:", {
+  item: name,
+  unit: unit,
+  gstRate,
+  gstAmt,
+  totalGST: gstAmt * qty
+});
+      
        // 🔥 PUSH WITH GST
       // 🔥 VARIANT LOOKUP
 const key = name.trim() + "||" + unit.trim();
