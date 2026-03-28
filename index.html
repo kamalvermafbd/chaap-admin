@@ -5237,7 +5237,7 @@ if (!span) {
 })
 .then((res) => {
   const url = res?.url || res;
-  
+  console.log("UPLOAD FINAL URL:", url, typeof url);
   if (!url) throw new Error("Upload failed");
 
   row.dataset.uploading = "0";
@@ -5565,14 +5565,14 @@ function saveRow(index) {
     if (txt && txt.value.trim() !== "") finalUrl = txt.value.trim();
   }
 
-  updatedData["Image Url"] = finalUrl;
+  updatedData["Image Url"] = finalUrl?.url || finalUrl || "";
 
  apiPost("updateMenuRecord", {
   index: index,
   data: updatedData
 })
 .then((res) => {
-
+console.log("UPLOAD RESPONSE:", res, typeof res);
   if (!res || res.success !== true) {
     throw new Error(res?.error || "Update failed");
   }
