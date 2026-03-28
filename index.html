@@ -5294,7 +5294,8 @@ apiPost("uploadMenuImage", {
   hideUploadOverlay(row);
 
   span.textContent = "Upload failed";
-  alert("Upload failed: " + err.message);
+ alert("Upload failed: " + JSON.stringify(err));
+console.error("FULL ERROR:", err);
 
 });
   };
