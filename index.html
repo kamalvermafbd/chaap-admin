@@ -5226,10 +5226,28 @@ if (!row) {
   span.textContent = "Uploading...";
   span.removeAttribute("data-url");
 
+  if (!file.type.startsWith("image/")) {
+  hideUploadOverlay(row);
+  return alert("Only image files allowed");
+}
+  
   const reader = new FileReader();
+  reader.onerror = function (err) {
+  console.error("❌ FileReader error:", err);
+  hideUploadOverlay(row);
+  alert("File read error");
+};
+  
   reader.onload = function (e) {
     try {
-      const dataUrl = e.target.result;
+    const dataUrl = e.target?.result;
+
+if (!dataUrl) {
+  console.error("❌ FileReader result empty", e);
+  hideUploadOverlay(row);
+  return alert("File read failed (empty result)");
+}
+      
       const base64 = dataUrl.split(",")[1];
 if (!base64) {
   hideUploadOverlay(row);
