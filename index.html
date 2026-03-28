@@ -5811,13 +5811,17 @@ function refreshCategoryDropdown() {
   const dl = document.getElementById("cat-list");
   if (!dl) return;
 
-  // prefer uppercase var, fall back to lowercase alias
-  const opts = (window.CATEGORY_OPTIONS && window.CATEGORY_OPTIONS.length) ? window.CATEGORY_OPTIONS
-             : (window.category_options || []);
+  let opts = window.CATEGORY_OPTIONS || window.category_options || [];
+
+  // 🔥 SAFETY CHECK (important)
+  if (!Array.isArray(opts)) {
+    console.error("❌ CATEGORY_OPTIONS is not array:", opts);
+    dl.innerHTML = "";
+    return;
+  }
 
   dl.innerHTML = opts.map(cat => `<option value="${cat}">`).join("");
 }
-
 
 
 // 🔥 अब बाकी code शुरू करें
