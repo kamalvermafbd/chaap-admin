@@ -5288,14 +5288,14 @@ apiPost("uploadMenuImage", {
 })
 .catch(function(err){
 
-  console.error("🔥 UPLOAD FAILED:", err);
+  console.error("🔥 FINAL ERROR:", err);
 
   row.dataset.uploading = "0";
   hideUploadOverlay(row);
 
   span.textContent = "Upload failed";
- alert("Upload failed: " + JSON.stringify(err));
-console.error("FULL ERROR:", err);
+
+  alert("Upload failed: " + err); // 👈 simple rakho
 
 });
   };
