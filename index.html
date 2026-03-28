@@ -5209,7 +5209,10 @@ if (!span) {
   console.error("Upload UI missing");
   return;
 }
-
+if (!row) {
+  console.error("Row not found");
+  return;
+}
   // 🚨 Lock row & show overlay
   row.dataset.uploading = "1";
   showUploadOverlay(row);
@@ -5228,7 +5231,10 @@ if (!span) {
     try {
       const dataUrl = e.target.result;
       const base64 = dataUrl.split(",")[1];
-
+if (!base64) {
+  hideUploadOverlay(row);
+  return alert("Invalid image data");
+}
       console.log("FILE INFO:", file);
 console.log("DATA URL LENGTH:", dataUrl.length);
 console.log("BASE64 LENGTH:", base64?.length);
@@ -5236,38 +5242,33 @@ console.log("BASE64 LENGTH:", base64?.length);
       const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
       const filename = `menu_${Date.now()}.${ext}`;
 
-   apiPost("uploadMenuImage", {
-  base64Data: base64,
-  fileName: filename,
-  mimeType: file.type
-})
-.then((res) => {
-  const url = res?.url || res;
-  console.log("UPLOAD FINAL URL:", url, typeof url);
-  if (!url) throw new Error("Upload failed");
+   google.script.run
+  .withSuccessHandler(function(url){
 
-  row.dataset.uploading = "0";
-  hideUploadOverlay(row);
+    row.dataset.uploading = "0";
+    hideUploadOverlay(row);
 
-  span.setAttribute("data-url", url);
-  span.dataset.url = url;
-  span.textContent = "Uploaded";
+    span.setAttribute("data-url", url);
+    span.dataset.url = url;
+    span.textContent = "Uploaded";
 
-  const imgInput = document.getElementById(`img-input-${index}`);
-  if (imgInput) imgInput.value = url;
+    const imgInput = document.getElementById(`img-input-${index}`);
+    if (imgInput) imgInput.value = url;
 
-  const previewImg = row.querySelector("td img");
-  if (previewImg) previewImg.src = url + "?v=" + Date.now();
+    const previewImg = row.querySelector("td img");
+    if (previewImg) previewImg.src = url + "?v=" + Date.now();
 
-  alert("Image upload completed. Now click Save.");
+    alert("Image upload completed. Now click Save.");
+  })
+  .withFailureHandler(function(err){
 
-})
-.catch(() => {
-  row.dataset.uploading = "0";
-  hideUploadOverlay(row);
-  span.textContent = "Upload failed";
-  alert("Image upload failed.");
-});
+    row.dataset.uploading = "0";
+    hideUploadOverlay(row);
+
+    span.textContent = "Upload failed";
+    alert("Image upload failed: " + err);
+  })
+  .uploadMenuImage(base64, filename, file.type);
       
     } catch (err) {
       row.dataset.uploading = "0";
