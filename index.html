@@ -5232,7 +5232,7 @@ if (!span) {
       const filename = `menu_${Date.now()}.${ext}`;
 
      apiPost("uploadMenuImage", {
-  base64: base64,
+  base64data: base64,
   filename: filename
 })
 .then((res) => {
