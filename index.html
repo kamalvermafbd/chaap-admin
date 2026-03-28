@@ -5204,7 +5204,11 @@ function uploadImage(inputEl, index) {
     var row = document.getElementById(`row-${index}`);
   }
  //const row = document.getElementById(`row-${index}`);
-  const span = document.getElementById(`img-url-${index}`);
+const span = document.getElementById(`img-url-${index}`);
+if (!span) {
+  console.error("Upload UI missing");
+  return;
+}
 
   // 🚨 Lock row & show overlay
   row.dataset.uploading = "1";
@@ -5227,30 +5231,38 @@ function uploadImage(inputEl, index) {
       const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
       const filename = `menu_${Date.now()}.${ext}`;
 
-      google.script.run
-        .withSuccessHandler(function (url) {
-          row.dataset.uploading = "0";
-          hideUploadOverlay(row);
+     apiPost("uploadMenuImage", {
+  base64: base64,
+  filename: filename
+})
+.then((res) => {
+  const url = res?.url || res;
+  
+  if (!url) throw new Error("Upload failed");
 
-          span.setAttribute("data-url", url);
-          span.dataset.url = url;
-          span.textContent = "Uploaded";
+  row.dataset.uploading = "0";
+  hideUploadOverlay(row);
 
-          const imgInput = document.getElementById(`img-input-${index}`);
-          if (imgInput) imgInput.value = url;
+  span.setAttribute("data-url", url);
+  span.dataset.url = url;
+  span.textContent = "Uploaded";
 
-          const previewImg = document.querySelector(`#row-${index} td img`);
-          if (previewImg) previewImg.src = url + "?v=" + Date.now();
-           alert("Image upload completed successfully.\nPlease review the details and click \"Save\" to update the record.");
+  const imgInput = document.getElementById(`img-input-${index}`);
+  if (imgInput) imgInput.value = url;
 
-        })
-        .withFailureHandler(function () {
-          row.dataset.uploading = "0";
-          hideUploadOverlay(row);
-          span.textContent = "Upload failed";
-          alert("Image upload failed.");
-        })
-        .uploadMenuImage(base64, filename);
+  const previewImg = row.querySelector("td img");
+  if (previewImg) previewImg.src = url + "?v=" + Date.now();
+
+  alert("Image upload completed. Now click Save.");
+
+})
+.catch(() => {
+  row.dataset.uploading = "0";
+  hideUploadOverlay(row);
+  span.textContent = "Upload failed";
+  alert("Image upload failed.");
+});
+      
     } catch (err) {
       row.dataset.uploading = "0";
       hideUploadOverlay(row);
