@@ -5228,12 +5228,18 @@ if (!span) {
     try {
       const dataUrl = e.target.result;
       const base64 = dataUrl.split(",")[1];
+
+      console.log("FILE INFO:", file);
+console.log("DATA URL LENGTH:", dataUrl.length);
+console.log("BASE64 LENGTH:", base64?.length);
+      
       const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
       const filename = `menu_${Date.now()}.${ext}`;
 
-     apiPost("uploadMenuImage", {
-  base64data: base64,
-  filename: filename
+   apiPost("uploadMenuImage", {
+  base64Data: base64,
+  fileName: filename,
+  mimeType: file.type
 })
 .then((res) => {
   const url = res?.url || res;
