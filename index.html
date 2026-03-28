@@ -5240,7 +5240,8 @@ if (!row) {
   alert("File read error");
 };
   
-  reader.onload = function (e) {
+reader.onload = function (e) {
+  try {
     const dataUrl = e.target?.result;
 
 if (!dataUrl) {
@@ -5262,7 +5263,7 @@ console.log("BASE64 LENGTH:", base64?.length);
 
 const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
 const filename = `menu_${Date.now()}.${ext}`;
-
+console.log("🚀 CALLING API...");
 apiPost("uploadMenuImage", {
   base64: base64,
   filename: filename,
@@ -5295,9 +5296,14 @@ apiPost("uploadMenuImage", {
 
   span.textContent = "Upload failed";
 
-  alert("Upload failed: " + err); // 👈 simple rakho
+  alert("Upload failed: " + err);
 
 });
+
+} catch (err) {
+  console.error("🔥 JS CRASH:", err);
+  alert("JS Crash: " + err.message);
+}
   };
 
   reader.readAsDataURL(file);
