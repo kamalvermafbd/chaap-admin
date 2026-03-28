@@ -778,7 +778,7 @@ td:nth-child(8) { width: 220px; } /* Action */
   </div>
 
 <script>
-  const API_BASE_URL = "https://script.google.com/macros/s/AKfycbxgsUgv9MHHcPUpYFgwz18TBgCtl78xNS-0zt9dNrVk1NLYEUMVWCerQ-IiRUhYYluW/exec";
+  const API_BASE_URL = "https://script.google.com/macros/s/AKfycbwPldeomcMg6sNQpKlwT_cMHv-1Dy70FMakKdTaMMJDWSG-KxNRs4cyvqcmQ6PbaPg0/exec";
 
 // =========================
 // GET API
@@ -5266,7 +5266,7 @@ const filename = `menu_${Date.now()}.${ext}`;
 console.log("🚀 CALLING API...");
 apiPost("uploadMenuImage", {
    api: "uploadMenuImage",   // 🔥 ADD THIS LINE
-  base64data: base64,
+  base64: base64,
   filename: filename,
   type: file.type
 })
