@@ -5197,7 +5197,8 @@ function cacheUrl(url) {
 }
 
 function uploadImage(inputEl, index) {
-
+console.log("🔥 uploadImage called", index);
+console.log("FILES:", inputEl.files);
  if (index === 'new') {
     var row = document.getElementById('newRecordRow');
   } else {
@@ -5206,7 +5207,8 @@ function uploadImage(inputEl, index) {
  //const row = document.getElementById(`row-${index}`);
 const span = document.getElementById(`img-url-${index}`);
 if (!span) {
-  console.error("Upload UI missing");
+  console.error("❌ img-url span not found:", index);
+  alert("Upload UI missing");
   return;
 }
 if (!row) {
@@ -5239,7 +5241,6 @@ if (!row) {
 };
   
   reader.onload = function (e) {
-    try {
     const dataUrl = e.target?.result;
 
 if (!dataUrl) {
@@ -5247,20 +5248,22 @@ if (!dataUrl) {
   hideUploadOverlay(row);
   return alert("File read failed (empty result)");
 }
-      
-      const base64 = dataUrl.split(",")[1];
+
+const base64 = dataUrl.split(",")[1];
+
 if (!base64) {
   hideUploadOverlay(row);
   return alert("Invalid image data");
 }
-      console.log("FILE INFO:", file);
+
+console.log("FILE INFO:", file);
 console.log("DATA URL LENGTH:", dataUrl.length);
 console.log("BASE64 LENGTH:", base64?.length);
-      
-      const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
-      const filename = `menu_${Date.now()}.${ext}`;
 
-   google.script.run
+const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+const filename = `menu_${Date.now()}.${ext}`;
+
+google.script.run
   .withSuccessHandler(function(url){
 
     row.dataset.uploading = "0";
@@ -5280,19 +5283,15 @@ console.log("BASE64 LENGTH:", base64?.length);
   })
   .withFailureHandler(function(err){
 
+    console.error("🔥 UPLOAD FAILED FULL ERROR:", err);
+
     row.dataset.uploading = "0";
     hideUploadOverlay(row);
 
     span.textContent = "Upload failed";
-    alert("Image upload failed: " + err);
+    alert("Upload failed: " + JSON.stringify(err));
   })
   .uploadMenuImage(base64, filename, file.type);
-      
-    } catch (err) {
-      row.dataset.uploading = "0";
-      hideUploadOverlay(row);
-      alert("File read error");
-    }
   };
 
   reader.readAsDataURL(file);
