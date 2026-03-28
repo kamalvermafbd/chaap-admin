@@ -5559,10 +5559,15 @@ function saveRow(index) {
   index: index,
   data: updatedData
 })
-.then(() => {
+.then((res) => {
+
+  if (!res || res.success !== true) {
+    throw new Error(res?.error || "Update failed");
+  }
 
   hideScreenLock();
-
+const addBtn = document.getElementById("addNewBtn");
+if (addBtn) addBtn.disabled = false;
   // 🔥 unlock buttons
   document.querySelectorAll(".edit-btn").forEach(btn => btn.disabled = false);
   activeEditIndex = null;
