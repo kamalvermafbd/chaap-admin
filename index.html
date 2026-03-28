@@ -5392,7 +5392,8 @@ function editRow(index) {
   }
 
   // 🔒 Lock Add New Record button
-  document.getElementById("addNewBtn").disabled = true;
+  const addBtn = document.getElementById("addNewBtn");
+if (addBtn) addBtn.disabled = true;
 
   const row = document.getElementById(`row-${index}`);
   if (!row) return;
