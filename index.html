@@ -5263,35 +5263,40 @@ console.log("BASE64 LENGTH:", base64?.length);
 const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
 const filename = `menu_${Date.now()}.${ext}`;
 
-google.script.run
-  .withSuccessHandler(function(url){
+apiPost("uploadMenuImage", {
+  base64: base64,
+  filename: filename,
+  type: file.type
+})
+.then(function(res){
 
-    row.dataset.uploading = "0";
-    hideUploadOverlay(row);
+  const url = res.url || res;
 
-    span.setAttribute("data-url", url);
-    span.dataset.url = url;
-    span.textContent = "Uploaded";
+  row.dataset.uploading = "0";
+  hideUploadOverlay(row);
 
-    const imgInput = document.getElementById(`img-input-${index}`);
-    if (imgInput) imgInput.value = url;
+  span.setAttribute("data-url", url);
+  span.dataset.url = url;
+  span.textContent = "Uploaded";
 
-    const previewImg = row.querySelector("td img");
-    if (previewImg) previewImg.src = url + "?v=" + Date.now();
+  const imgInput = document.getElementById(`img-input-${index}`);
+  if (imgInput) imgInput.value = url;
 
-    alert("Image upload completed. Now click Save.");
-  })
-  .withFailureHandler(function(err){
+  const previewImg = row.querySelector("td img");
+  if (previewImg) previewImg.src = url + "?v=" + Date.now();
 
-    console.error("🔥 UPLOAD FAILED FULL ERROR:", err);
+})
+.catch(function(err){
 
-    row.dataset.uploading = "0";
-    hideUploadOverlay(row);
+  console.error("🔥 UPLOAD FAILED:", err);
 
-    span.textContent = "Upload failed";
-    alert("Upload failed: " + JSON.stringify(err));
-  })
-  .uploadMenuImage(base64, filename, file.type);
+  row.dataset.uploading = "0";
+  hideUploadOverlay(row);
+
+  span.textContent = "Upload failed";
+  alert("Upload failed: " + err.message);
+
+});
   };
 
   reader.readAsDataURL(file);
