@@ -5271,9 +5271,9 @@ apiPost("uploadMenuImage", {
   type: file.type
 })
 .then(function(res){
-
+console.log("✅ API RESPONSE:", res);   // 🔥 NEW
   const url = res.url || res;
-
+console.log("✅ API RESPONSE:", res);   // 🔥 NEW
   row.dataset.uploading = "0";
   hideUploadOverlay(row);
 
