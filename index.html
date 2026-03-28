@@ -5280,94 +5280,92 @@ function loadMenuData() {
       .replace(/"/g, '&quot;');
   }
 
-  google.script.run.withSuccessHandler(function(data) {
+ apiGet("getMenu")
+.then(function(data){
 
-    // 🔥 NEW — Unlock screen
-    hideScreenLock();
+  hideScreenLock();
 
-    console.log('DEBUG MENU: getMenuData() returned', data);
+  console.log('DEBUG MENU:', data);
 
-    if (!data || !Array.isArray(data) || data.length === 0) {
-      menuDiv.textContent = 'No menu items found';
-      return;
+  if (!data || !Array.isArray(data) || data.length === 0) {
+    menuDiv.textContent = 'No menu items found';
+    return;
+  }
+
+  let html = '<div style="overflow-x:auto;"><table border="1" cellpadding="5" cellspacing="0" style="width:100%; border-collapse:collapse;">';
+
+  html += `
+    <tr style="background-color:#f0f0f0;">
+      <th>#</th><th style="width:200px;">Name</th><th>Category</th><th>Description</th>
+      <th>Hold</th><th>Price</th>
+      <th>Image</th><th>Hotselling</th><th>Opening</th><th>Purchase</th>
+      <th>Sale</th><th>Balance</th>
+      <th class="upload-header" style="display:none;">Upload</th>
+      <th>Action</th>
+    </tr>
+  `;
+
+  data.forEach(function(item, index) {
+
+    let rawImg = (item["Image Url"] || '').toString().trim();
+
+    if (rawImg.includes('drive.google.com')) {
+      const idMatch = rawImg.match(/\/d\/([a-zA-Z0-9_-]+)/) || rawImg.match(/id=([a-zA-Z0-9_-]+)/);
+      if (idMatch && idMatch[1]) {
+        rawImg = 'https://drive.google.com/uc?export=view&id=' + idMatch[1];
+      }
     }
 
-    let html = '<div style="overflow-x:auto;"><table border="1" cellpadding="5" cellspacing="0" style="width:100%; border-collapse:collapse;">';
+    let imgSrc = rawImg ? encodeURI(rawImg) : 'https://via.placeholder.com/80x80?text=No+Image';
+    imgSrc = cacheUrl(imgSrc);
 
-    // Upload header (hidden)
     html += `
-      <tr style="background-color:#f0f0f0;">
-        <th>#</th><th style="width:200px;">Name</th><th>Category</th><th>Description</th>
-        <th>Hold</th><th>Price</th>
-        <th>Image</th><th>Hotselling</th><th>Opening</th><th>Purchase</th>
-        <th>Sale</th><th>Balance</th>
-        <th class="upload-header" style="display:none;">Upload</th>
-        <th>Action</th>
+      <tr id="row-${index}">
+        <td>${index + 1}</td>
+        <td>${esc(item["Name"])}</td>
+        <td>${esc(item["Category"])}</td>
+        <td>${esc(item["Description"])}</td>
+
+        <td>
+          <input type="checkbox" disabled ${String(item["Hold"]).toUpperCase() === "TRUE" ? "checked" : ""}>
+        </td>
+
+        <td>${esc(item["Price"])}</td>
+        <td><img src="${imgSrc}" style="width:80px;height:80px;object-fit:cover;"></td>
+
+        <td>
+          <input type="checkbox" disabled ${String(item["Hotselling"]).toUpperCase() === "TRUE" ? "checked" : ""}>
+        </td>
+
+        <td>${esc(item["Opening"])}</td>
+        <td>${esc(item["Purchase"])}</td>
+        <td>${esc(item["Sale"])}</td>
+        <td>${esc(item["Balance"])}</td>
+
+        <td class="upload-cell" style="display:none;">
+          <input type="file" onchange="uploadImage(this, ${index})">
+          <span id="img-url-${index}" style="font-size:12px;color:#007bff"></span>
+        </td>
+
+        <td>
+          <button class="edit-btn" onclick="editRow(${index})">✏️ Edit</button>
+        </td>
       </tr>
     `;
+  });
 
-    data.forEach(function(item, index) {
-      let rawImg = (item["Image Url"] || '').toString().trim();
+  html += '</table></div>';
+  html += '<br><button onclick="addNewRecord()">➕ Add New Record</button>';
 
-    
-      if (rawImg.includes('drive.google.com')) {
-        const idMatch = rawImg.match(/\/d\/([a-zA-Z0-9_-]+)/) || rawImg.match(/id=([a-zA-Z0-9_-]+)/);
-        if (idMatch && idMatch[1]) {
-          rawImg = 'https://drive.google.com/uc?export=view&id=' + idMatch[1];
-        }
-      }
+  menuDiv.innerHTML = html;
+  menuDiv.innerHTML += `<datalist id="cat-list"></datalist>`;
 
-      let imgSrc = rawImg ? encodeURI(rawImg) : 'https://via.placeholder.com/80x80?text=No+Image';
-      imgSrc = cacheUrl(imgSrc);
-
-      html += `
-        <tr id="row-${index}">
-          <td>${index + 1}</td>
-          <td>${esc(item["Name"])}</td>
-          <td>${esc(item["Category"])}</td>
-          <td>${esc(item["Description"])}</td>
-         
-          <td>
-  <input type="checkbox" disabled ${String(item["Hold"]).toUpperCase() === "TRUE" ? "checked" : ""}>
-</td>
-
-          <td>${esc(item["Price"])}</td>
-          <td><img src="${imgSrc}" style="width:80px;height:80px;object-fit:cover;"></td>
-          <td>
-  <input type="checkbox" disabled ${String(item["Hotselling"]).toUpperCase() === "TRUE" ? "checked" : ""}>
-</td>
-
-          <td>${esc(item["Opening"])}</td>
-          <td>${esc(item["Purchase"])}</td>
-          <td>${esc(item["Sale"])}</td>
-          <td>${esc(item["Balance"])}</td>
-
-          <td class="upload-cell" style="display:none;">
-            <input type="file" onchange="uploadImage(this, ${index})">
-            <span id="img-url-${index}" style="font-size:12px;color:#007bff"></span>
-          </td>
-
-          
-          <td>
-            <button class="edit-btn" data-index="${index}" onclick="editRow(${index})">✏️ Edit</button>
-          </td>
-        </tr>
-      `;
-    });
-
-    html += '</table></div>';
-    html += '<br><button id="addNewBtn" onclick="addNewRecord()">➕ Add New Record</button>';
-
-    menuDiv.innerHTML = html;
-    menuDiv.innerHTML += `<datalist id="cat-list"></datalist>`;
-
-  })
-  .withFailureHandler(function(err) {
-    hideScreenLock();
-    alert("Error loading menu: " + err);
-  })
-  .getMenuData();
-}
+})
+.catch(function(err){
+  hideScreenLock();
+  console.error(err);
+  menuDiv.textContent = "Failed to load menu";
+});
 
 
 
