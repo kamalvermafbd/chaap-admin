@@ -5484,6 +5484,7 @@ function editRow(index) {
     <button onclick="cancelEdit(${index})">❌ Cancel</button>
   `;
 }
+  
 function cancelEdit(index) {
   const row = document.getElementById(`row-${index}`);
   if (!row || !row.dataset.original) return;
@@ -5553,33 +5554,38 @@ function saveRow(index) {
 
   updatedData["Image Url"] = finalUrl;
 
-  google.script.run
-    .withSuccessHandler(() => {
+ apiPost("updateMenuRecord", {
+  index: index,
+  data: updatedData
+})
+.then(() => {
 
-      hideScreenLock();
+  hideScreenLock();
 
-      // 🔥 Enable ALL edit buttons after successful save
-      document.querySelectorAll(".edit-btn").forEach(btn => btn.disabled = false);
-      activeEditIndex = null;  // reset lock
+  // 🔥 unlock buttons
+  document.querySelectorAll(".edit-btn").forEach(btn => btn.disabled = false);
+  activeEditIndex = null;
 
-      cells[6].innerHTML = finalUrl
-        ? `<img src="${finalUrl}?v=${Date.now()}" style="width:80px;height:80px;object-fit:cover;">`
-        : `<img src="https://via.placeholder.com/80x80?text=No+Image">`;
+  // 🔥 update image
+  cells[6].innerHTML = finalUrl
+    ? `<img src="${finalUrl}?v=${Date.now()}" style="width:80px;height:80px;object-fit:cover;">`
+    : `<img src="https://via.placeholder.com/80x80?text=No+Image">`;
 
-      cells[cells.length - 1].innerHTML =
-        `<button class="edit-btn" data-index="${index}" onclick="editRow(${index})">✏️ Edit</button>`;
+  // 🔥 restore edit button
+  cells[cells.length - 1].innerHTML =
+    `<button class="edit-btn" data-index="${index}" onclick="editRow(${index})">✏️ Edit</button>`;
 
-      // ⭐⭐⭐ MOVE HERE — Now reload after save completes ⭐⭐⭐
-     setTimeout(() => {
-  loadMenuData();
-}, 500);
+  // 🔥 reload menu
+  setTimeout(() => {
+    loadMenuData();
+  }, 500);
 
-    })
-    .withFailureHandler((err) => {
-      hideScreenLock();
-      alert("Error saving: " + err);
-    })
-    .updateMenuRecord(index, updatedData);
+})
+.catch((err) => {
+  hideScreenLock();
+  console.error(err);
+  alert("Error saving");
+});
 }
 
 
