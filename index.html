@@ -5264,6 +5264,23 @@ function cacheUrl(url) {
   return url + (url.indexOf('?') === -1 ? '?v=' + Date.now() : '&v=' + Date.now());
 }
 
+  
+function filterMenu(){
+  const search = document.getElementById("menuSearch")?.value.toLowerCase() || "";
+  const rows = document.querySelectorAll("#menuTable table tr");
+
+  rows.forEach((row, i) => {
+    if(i === 0) return;
+    const name = row.children[1]?.innerText.toLowerCase() || "";
+    row.style.display = name.includes(search) ? "" : "none";
+  });
+}
+
+  function clearMenuFilter(){
+  document.getElementById("menuSearch").value = "";
+  filterMenu();
+}
+  
 function uploadImage(inputEl, index) {
 console.log("🔥 uploadImage called", index);
 console.log("FILES:", inputEl.files);
@@ -5411,6 +5428,32 @@ data.forEach((item, i) => {
     return;
   }
 
+  const cats = [...new Set(data.map(i => i["Category"]).filter(Boolean))];
+
+setTimeout(() => {
+  const cat = document.getElementById("menuCategoryFilter");
+  if(cat){
+    cat.innerHTML = `<option value="">All Categories</option>` +
+      cats.map(c => `<option value="${c}">${c}</option>`).join("");
+  }
+}, 100);
+  
+html = `
+<div style="display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap;">
+
+  <select id="menuCategoryFilter" onchange="filterMenu()">
+    <option value="">All Categories</option>
+  </select>
+
+  <input type="text" id="menuSearch"
+    placeholder="Search menu item..."
+    oninput="filterMenu()">
+
+  <button onclick="clearMenuFilter()">Clear</button>
+
+</div>
+` + `
+  
   let html = `
 <div style="
   max-height: 500px;
