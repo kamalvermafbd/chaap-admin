@@ -5411,7 +5411,17 @@ data.forEach((item, i) => {
     return;
   }
 
-  let html = '<div style="overflow-x:auto;"><table border="1" cellpadding="5" cellspacing="0" style="width:100%; border-collapse:collapse;">';
+  let html = `
+<div style="
+  max-height: 500px;
+  overflow-y: auto;
+  overflow-x: auto;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+">
+<table border="1" cellpadding="5" cellspacing="0"
+style="border-collapse:collapse;">
+`;
 
  html += `
 <tr style="background-color:#f0f0f0;">
