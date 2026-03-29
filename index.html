@@ -1023,7 +1023,16 @@ renderCategories(menuItems);   // 🔥 ADD THIS LINE
   });
 }
 
+let currentManageIndex = null;
 
+function openManageMenu(index){
+  currentManageIndex = index;
+  document.getElementById("manageModal").classList.add("active");
+}
+
+function closeManageModal(){
+  document.getElementById("manageModal").classList.remove("active");
+}
   function getNetPrice(price, discount){
 
   const p = Number(price) || 0;
@@ -1445,6 +1454,7 @@ function handleMobileInput() {
   }
   }
 
+  
 
   function clearCustomerFields() {
   // Name
@@ -6200,6 +6210,27 @@ if ("serviceWorker" in navigator) {
 
   </div>
 </div>
+
+  <div id="manageModal" class="modal-overlay">
+  <div class="modal-box">
+
+    <h3>Manage Item</h3>
+
+    <div style="display:flex;flex-direction:column;gap:10px;margin-top:10px;">
+
+      <button onclick="openPriceEdit()">💰 Update Price</button>
+
+      <button onclick="openQtyEdit()">📦 Update Qty</button>
+
+      <button onclick="openImageUpload()">🖼️ Upload Image</button>
+
+      <button onclick="closeManageModal()" style="background:#6c757d;">Cancel</button>
+
+    </div>
+
+  </div>
+</div>
+
   
 
   
