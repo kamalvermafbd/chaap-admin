@@ -1113,6 +1113,12 @@ renderCart();           // 🔥 ADD THIS (FINAL FIX)
 if (pageId === 'pageMenu') {
   loadMenuData();   // ✅ correct function
   loadUnitMaster();   // 🔥 ADD THIS
+
+  // 🔥 FIX
+  if(!unitList || unitList.length === 0){
+    select.innerHTML = `<option>Loading...</option>`;
+    return;
+  }
 }
   
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -1224,6 +1230,10 @@ let currentManageIndex = null;
   
 function openManageMenu(index){
 
+  if(unitList.length === 0){
+    alert("Unit loading... try again");
+    return;
+  }
   console.log("Manage clicked:", index);
 
   // ✅ single source of truth
@@ -1264,6 +1274,12 @@ document.getElementById("manageItemType").innerText = item["Cat2"] || "";
   const select = document.getElementById("unit");
   if(!select) return;
 
+// 🔥 FIX
+  if(!unitList || unitList.length === 0){
+    select.innerHTML = `<option>Loading...</option>`;
+    return;
+  }
+    
   select.innerHTML = `<option value="">Select Unit</option>`;
 
   unitList.forEach(unit => {
