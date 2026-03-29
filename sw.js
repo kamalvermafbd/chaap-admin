@@ -1,4 +1,4 @@
-const CACHE_NAME = "chaap-admin-cache-v66";
+const CACHE_NAME = "chaap-admin-cache-v67"; // 🔥 version update
 
 const URLS_TO_CACHE = [
   "/",
@@ -17,10 +17,8 @@ self.addEventListener("install", event => {
     })
   );
 
-  // Activate immediately
   self.skipWaiting();
 });
-
 
 // ==========================
 // ACTIVATE
@@ -41,7 +39,6 @@ self.addEventListener("activate", event => {
   self.clients.claim();
 });
 
-
 // ==========================
 // FETCH
 // ==========================
@@ -49,7 +46,7 @@ self.addEventListener("fetch", event => {
 
   const request = event.request;
 
-  // 🔥 Always get latest HTML from network (prevents stale admin UI)
+  // 🔥 Always fresh HTML (no cache)
   if (request.destination === "document") {
     event.respondWith(
       fetch(request)
@@ -59,36 +56,49 @@ self.addEventListener("fetch", event => {
     return;
   }
 
-  
-  // 🚫 Completely bypass Google Apps Script APIs
-if (
-  request.url.includes("script.google.com") ||
-  request.url.includes("/exec")
-) {
-  return; // Let browser handle it directly
-}
+  // 🚫 Skip API calls (VERY IMPORTANT)
+  if (
+    request.url.includes("script.google.com") ||
+    request.url.includes("/exec")
+  ) {
+    return;
+  }
 
-  // 🟢 Static assets → Cache First
+  // 🟢 Cache First Strategy
   event.respondWith(
     caches.match(request).then(cached => {
+
       if (cached) return cached;
 
-      return fetch(request).then(networkResponse => {
+      return fetch(request)
+        .then(networkResponse => {
 
-        // Cache only GET successful responses
-        if (
-          request.method === "GET" &&
-          networkResponse &&
-          networkResponse.status === 200
-        ) {
-          const clone = networkResponse.clone();
-          caches.open(CACHE_NAME).then(cache => {
-            cache.put(request, clone);
-          });
-        }
+          // ✅ Cache only valid GET responses
+          if (
+            request.method === "GET" &&
+            networkResponse &&
+            networkResponse.status === 200
+          ) {
+            const clone = networkResponse.clone();
+            caches.open(CACHE_NAME).then(cache => {
+              cache.put(request, clone);
+            });
+          }
 
-        return networkResponse;
-      });
+          return networkResponse;
+        })
+        .catch(() => {
+
+          // 🔥 Handle image failures (403 / blocked)
+          if (request.destination === "image") {
+            return new Response("", { status: 200 });
+          }
+
+          // 🔥 Fallback to cache
+          return caches.match(request);
+
+        });
+
     })
   );
 
