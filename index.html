@@ -6310,29 +6310,6 @@ if ("serviceWorker" in navigator) {
   
 </script>
 
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-
-    navigator.serviceWorker.register('/sw.js?v=68')
-      .then(reg => {
-        console.log("✅ SW Registered:", reg.scope);
-
-        // 🔥 only check update (no loop)
-        reg.update();
-
-        // ❌ REMOVE auto reload loop
-        reg.onupdatefound = () => {
-          console.log("🔄 New SW found");
-        };
-
-      })
-      .catch(err => console.error("❌ SW error:", err));
-
-  });
-}
-</script>
-  
 <<!-- 🔴 CANCEL ORDER MODAL -->
 
 <div id="cancelModal" class="modal-overlay">
