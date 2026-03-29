@@ -1291,14 +1291,11 @@ function openManageMenu(index){
 
     if(type === "Multi"){
 // 🔥 LOADING STATE (ADD THIS)
-  document.getElementById("mrp").value = "Loading...";
-  document.getElementById("discount").value = "";
-  document.getElementById("gstRate").value = "";
-  document.getElementById("price").value = "";
+ document.getElementById("manageLoading").style.display = "block";
       
       apiGet("getVariants", { name: item.Name })
         .then(function(data){
-
+document.getElementById("manageLoading").style.display = "none";
           console.log("Manage Variants:", data);
 
           if(!data || data.length === 0){
@@ -1313,6 +1310,7 @@ function openManageMenu(index){
 
         })
         .catch(err => {
+          document.getElementById("manageLoading").style.display = "none";
           console.error("Variant load error:", err);
           alert("Error loading variants");
         });
@@ -6658,8 +6656,17 @@ document.addEventListener("DOMContentLoaded", function(){
 
   <!-- 🔥 TAB CONTENT -->
   <div class="tab-content">
-    
 
+    <!-- 🔥 LOADING MESSAGE (ADD HERE) -->
+  <div id="manageLoading" style="
+    display:none;
+    text-align:center;
+    padding:10px;
+    font-weight:600;
+    color:#007bff;
+  ">
+    ⏳ Loading... Please wait
+  </div>
     
     <div id="tab-price" class="tab-pane active">
       <div class="price-form">
