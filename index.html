@@ -6310,41 +6310,10 @@ if ("serviceWorker" in navigator) {
   
 </script>
 
-  <script>
-if ("serviceWorker" in navigator) {
-
-  navigator.serviceWorker.register("/sw.js")
-    .then(reg => {
-
-      console.log("✅ Admin SW Registered");
-
-      // 🔥 Detect new version (NO LOOP)
-      reg.addEventListener("updatefound", () => {
-
-        const newWorker = reg.installing;
-
-        newWorker.addEventListener("statechange", () => {
-
-          if (
-            newWorker.state === "installed" &&
-            navigator.serviceWorker.controller
-          ) {
-
-            // ✅ sirf ek baar alert
-            if (!localStorage.getItem("swUpdated")) {
-
-              alert("✅ New version installed. Please refresh once.");
-
-              localStorage.setItem("swUpdated", "yes");
-            }
-
-          }
-
-        });
-
-      });
-
-    })
+ <script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js?v=72')
+    .then(() => console.log("✅ SW Registered"))
     .catch(err => console.log("❌ SW Error", err));
 }
 </script>
