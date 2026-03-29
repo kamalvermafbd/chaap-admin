@@ -759,6 +759,19 @@ td:nth-child(8) { width: 220px; } /* Action */
 .modalitem-overlay.active {
   display: flex;
 }
+
+
+#tab-price input,
+#tab-price select {
+  width: 100%;
+  padding: 6px 8px;
+  margin-bottom: 8px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+    
   </style>
 </head>
 <body>
@@ -6431,18 +6444,20 @@ if ("serviceWorker" in navigator) {
 
     <div id="tab-price" class="tab-pane active">
       <p>Price update UI to yaha aayega</p>
-
+<label>MRP</label>
 <input id="mrp" type="number" placeholder="MRP" oninput="calculatePrice()">
+      <label>Discount %</label>
 <input id="discount" type="number" placeholder="Discount %" oninput="calculatePrice()">
-
+<label>GST Included</label>
 <select id="gstIncluded" onchange="calculatePrice()">
   <option>Yes</option>
   <option>No</option>
 </select>
-
+<label>GST Rate (%)</label>
 <input id="gstRate" type="number" placeholder="GST %" oninput="calculatePrice()">
-
+<label>Base Amt</label>
 <input id="price" readonly placeholder="Calculated Price">
+      <label>GST Amt</label>
 <input id="gstAmt" readonly placeholder="GST Amount">
       
     </div>
