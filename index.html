@@ -6583,8 +6583,8 @@ document.addEventListener("DOMContentLoaded", function(){
       <div class="form-row">
   <label>Unit</label>
 
-  <select id="unit" disabled></select>
-
+  <select id="unit" disabled onchange="this.blur()"></select>
+        
   <span class="edit-btn" onclick="enableEdit('unit')">✏️</span>
 </div>
 
