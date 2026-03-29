@@ -770,33 +770,54 @@ td:nth-child(8) { width: 220px; } /* Action */
   display: flex;
 }
 
-.price-form input,
-.price-form select {
-  width: 100%;
-  padding: 6px 8px;
-  margin-bottom: 8px;
-  font-size: 13px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  height: 32px;
+/* =========================
+   🔥 MANAGE MODAL (COMPACT UI)
+========================= */
+
+.manage-modal-box {
+  background: #fff;
+  width: 95%;
+  max-width: 380px;   /* 🔥 compact modal */
+  border-radius: 12px;
+  padding: 16px;
+  margin: auto;
 }
 
+/* 🔥 FORM CENTER + WIDTH CONTROL */
+.price-form {
+  max-width: 300px;
+  margin: auto;
+}
+
+/* 🔥 LABEL */
 .price-form label {
-  font-size: 12px;
+  font-size: 11px;
   color: #555;
   margin-bottom: 2px;
   display: block;
 }
 
-.manage-modal-box .price-form input,
-.manage-modal-box .price-form select {
+/* 🔥 INPUT / SELECT (FINAL COMPACT) */
+.price-form input,
+.price-form select {
   width: 100%;
-  padding: 6px 8px !important;
-  margin-bottom: 8px !important;
-  font-size: 13px !important;
+  padding: 4px 6px;
+  margin-bottom: 6px;
+  font-size: 12px;
   border-radius: 6px;
   border: 1px solid #ccc;
-  height: 32px !important;
+  height: 30px;
+  box-sizing: border-box;
+}
+
+/* 🔥 FORCE OVERRIDE (VERY IMPORTANT) */
+.manage-modal-box .price-form input,
+.manage-modal-box .price-form select {
+  width: 100% !important;
+  padding: 4px 6px !important;
+  margin-bottom: 6px !important;
+  font-size: 12px !important;
+  height: 30px !important;
 }
     
   </style>
