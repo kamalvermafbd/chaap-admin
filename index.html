@@ -809,7 +809,7 @@ td:nth-child(8) { width: 220px; } /* Action */
 }
     .price-form .form-row {
   display: grid;
-  grid-template-columns: 120px 1fr 24px;  /* 🔥 ye add */
+  grid-template-columns: 120px 1fr 30px;  /* 🔥 ye add */
   align-items: center;
   margin-bottom: 8px;
 }
@@ -841,12 +841,17 @@ td:nth-child(8) { width: 220px; } /* Action */
 .edit-btn {
   cursor: pointer;
   font-size: 14px;
+  margin-left: 6px;   /* 🔥 ye add kar */
 }
 
 .edit-btn:hover {
   color: #007bff;
 }
-    
+   .edit-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+} 
   </style>
 </head>
 <body>
