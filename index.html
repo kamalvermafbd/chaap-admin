@@ -1036,12 +1036,17 @@ renderCategories(menuItems);   // 🔥 ADD THIS LINE
 }
 
 let currentManageIndex = null;
-
+  
 function openManageMenu(index){
   currentManageIndex = index;
+
+  const row = document.getElementById(`row-${index}`);
+  const name = row?.children[1]?.innerText || "";
+
+  document.getElementById("manageItemName").innerText = name;
+
   document.getElementById("manageModal").classList.add("active");
 }
-
 function closeManageModal(){
   document.getElementById("manageModal").classList.remove("active");
 }
@@ -6226,9 +6231,13 @@ if ("serviceWorker" in navigator) {
   
   <div class="manage-modal-box">
     
-  <h3 style="margin-bottom:10px;">Manage Item</h3>
+  <h3 style="margin-bottom:5px;">Manage Item</h3>
 
-  <div style="display:flex;flex-direction:column;gap:12px;margin-top:10px;">
+<h4 id="manageItemName" 
+    style="margin:0 0 10px 0;color:#555;font-weight:500;">
+</h4>
+
+<div style="display:flex;flex-direction:column;gap:12px;margin-top:10px;">
 
     <button 
       onclick="openPriceEdit()"
