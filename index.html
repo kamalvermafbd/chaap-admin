@@ -1367,7 +1367,7 @@ function openManageMenu(index){
 if(nav) nav.style.display = "none";
  clearManageFields();   // 🔥 YAHI LAGANA HAI (VERY IMPORTANT)
     disableAllFields();
-    renderUnitDropdown();
+   
 
     // =========================
     // 🔥 MAIN LOGIC
@@ -1389,13 +1389,16 @@ if(btn) btn.disabled = false;
           console.log("Manage Variants:", data);
 
           if(!data || data.length === 0){
-            alert("No variants found");
-            return;
-          }
 
+  manageVariants = [];          // 🔥 ADD THIS
+  renderUnitDropdown();         // 🔥 ADD THIS
+
+  alert("No variants found");
+  return;
+}
           manageVariants = data;
           manageVariantIndex = 0;
-
+ renderUnitDropdown();
           loadManageVariant(manageVariants[0]); // ✅ first variant
 const nav = document.getElementById("variantNav");
 if(nav) nav.style.display = "flex";
