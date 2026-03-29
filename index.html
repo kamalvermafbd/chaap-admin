@@ -1455,10 +1455,22 @@ function clearManageFields(){
     
   select.innerHTML = `<option value="">Select Unit</option>`;
 
+  // 🔥 ADD THIS (used units)
+  const usedUnits = manageVariants.map(v => v.Unit);
+
+    
   unitList.forEach(unit => {
     const opt = document.createElement("option");
     opt.value = unit;
-    opt.textContent = unit;
+// 🔥 ADD THIS BLOCK
+    if(usedUnits.includes(unit)){
+      opt.textContent = unit + " (Already added)";
+      opt.disabled = true;
+      opt.style.color = "#999";
+    } else {
+      opt.textContent = unit;
+    }
+
     select.appendChild(opt);
   });
 
