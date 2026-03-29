@@ -1187,6 +1187,14 @@ renderCategories(menuItems);   // 🔥 ADD THIS LINE
 
 
 function enableEdit(id){
+  // 🔥 block for SINGLE item
+  const type = window.currentItemType || "";
+  const isMulti = (type || "").toLowerCase() === "multi";
+
+  if(!isMulti){
+    alert("⚠️ Edit not allowed for Single item");
+    return;
+  }
 
   const unit = document.getElementById("unit").value;
 
