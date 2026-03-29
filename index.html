@@ -1141,7 +1141,10 @@ function openVariantSelector(){
 }
   
 function closeManageModal(){
-  document.getElementById("manageModal").classList.remove("active");
+  const modal = document.getElementById("manageModal");
+  if(modal){
+    modal.classList.remove("active");
+  }
 }
   function getNetPrice(price, discount){
 
