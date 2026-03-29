@@ -1090,6 +1090,10 @@ renderCategories(menuItems);   // 🔥 ADD THIS LINE
   });
 }
 
+
+
+
+  
 let currentManageIndex = null;
   
 function openManageMenu(index){
@@ -1127,6 +1131,36 @@ document.getElementById("manageItemType").innerText = item["Cat2"] || "";
   }
 }
 
+function calculatePrice(){
+
+  const mrp = parseFloat(document.getElementById("mrp").value) || 0;
+  const discount = parseFloat(document.getElementById("discount").value) || 0;
+  const gstRate = parseFloat(document.getElementById("gstRate").value) || 0;
+  const gstIncluded = document.getElementById("gstIncluded").value === "Yes";
+
+  let price = 0;
+  let gstAmt = 0;
+
+  if(gstIncluded){
+
+    price = mrp * 100 / (100 + gstRate);
+
+    const discounted = mrp - (mrp * discount / 100);
+
+    gstAmt = discounted * gstRate / (100 + gstRate);
+
+  } else {
+
+    price = mrp;
+
+    gstAmt = mrp * gstRate / 100;
+
+  }
+
+  document.getElementById("price").value = price.toFixed(2);
+  document.getElementById("gstAmt").value = gstAmt.toFixed(2);
+}
+  
 function openPriceEdit(){
 
   if(currentItemType === "Single"){
@@ -6386,6 +6420,20 @@ if ("serviceWorker" in navigator) {
 
     <div id="tab-price" class="tab-pane active">
       <p>Price update UI to yaha aayega</p>
+
+<input id="mrp" type="number" placeholder="MRP" oninput="calculatePrice()">
+<input id="discount" type="number" placeholder="Discount %" oninput="calculatePrice()">
+
+<select id="gstIncluded" onchange="calculatePrice()">
+  <option>Yes</option>
+  <option>No</option>
+</select>
+
+<input id="gstRate" type="number" placeholder="GST %" oninput="calculatePrice()">
+
+<input id="price" readonly placeholder="Calculated Price">
+<input id="gstAmt" readonly placeholder="GST Amount">
+      
     </div>
 
     <div id="tab-qty" class="tab-pane">
