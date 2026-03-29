@@ -1180,13 +1180,9 @@ renderCategories(menuItems);   // 🔥 ADD THIS LINE
 
 function enableEdit(id){
   const el = document.getElementById(id);
-  el.disabled = false;
-  el.focus();
 
-  // 🔥 auto disable after edit
-  el.addEventListener("blur", () => {
-    el.disabled = true;
-  });
+  el.removeAttribute("disabled");   // 🔥 better than el.disabled = false
+  el.focus();
 }
 
 function fillPriceFields(item){
