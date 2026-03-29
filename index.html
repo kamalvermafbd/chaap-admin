@@ -1310,6 +1310,8 @@ function openManageMenu(index){
   if(modal){
 
     modal.classList.add("active");
+    const nav = document.getElementById("variantNav");
+if(nav) nav.style.display = "none";
  clearManageFields();   // 🔥 YAHI LAGANA HAI (VERY IMPORTANT)
     disableAllFields();
     renderUnitDropdown();
@@ -1324,7 +1326,7 @@ function openManageMenu(index){
       
       apiGet("getVariants", { name: item.Name })
         .then(function(data){
-document.getElementById("manageLoading").style.display = "none";
+        document.getElementById("manageLoading").style.display = "none";
           console.log("Manage Variants:", data);
 
           if(!data || data.length === 0){
@@ -1336,7 +1338,8 @@ document.getElementById("manageLoading").style.display = "none";
           manageVariantIndex = 0;
 
           loadManageVariant(manageVariants[0]); // ✅ first variant
-document.getElementById("variantNav").style.display = "flex";
+const nav = document.getElementById("variantNav");
+if(nav) nav.style.display = "flex";
 updateVariantUI();
         })
         .catch(err => {
@@ -1349,7 +1352,8 @@ updateVariantUI();
 
       // ✅ SINGLE ITEM
       fillPriceFields(item);
-document.getElementById("variantNav").style.display = "none";
+const nav = document.getElementById("variantNav");
+if(nav) nav.style.display = "none";
     }
 
     // =========================
