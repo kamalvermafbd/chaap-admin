@@ -679,6 +679,23 @@ td:nth-child(8) { width: 220px; } /* Action */
 #menuTable button {
   display: inline-block;
 }
+/* 🔥 MENU FILTER FIX */
+#menuTable select,
+#menuTable input {
+  width: auto !important;
+  margin-bottom: 0 !important;
+}
+    #menuTable select {
+  min-width: 180px;
+}
+
+#menuTable input {
+  min-width: 220px;
+}
+
+    
+
+    
   </style>
 </head>
 <body>
@@ -5440,7 +5457,7 @@ data.forEach((item, i) => {
   }
 
 let html = `
-<div style="display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap;">
+<div style="display:flex;gap:10px;margin-bottom:10px;align-items:center;">
 
   <select id="menuCategoryFilter" onchange="filterMenu()">
     <option value="">All Categories</option>
