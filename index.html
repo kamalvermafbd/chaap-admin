@@ -1139,7 +1139,7 @@ let cart = [];
   let isMenuReady = false;
 let pendingVariants = 0;
 let manageVariants = [];
-let manageIndex = 0;
+let manageVariantIndex = 0; // 🔥 rename
   
   function loadPOSItems(){
 
@@ -1246,6 +1246,35 @@ function disableAllFields(){
   });
 
 }
+
+
+function updateVariantUI(){
+
+  document.getElementById("variantCounter").innerText =
+    `Variant ${manageVariantIndex + 1} of ${manageVariants.length}`;
+
+}
+
+function nextVariant(){
+
+  if(manageVariantIndex < manageVariants.length - 1){
+    manageVariantIndex++;
+    loadManageVariant(manageVariants[manageVariantIndex]);
+    updateVariantUI();
+  }
+
+}
+
+function prevVariant(){
+
+  if(manageVariantIndex > 0){
+    manageVariantIndex--;
+    loadManageVariant(manageVariants[manageVariantIndex]);
+    updateVariantUI();
+  }
+
+}
+
   
 let currentManageIndex = null;
   
@@ -1307,7 +1336,8 @@ document.getElementById("manageLoading").style.display = "none";
           manageVariantIndex = 0;
 
           loadManageVariant(manageVariants[0]); // ✅ first variant
-
+document.getElementById("variantNav").style.display = "flex";
+updateVariantUI();
         })
         .catch(err => {
           document.getElementById("manageLoading").style.display = "none";
@@ -1319,7 +1349,7 @@ document.getElementById("manageLoading").style.display = "none";
 
       // ✅ SINGLE ITEM
       fillPriceFields(item);
-
+document.getElementById("variantNav").style.display = "none";
     }
 
     // =========================
@@ -6671,6 +6701,21 @@ document.addEventListener("DOMContentLoaded", function(){
     <div id="tab-price" class="tab-pane active">
       <div class="price-form">
 
+<div id="variantNav" style="
+  display:none;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:10px;
+">
+
+  <button onclick="prevVariant()">⬅️</button>
+
+  <span id="variantCounter" style="font-size:13px;color:#555;"></span>
+
+  <button onclick="nextVariant()">➡️</button>
+
+</div>
+        
       <div class="form-row">
   <label>Unit</label>
 
