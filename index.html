@@ -1318,10 +1318,16 @@ if(nav) nav.style.display = "none";
     if(type === "Multi"){
 // 🔥 LOADING STATE (ADD THIS)
  document.getElementById("manageLoading").style.display = "block";
+      const btn = document.getElementById("addVariantBtn");
+if(btn) btn.disabled = true;
       
       apiGet("getVariants", { name: item.Name })
         .then(function(data){
         document.getElementById("manageLoading").style.display = "none";
+
+const btn = document.getElementById("addVariantBtn");
+if(btn) btn.disabled = false;
+  
           console.log("Manage Variants:", data);
 
           if(!data || data.length === 0){
@@ -1339,6 +1345,10 @@ updateVariantUI();
         })
         .catch(err => {
           document.getElementById("manageLoading").style.display = "none";
+
+const btn = document.getElementById("addVariantBtn");
+if(btn) btn.disabled = false;
+          
           console.error("Variant load error:", err);
           alert("Error loading variants");
         });
@@ -6866,7 +6876,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
 </div>
 
-<button onclick="addNewVariant()" style="
+<button id="addVariantBtn" onclick="addNewVariant()" style="
   width:100%;
   margin-top:8px;
   background:#28a745;
