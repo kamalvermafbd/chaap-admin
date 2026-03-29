@@ -6871,6 +6871,18 @@ document.addEventListener("DOMContentLoaded", function(){
   <button onclick="nextVariant()">➡️</button>
 
 </div>
+
+<button onclick="addNewVariant()" style="
+  width:100%;
+  margin-top:8px;
+  background:#28a745;
+  color:#fff;
+  border:none;
+  padding:6px;
+  border-radius:6px;
+">
+  ➕ Add Variant
+</button>
         
       <div class="form-row">
   <label>Unit</label>
@@ -6925,14 +6937,19 @@ document.addEventListener("DOMContentLoaded", function(){
 
   </div>
 
-  <!-- Cancel -->
-  <div style="margin-top:10px;text-align:right;">
-    <button 
-      onclick="closeManageModal()"
-      style="background:#6c757d;padding:8px 14px;border-radius:6px;font-size:14px;">
-      Cancel
-    </button>
-  </div>
+<div style="margin-top:10px;text-align:right;display:flex;gap:10px;justify-content:flex-end;">
+
+  <button 
+    onclick="saveManageItem()"
+    style="background:#28a745;padding:8px 14px;border-radius:6px;font-size:14px;">
+    💾 Save
+  </button>
+      <button 
+  onclick="closeManageModal()"
+  style="background:#6c757d;padding:8px 14px;border-radius:6px;font-size:14px;">
+  Cancel
+</button>
+ 
     </div>
 </div>
 
