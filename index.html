@@ -1138,7 +1138,9 @@ let menuItems = [];
 let cart = [];
   let isMenuReady = false;
 let pendingVariants = 0;
-
+let manageVariants = [];
+let manageIndex = 0;
+  
   function loadPOSItems(){
 
   const box = document.getElementById("posItems");
@@ -1198,7 +1200,21 @@ function fillPriceFields(item){
   calculatePrice();
 }
 
-  
+  function loadManageVariant(v){
+
+  document.getElementById("unit").value = v.Unit || "";
+
+  // 🔥 IMPORTANT: Multi me MRP nahi hota mostly
+  document.getElementById("mrp").value = v.MRP || v.Price || 0;
+
+  document.getElementById("discount").value = v.Discount_Percent || 0;
+
+  document.getElementById("gstRate").value = parseFloat(v.GST_Rate) || 0;
+
+  document.getElementById("gstIncluded").value = v.GST_Included || "Yes";
+
+  calculatePrice();
+}
 
 async function loadUnitMaster(){
 
@@ -1233,15 +1249,16 @@ function disableAllFields(){
   
 let currentManageIndex = null;
   
+
 function openManageMenu(index){
 
   if(unitList.length === 0){
     alert("Unit loading... try again");
     return;
   }
+
   console.log("Manage clicked:", index);
 
-  // ✅ single source of truth
   if(!window.menuData || !window.menuData[index]){
     console.error("Item not found", index);
     return;
@@ -1252,29 +1269,66 @@ function openManageMenu(index){
   const item = window.menuData[index];
 
   const name = item.Name || "Item";
-  
   const type = item["Cat2"] || "";
 
-  // ✅ UI update
   document.getElementById("manageItemName").innerText = name;
-// 🔥 ADD THIS (type UI)
+  document.getElementById("manageItemType").innerText = type;
 
-document.getElementById("manageItemType").innerText = item["Cat2"] || "";
-  
-  // ✅ global use (price / variant flow ke liye)
   window.currentItemType = type;
 
-  // ✅ open modal
   const modal = document.getElementById("manageModal");
+
   if(modal){
+
     modal.classList.add("active");
-    disableAllFields();   // 🔥 ADD THIS
-    renderUnitDropdown();   // 🔥 no API call
-    fillPriceFields(item); // ✅ correct place
+
+    disableAllFields();
+    renderUnitDropdown();
+
+    // =========================
+    // 🔥 MAIN LOGIC
+    // =========================
+
+    if(type === "Multi"){
+
+      apiGet("getVariants", { name: item.Name })
+        .then(function(data){
+
+          console.log("Manage Variants:", data);
+
+          if(!data || data.length === 0){
+            alert("No variants found");
+            return;
+          }
+
+          manageVariants = data;
+          manageVariantIndex = 0;
+
+          loadManageVariant(manageVariants[0]); // ✅ first variant
+
+        })
+        .catch(err => {
+          console.error("Variant load error:", err);
+          alert("Error loading variants");
+        });
+
+    } else {
+
+      // ✅ SINGLE ITEM
+      fillPriceFields(item);
+
+    }
+
+    // =========================
+
   } else {
+
     console.error("manageModal not found");
+
   }
 }
+
+  
   function renderUnitDropdown(){
 
   const select = document.getElementById("unit");
