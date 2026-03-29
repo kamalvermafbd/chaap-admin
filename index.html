@@ -5428,17 +5428,8 @@ data.forEach((item, i) => {
     return;
   }
 
-  const cats = [...new Set(data.map(i => i["Category"]).filter(Boolean))];
-
-setTimeout(() => {
-  const cat = document.getElementById("menuCategoryFilter");
-  if(cat){
-    cat.innerHTML = `<option value="">All Categories</option>` +
-      cats.map(c => `<option value="${c}">${c}</option>`).join("");
-  }
-}, 100);
-  
-html = `
+ 
+let html = `
 <div style="display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap;">
 
   <select id="menuCategoryFilter" onchange="filterMenu()">
@@ -5452,9 +5443,7 @@ html = `
   <button onclick="clearMenuFilter()">Clear</button>
 
 </div>
-` + `
-  
-  let html = `
+
 <div style="
   max-height: 500px;
   overflow-y: auto;
@@ -5521,6 +5510,15 @@ style="border-collapse:collapse;">
   html += '<br><button onclick="addNewRecord()">➕ Add New Record</button>';
 
   menuDiv.innerHTML = html;
+
+   const cats = [...new Set(data.map(i => i["Category"]).filter(Boolean))];
+
+const cat = document.getElementById("menuCategoryFilter");
+if(cat){
+  cat.innerHTML = `<option value="">All Categories</option>` +
+    cats.map(c => `<option value="${c}">${c}</option>`).join("");
+}  
+  
   menuDiv.innerHTML += `<datalist id="cat-list"></datalist>`;
 
 })
