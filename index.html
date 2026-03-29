@@ -6499,20 +6499,29 @@ if ("serviceWorker" in navigator) {
 <label>MRP</label>
 <input id="mrp" type="number" placeholder="MRP" oninput="calculatePrice()">
    </div>
+         <div class="form-row"> 
       <label>Discount %</label>
 <input id="discount" type="number" placeholder="Discount %" oninput="calculatePrice()">
+         </div>
+         <div class="form-row"> 
 <label>GST Included</label>
 <select id="gstIncluded" onchange="calculatePrice()">
   <option>Yes</option>
   <option>No</option>
 </select>
+         </div>
+         <div class="form-row"> 
 <label>GST Rate (%)</label>
 <input id="gstRate" type="number" placeholder="GST %" oninput="calculatePrice()">
+         </div>
+         <div class="form-row"> 
 <label>Base Amt</label>
 <input id="price" readonly placeholder="Calculated Price">
+         </div>
+         <div class="form-row"> 
       <label>GST Amt</label>
 <input id="gstAmt" readonly placeholder="GST Amount">
-      
+         </div>
     </div>
     </div>
     <div id="tab-qty" class="tab-pane">
