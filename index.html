@@ -1488,6 +1488,153 @@ function closeManageModal(){
 
 }
 
+function addNewVariant(){
+
+  const item = window.menuData[currentManageIndex];
+  const itemId = item.itemId;
+
+  // 🔥 generate new variantId
+  const newVariantId = getNextVariantId(itemId, manageVariants);
+
+  // 🔥 new variant object
+  const newVar = {
+    Name: item.Name,
+    Unit: "",
+    MRP: 0,
+    Discount_Percent: 0,
+    GST_Rate: 0,
+    GST_Included: "Yes",
+    variantId: newVariantId,
+    itemId: itemId,
+    isNew: true   // 🔥 IMPORTANT (identify new row)
+  };
+
+  manageVariants.push(newVar);
+  manageVariantIndex = manageVariants.length - 1;
+
+  loadManageVariant(newVar);
+  updateVariantUI();
+
+}
+
+  function saveManageItem(){
+
+  const item = window.menuData[currentManageIndex];
+  const type = window.currentItemType;
+
+  // 🔥 common fields
+  const payload = {
+    Name: item.Name,
+    Unit: document.getElementById("unit").value,
+    MRP: parseFloat(document.getElementById("mrp").value) || 0,
+    Discount_Percent: parseFloat(document.getElementById("discount").value) || 0,
+    GST_Rate: parseFloat(document.getElementById("gstRate").value) || 0,
+    GST_Included: document.getElementById("gstIncluded").value,
+    Price: parseFloat(document.getElementById("price").value) || 0
+  };
+
+  // =========================
+  // 🔥 SINGLE ITEM
+  // =========================
+  if(type !== "Multi"){
+
+    payload.itemId = item.itemId;
+
+    apiPost("updateMenuItem", payload)
+      .then(res => {
+        alert("Updated successfully");
+        closeManageModal();
+      })
+      .catch(err => {
+        console.error(err);
+        alert("Update failed");
+      });
+
+    return;
+  }
+
+  // =========================
+  // 🔥 MULTI ITEM
+  // =========================
+
+  const currentVariant = manageVariants[manageVariantIndex];
+
+  payload.itemId = currentVariant.itemId;
+  payload.variantId = currentVariant.variantId;
+
+  // 🔥 NEW VARIANT → INSERT
+  if(currentVariant.isNew){
+
+    apiPost("addVariant", payload)
+      .then(res => {
+        alert("Variant added");
+        currentVariant.isNew = false; // reset
+        closeManageModal();
+      })
+      .catch(err => {
+        console.error(err);
+        alert("Insert failed");
+      });
+
+  } else {
+
+    // 🔥 EXISTING → UPDATE
+    apiPost("updateVariant", payload)
+      .then(res => {
+        alert("Variant updated");
+        closeManageModal();
+      })
+      .catch(err => {
+        console.error(err);
+        alert("Update failed");
+      });
+
+  }
+
+}
+  
+function getNextVariantId(itemId, variants){
+
+  // 🔥 extract suffix (a, b, aa...)
+  const suffixes = variants.map(v => {
+    const id = v.variantId || "";
+    return id.replace(itemId.toString(), "");
+  });
+
+  // 🔥 function to convert suffix → number
+  function suffixToNumber(s){
+    let num = 0;
+    for(let i=0;i<s.length;i++){
+      num = num * 26 + (s.charCodeAt(i) - 96);
+    }
+    return num;
+  }
+
+  // 🔥 function number → suffix
+  function numberToSuffix(num){
+    let str = "";
+    while(num > 0){
+      let rem = (num - 1) % 26;
+      str = String.fromCharCode(97 + rem) + str;
+      num = Math.floor((num - 1) / 26);
+    }
+    return str;
+  }
+
+  // 🔥 find max
+  let max = 0;
+  suffixes.forEach(s => {
+    if(!s) return;
+    const n = suffixToNumber(s);
+    if(n > max) max = n;
+  });
+
+  // 🔥 next
+  const nextSuffix = numberToSuffix(max + 1);
+
+  return itemId + nextSuffix;
+}
+  
 
   function switchTab(e, tab){
 
