@@ -5370,28 +5370,26 @@ data.forEach((item, i) => {
     imgSrc = cacheUrl(imgSrc);
 
     html += `
-      <tr id="row-${index}">
-        <td>${index + 1}</td>
-        <td>${esc(item["Name"])}</td>
-        <td><img src="${imgSrc}" style="width:80px;height:80px;object-fit:cover;"></td>
-        <td>
-          <input type="checkbox" disabled ${String(item["Hotselling"]).toUpperCase() === "TRUE" ? "checked" : ""}>
-        </td>
+<tr id="row-${index}">
+  <td>${index + 1}</td>
 
-     //   <td class="upload-cell" style="display:none;">
-    //      <input type="file" onchange="uploadImage(this, ${index})">
-  //        <span id="img-url-${index}" style="font-size:12px;color:#007bff"></span>
- //       </td>
+  <td>${esc(item["Name"])}</td>
 
-    //    <td>
-      //    <button class="edit-btn" onclick="editRow(${index})">✏️ Edit</button>
-      
-      //  </td>
-       <td>
-      <button onclick="openManageMenu(${index})">⚙️ Manage</button>
-    </td>
-      </tr>
-    `;
+  <td>
+    <img src="${imgSrc}" 
+         style="width:60px;height:60px;object-fit:cover;border-radius:6px;">
+  </td>
+
+  <td style="text-align:center;">
+    <input type="checkbox" disabled 
+      ${String(item["Hotselling"]).toUpperCase() === "TRUE" ? "checked" : ""}>
+  </td>
+
+  <td>
+    <button onclick="openManageMenu(${index})">⚙️ Manage</button>
+  </td>
+</tr>
+`;
   });
 
   html += '</table></div>';
