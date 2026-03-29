@@ -6281,11 +6281,22 @@ if ("serviceWorker" in navigator) {
 }
 
 
-  document.getElementById("manageModal").addEventListener("click", function(e){
-  if(e.target.id === "manageModal"){
-    closeManageModal();
+ document.addEventListener("DOMContentLoaded", function(){
+
+  const modal = document.getElementById("manageModal");
+
+  if(modal){
+    modal.addEventListener("click", function(e){
+      if(e.target.id === "manageModal"){
+        closeManageModal();
+      }
+    });
+  } else {
+    console.error("manageModal not found at DOM load");
   }
+
 });
+  
 </script>
   
 <<!-- 🔴 CANCEL ORDER MODAL -->
