@@ -6314,25 +6314,16 @@ if ("serviceWorker" in navigator) {
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
 
-    navigator.serviceWorker.register('/sw.js?v=' + Date.now())
+    navigator.serviceWorker.register('/sw.js?v=68')
       .then(reg => {
         console.log("✅ SW Registered:", reg.scope);
 
-        // 🔥 force update
+        // 🔥 only check update (no loop)
         reg.update();
 
-        // 🔥 auto reload on new SW
+        // ❌ REMOVE auto reload loop
         reg.onupdatefound = () => {
-          const newWorker = reg.installing;
-
-          newWorker.onstatechange = () => {
-            if (newWorker.state === 'installed') {
-              if (navigator.serviceWorker.controller) {
-                console.log("🔥 New update available, reloading...");
-                window.location.reload();
-              }
-            }
-          };
+          console.log("🔄 New SW found");
         };
 
       })
