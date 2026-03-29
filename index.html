@@ -5604,10 +5604,12 @@ function saveRow(index) {
     if (txt && txt.value.trim() !== "") finalUrl = txt.value.trim();
   }
 
-  updatedData["Image Url"] = finalUrl?.url || finalUrl || "";
 
+  updatedData["Image Url"] = finalUrl || "";
+  
  apiPost("updateMenuRecord", {
-  index: index,
+    api: "updateMenuRecord",   // 🔥 ADD THIS
+  index: index+1,
   data: updatedData
 })
 .then((res) => {
@@ -5635,7 +5637,7 @@ if (addBtn) addBtn.disabled = false;
   // 🔥 reload menu
   setTimeout(() => {
     loadMenuData();
-  }, 500);
+  }, 1000);
 
 })
 .catch((err) => {
