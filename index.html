@@ -1133,6 +1133,7 @@ if (pageId === 'pageMenu') {
         }
 }
 
+  let unitList = [];
 let menuItems = [];
 let cart = [];
   let isMenuReady = false;
@@ -1187,9 +1188,7 @@ function enableEdit(id){
 }
 
 function fillPriceFields(item){
-setTimeout(() => {
-    document.getElementById("unit").value = item.Unit || "";
-  }, 100);
+  document.getElementById("unit").value = item.Unit || "";
   document.getElementById("mrp").value = item.MRP || 0;
   document.getElementById("discount").value = item.Discount_Percent || 0;
   document.getElementById("gstRate").value = parseFloat(item.GST_Rate) || 0;
@@ -1199,7 +1198,7 @@ setTimeout(() => {
   calculatePrice();
 }
 
-  let unitListCache = [];
+  
 
 async function loadUnitMaster(){
 
@@ -1219,21 +1218,7 @@ async function loadUnitMaster(){
 
 }
   
-function loadUnitDropdown(){
 
-  const select = document.getElementById("unit");
-  if(!select) return;
-
-  select.innerHTML = `<option value="">Select Unit</option>`;
-
-  unitList.forEach(unit => {
-    const opt = document.createElement("option");
-    opt.value = unit;
-    opt.textContent = unit;
-    select.appendChild(opt);
-  });
-
-}
   
 let currentManageIndex = null;
   
