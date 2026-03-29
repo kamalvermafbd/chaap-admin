@@ -6309,6 +6309,38 @@ if ("serviceWorker" in navigator) {
 });
   
 </script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+
+    navigator.serviceWorker.register('/sw.js?v=' + Date.now())
+      .then(reg => {
+        console.log("✅ SW Registered:", reg.scope);
+
+        // 🔥 force update
+        reg.update();
+
+        // 🔥 auto reload on new SW
+        reg.onupdatefound = () => {
+          const newWorker = reg.installing;
+
+          newWorker.onstatechange = () => {
+            if (newWorker.state === 'installed') {
+              if (navigator.serviceWorker.controller) {
+                console.log("🔥 New update available, reloading...");
+                window.location.reload();
+              }
+            }
+          };
+        };
+
+      })
+      .catch(err => console.error("❌ SW error:", err));
+
+  });
+}
+</script>
   
 <<!-- 🔴 CANCEL ORDER MODAL -->
 
