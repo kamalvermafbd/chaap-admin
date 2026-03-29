@@ -1112,6 +1112,7 @@ renderCart();           // 🔥 ADD THIS (FINAL FIX)
 
 if (pageId === 'pageMenu') {
   loadMenuData();   // ✅ correct function
+  loadUnitMaster();   // 🔥 ADD THIS
 }
   
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -1198,30 +1199,39 @@ setTimeout(() => {
   calculatePrice();
 }
 
+  let unitListCache = [];
 
-async function loadUnitDropdown(){
+async function loadUnitMaster(){
 
   try {
 
     const res = await fetch(API_BASE_URL + "?api=getUnitMaster");
     const data = await res.json();
 
-    const select = document.getElementById("unit");
+    unitList = data;   // 🔥 store globally
 
-    if(!select) return;
-
-    select.innerHTML = "";
-
-    data.forEach(unit => {
-      const opt = document.createElement("option");
-      opt.value = unit;
-      opt.textContent = unit;
-      select.appendChild(opt);
-    });
+    console.log("Unit Master Loaded:", unitList);
 
   } catch(err){
     console.error("Unit load error:", err);
+    unitList = [];
   }
+
+}
+  
+function loadUnitDropdown(){
+
+  const select = document.getElementById("unit");
+  if(!select) return;
+
+  select.innerHTML = `<option value="">Select Unit</option>`;
+
+  unitList.forEach(unit => {
+    const opt = document.createElement("option");
+    opt.value = unit;
+    opt.textContent = unit;
+    select.appendChild(opt);
+  });
 
 }
   
@@ -1258,11 +1268,26 @@ document.getElementById("manageItemType").innerText = item["Cat2"] || "";
   const modal = document.getElementById("manageModal");
   if(modal){
     modal.classList.add("active");
-    loadUnitDropdown();   // 🔥 ADD THIS LINE
+    renderUnitDropdown();   // 🔥 no API call
     fillPriceFields(item); // ✅ correct place
   } else {
     console.error("manageModal not found");
   }
+}
+  function renderUnitDropdown(){
+
+  const select = document.getElementById("unit");
+  if(!select) return;
+
+  select.innerHTML = `<option value="">Select Unit</option>`;
+
+  unitList.forEach(unit => {
+    const opt = document.createElement("option");
+    opt.value = unit;
+    opt.textContent = unit;
+    select.appendChild(opt);
+  });
+
 }
 
 function calculatePrice(){
