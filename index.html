@@ -1388,6 +1388,19 @@ function openManageMenu(index){
   const name = item.Name || "Item";
   const type = item["Cat2"] || "";
 
+
+  // 🔥 ADD VARIANT BUTTON CONTROL
+const addBtn = document.getElementById("addVariantBtn");
+
+if(addBtn){
+  if(type === "Multi"){
+    addBtn.style.display = "block";   // ✅ show
+  } else {
+    addBtn.style.display = "none";    // ❌ hide for single
+  }
+}
+
+  
   document.getElementById("manageItemName").innerText = name;
   document.getElementById("manageItemType").innerText = type;
 
