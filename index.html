@@ -1186,7 +1186,7 @@ function enableEdit(id){
 }
 
 function fillPriceFields(item){
-
+document.getElementById("unit").value = item.Unit || "";   // 🔥 ADD THIS
   document.getElementById("mrp").value = item.MRP || 0;
   document.getElementById("discount").value = item.Discount_Percent || 0;
   document.getElementById("gstRate").value = parseFloat(item.GST_Rate) || 0;
