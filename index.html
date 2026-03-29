@@ -6421,22 +6421,25 @@ if ("serviceWorker" in navigator) {
 }
 
 
- document.addEventListener("DOMContentLoaded", function(){
+document.addEventListener("DOMContentLoaded", function(){
 
   const modal = document.getElementById("manageModal");
 
   if(modal){
     modal.addEventListener("click", function(e){
-      if(e.target.id === "manageModal"){
-        closeManageModal();
-      }
+
+      // 🔥 agar modal box ke andar click hua → kuch nahi
+      if(e.target.closest(".manage-modal-box")) return;
+
+      // ❌ bahar click ignore (close mat karo)
+      // closeManageModal(); ❌ remove
     });
+
   } else {
     console.error("manageModal not found at DOM load");
   }
 
 });
-  
 </script>
 
 
