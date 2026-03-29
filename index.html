@@ -5266,13 +5266,24 @@ function cacheUrl(url) {
 
   
 function filterMenu(){
+
   const search = document.getElementById("menuSearch")?.value.toLowerCase() || "";
+  const category = document.getElementById("menuCategoryFilter")?.value || "";
+
   const rows = document.querySelectorAll("#menuTable table tr");
 
   rows.forEach((row, i) => {
-    if(i === 0) return;
+
+    if(i === 0) return; // header skip
+
     const name = row.children[1]?.innerText.toLowerCase() || "";
-    row.style.display = name.includes(search) ? "" : "none";
+    const rowCat = row.dataset.category || "";
+
+    const matchSearch = name.includes(search);
+    const matchCategory = !category || rowCat === category;
+
+    row.style.display = (matchSearch && matchCategory) ? "" : "none";
+
   });
 }
 
@@ -5428,7 +5439,6 @@ data.forEach((item, i) => {
     return;
   }
 
- 
 let html = `
 <div style="display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap;">
 
@@ -5480,7 +5490,7 @@ style="border-collapse:collapse;">
     imgSrc = cacheUrl(imgSrc);
 
     html += `
-<tr id="row-${index}">
+<tr id="row-${index}" data-category="${esc(item["Category"])}">
   <td>${index + 1}</td>
 
   <td>${esc(item["Name"])}</td>
