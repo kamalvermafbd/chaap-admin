@@ -831,6 +831,21 @@ td:nth-child(8) { width: 220px; } /* Action */
 .price-form select {
   height: 30px;   /* 🔥 fix for GST Included */
 }
+
+    .field-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.edit-btn {
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.edit-btn:hover {
+  color: #007bff;
+}
     
   </style>
 </head>
@@ -1163,7 +1178,16 @@ renderCategories(menuItems);   // 🔥 ADD THIS LINE
   });
 }
 
+function enableEdit(id){
+  const el = document.getElementById(id);
+  el.disabled = false;
+  el.focus();
 
+  // 🔥 auto disable after edit
+  el.addEventListener("blur", () => {
+    el.disabled = true;
+  });
+}
 
 function fillPriceFields(item){
 
@@ -6506,22 +6530,27 @@ if ("serviceWorker" in navigator) {
       <div class="price-form"> 
    <div class="form-row">  
 <label>MRP</label>
-<input id="mrp" type="number" placeholder="MRP" oninput="calculatePrice()">
+<input id="mrp" type="number" disabled placeholder="MRP" oninput="calculatePrice()">
+       <span class="edit-btn" onclick="enableEdit('mrp')">✏️</span>
    </div>
          <div class="form-row"> 
       <label>Discount %</label>
-<input id="discount" type="number" placeholder="Discount %" oninput="calculatePrice()">
+<input id="discount" type="number" disabled placeholder="Discount %" oninput="calculatePrice()">
+             <span class="edit-btn" onclick="enableEdit('discount')">✏️</span>
          </div>
          <div class="form-row"> 
 <label>GST Included</label>
-<select id="gstIncluded" onchange="calculatePrice()">
+<select id="gstIncluded"disabled  onchange="calculatePrice()">
   <option>Yes</option>
   <option>No</option>
 </select>
+           <span class="edit-btn" onclick="enableEdit('gstIncluded')">✏️</span>
          </div>
          <div class="form-row"> 
 <label>GST Rate (%)</label>
-<input id="gstRate" type="number" placeholder="GST %" oninput="calculatePrice()">
+<input id="gstRate" type="number" disabled  placeholder="GST %" oninput="calculatePrice()">
+      <span class="edit-btn" onclick="enableEdit('gstRate')">✏️</span>      
+           
          </div>
          <div class="form-row"> 
 <label>Base Amt</label>
