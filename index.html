@@ -6251,43 +6251,48 @@ if ("serviceWorker" in navigator) {
 
   </div>
 </div>
-<div id="manageModal" class="modal-overlay">
+
   
-  <div class="manage-modal-box">
-    
+<div id="manageModal" class="modal-overlay">    
   <h3 style="margin-bottom:5px;">Manage Item</h3>
 
-<h4 id="manageItemName" 
-    style="margin:0 0 10px 0;color:#555;font-weight:500;">
-</h4>
+  <h4 id="manageItemName" 
+      style="margin:0 0 10px 0;color:#555;font-weight:500;">
+  </h4>
 
-<div style="display:flex;flex-direction:column;gap:12px;margin-top:10px;">
+  <!-- 🔥 TABS HEADER -->
+  <div class="manage-tabs">
+    <div class="tab active" onclick="switchTab(event,'price')">💰 Price</div>
+    <div class="tab" onclick="switchTab(event,'qty')">📦 Qty</div>
+    <div class="tab" onclick="switchTab(event,'image')">🖼️ Image</div>
+  </div>
 
-    <button 
-      onclick="openPriceEdit()"
-      style="padding:10px;border-radius:8px;font-size:14px;">
-      💰 Update Price
-    </button>
+  <!-- 🔥 TAB CONTENT -->
+  <div class="tab-content">
 
-    <button 
-      onclick="openQtyEdit()"
-      style="padding:10px;border-radius:8px;font-size:14px;">
-      📦 Update Qty
-    </button>
+    <div id="tab-price" class="tab-pane active">
+      <p>Price update UI yaha aayega</p>
+    </div>
 
-    <button 
-      onclick="openImageUpload()"
-      style="padding:10px;border-radius:8px;font-size:14px;">
-      🖼️ Upload Image
-    </button>
+    <div id="tab-qty" class="tab-pane">
+      <p>Qty update UI yaha aayega</p>
+    </div>
 
+    <div id="tab-image" class="tab-pane">
+      <p>Image upload UI yaha aayega</p>
+    </div>
+
+  </div>
+
+  <!-- Cancel -->
+  <div style="margin-top:10px;text-align:right;">
     <button 
       onclick="closeManageModal()"
-      style="background:#6c757d;padding:10px;border-radius:8px;font-size:14px;">
+      style="background:#6c757d;padding:8px 14px;border-radius:6px;font-size:14px;">
       Cancel
     </button>
   </div>
-  </div>
+
 </div>
 
   
