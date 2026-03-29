@@ -6525,14 +6525,16 @@ document.addEventListener("DOMContentLoaded", function(){
   <!-- 🔥 TAB CONTENT -->
   <div class="tab-content">
     
-<div class="form-row">
+
+    
+    <div id="tab-price" class="tab-pane active">
+      <div class="price-form">
+
+        <div class="form-row">
   <label>Unit</label>
   <input id="unit" type="text" disabled placeholder="Unit (Plate / Half / Full)">
   <span class="edit-btn" onclick="enableEdit('unit')">✏️</span>
 </div>
-    
-    <div id="tab-price" class="tab-pane active">
-      <div class="price-form"> 
    <div class="form-row">  
 <label>MRP</label>
 <input id="mrp" type="number" disabled placeholder="MRP" oninput="calculatePrice()">
