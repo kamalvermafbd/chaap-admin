@@ -1111,7 +1111,13 @@ function openManageMenu(index){
 
   // ✅ UI update
   document.getElementById("manageItemName").innerText = name;
+// 🔥 ADD THIS (type UI)
+const typeText = (type === "Multi")
+  ? "Multi Item (Variants available)"
+  : "Single Item";
 
+document.getElementById("manageItemType").innerText = typeText;
+  
   // ✅ global use (price / variant flow ke liye)
   window.currentItemType = type;
 
@@ -6367,7 +6373,9 @@ if ("serviceWorker" in navigator) {
   <h4 id="manageItemName" 
       style="margin:0 0 10px 0;color:#555;font-weight:500;">
   </h4>
-
+<div id="manageItemType" 
+     style="font-size:13px;color:#888;margin-bottom:10px;">
+</div>
   <!-- 🔥 TABS HEADER -->
   <div class="manage-tabs">
     <div class="tab active" onclick="switchTab(event,'price')">💰 Price</div>
