@@ -6310,6 +6310,21 @@ if ("serviceWorker" in navigator) {
   
 </script>
 
+  <script>
+if ('serviceWorker' in navigator) {
+
+  navigator.serviceWorker.register('/sw.js?v=70')
+    .then(reg => {
+      console.log("✅ SW Registered v70");
+
+      // 🔥 sirf ek baar update check
+      reg.update();
+    })
+    .catch(err => console.error("SW error:", err));
+
+}
+</script>
+
 <<!-- 🔴 CANCEL ORDER MODAL -->
 
 <div id="cancelModal" class="modal-overlay">
