@@ -6279,6 +6279,13 @@ if ("serviceWorker" in navigator) {
     })
     .catch(err => console.log("❌ SW Error", err));
 }
+
+
+  document.getElementById("manageModal").addEventListener("click", function(e){
+  if(e.target.id === "manageModal"){
+    closeManageModal();
+  }
+});
 </script>
   
 <<!-- 🔴 CANCEL ORDER MODAL -->
@@ -6344,6 +6351,7 @@ if ("serviceWorker" in navigator) {
 
   
 <div id="manageModal" class="modalitem-overlay">    
+    <div class="manage-modal-box">   <!-- 🔥 ADD THIS WRAPPER -->
   <h3 style="margin-bottom:5px;">Manage Item</h3>
 
   <h4 id="manageItemName" 
@@ -6382,7 +6390,7 @@ if ("serviceWorker" in navigator) {
       Cancel
     </button>
   </div>
-
+    </div>
 </div>
 
   
