@@ -1186,7 +1186,9 @@ function enableEdit(id){
 }
 
 function fillPriceFields(item){
-document.getElementById("unit").value = item.Unit || "";   // 🔥 ADD THIS
+setTimeout(() => {
+    document.getElementById("unit").value = item.Unit || "";
+  }, 100);
   document.getElementById("mrp").value = item.MRP || 0;
   document.getElementById("discount").value = item.Discount_Percent || 0;
   document.getElementById("gstRate").value = parseFloat(item.GST_Rate) || 0;
@@ -1194,6 +1196,33 @@ document.getElementById("unit").value = item.Unit || "";   // 🔥 ADD THIS
   document.getElementById("gstIncluded").value = item.GST_Included || "Yes";
 
   calculatePrice();
+}
+
+
+async function loadUnitDropdown(){
+
+  try {
+
+    const res = await fetch(API_BASE_URL + "?api=getUnitMaster");
+    const data = await res.json();
+
+    const select = document.getElementById("unit");
+
+    if(!select) return;
+
+    select.innerHTML = "";
+
+    data.forEach(unit => {
+      const opt = document.createElement("option");
+      opt.value = unit;
+      opt.textContent = unit;
+      select.appendChild(opt);
+    });
+
+  } catch(err){
+    console.error("Unit load error:", err);
+  }
+
 }
   
 let currentManageIndex = null;
@@ -1229,6 +1258,7 @@ document.getElementById("manageItemType").innerText = item["Cat2"] || "";
   const modal = document.getElementById("manageModal");
   if(modal){
     modal.classList.add("active");
+    loadUnitDropdown();   // 🔥 ADD THIS LINE
     fillPriceFields(item); // ✅ correct place
   } else {
     console.error("manageModal not found");
@@ -6535,6 +6565,8 @@ document.addEventListener("DOMContentLoaded", function(){
   <input id="unit" type="text" disabled placeholder="Unit (Plate / Half / Full)">
   <span class="edit-btn" onclick="enableEdit('unit')">✏️</span>
 </div>
+
+        
    <div class="form-row">  
 <label>MRP</label>
 <input id="mrp" type="number" disabled placeholder="MRP" oninput="calculatePrice()">
