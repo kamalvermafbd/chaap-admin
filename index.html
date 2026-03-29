@@ -1092,7 +1092,16 @@ renderCategories(menuItems);   // 🔥 ADD THIS LINE
 
 
 
+function fillPriceFields(item){
 
+  document.getElementById("mrp").value = item.MRP || 0;
+  document.getElementById("discount").value = item.Discount_Percent || 0;
+  document.getElementById("gstRate").value = parseFloat(item.GST_Rate) || 0;
+
+  document.getElementById("gstIncluded").value = item.GST_Included || "Yes";
+
+  calculatePrice();
+}
   
 let currentManageIndex = null;
   
@@ -1111,6 +1120,7 @@ function openManageMenu(index){
   const item = window.menuData[index];
 
   const name = item.Name || "Item";
+  
   const type = item["Cat2"] || "";
 
   // ✅ UI update
@@ -1126,6 +1136,7 @@ document.getElementById("manageItemType").innerText = item["Cat2"] || "";
   const modal = document.getElementById("manageModal");
   if(modal){
     modal.classList.add("active");
+    fillPriceFields(item); // ✅ correct place
   } else {
     console.error("manageModal not found");
   }
