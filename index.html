@@ -1250,6 +1250,42 @@ function enableAllFields(){
   });
 
 }
+
+
+function handleUnitChange(){
+
+  const el = document.getElementById("unit");
+  const selectedUnit = el.value;
+
+  if(!selectedUnit){
+    el.blur();
+    return;
+  }
+
+  // 🔥 duplicate check
+  const duplicate = manageVariants.find((v, index) => {
+    return (
+      v.Unit === selectedUnit &&
+      index !== manageVariantIndex
+    );
+  });
+
+  if(duplicate){
+    alert("❌ This unit already exists for this item");
+
+    el.value = "";   // reset
+    el.blur();
+    return;
+  }
+
+  // ✅ save value
+  if(manageVariants[manageVariantIndex]){
+    manageVariants[manageVariantIndex].Unit = selectedUnit;
+  }
+
+  el.blur(); // existing behavior preserve
+}
+  
   
 function disableAllFields(){
 
@@ -6924,7 +6960,7 @@ document.addEventListener("DOMContentLoaded", function(){
       <div class="form-row">
   <label>Unit</label>
 
-  <select id="unit" disabled onchange="this.blur()"></select>
+ <select id="unit" disabled onchange="handleUnitChange()"></select>
         
   <span class="edit-btn" onclick="enableEdit('unit')">✏️</span>
 </div>
