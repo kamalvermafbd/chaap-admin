@@ -783,21 +783,6 @@ td:nth-child(8) { width: 220px; } /* Action */
   margin: auto;
 }
 
-/* 🔥 FORM CENTER + WIDTH CONTROL */
-.price-form {
-  max-width: 300px;
-  margin: auto;
-}
-
-/* 🔥 LABEL */
-.price-form label {
-  font-size: 11px;
-  color: #555;
-  margin-bottom: 2px;
-  display: block;
-}
-
-
     .price-form {
   max-width: 260px;
   margin: auto;
@@ -821,6 +806,22 @@ td:nth-child(8) { width: 220px; } /* Action */
   border: 1px solid #ccc;
   height: 22px;
   display: block;
+}
+    .price-form .form-row {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.price-form .form-row label {
+  margin-bottom: 0;
+}
+
+.price-form .form-row input,
+.price-form .form-row select {
+  width: 100%;
+  max-width: 160px;
 }
   </style>
 </head>
@@ -6494,9 +6495,10 @@ if ("serviceWorker" in navigator) {
 
     <div id="tab-price" class="tab-pane active">
       <div class="price-form"> 
-     
+   <div class="form-row">  
 <label>MRP</label>
 <input id="mrp" type="number" placeholder="MRP" oninput="calculatePrice()">
+   </div>
       <label>Discount %</label>
 <input id="discount" type="number" placeholder="Discount %" oninput="calculatePrice()">
 <label>GST Included</label>
