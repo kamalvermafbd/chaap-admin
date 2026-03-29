@@ -1185,11 +1185,23 @@ renderCategories(menuItems);   // 🔥 ADD THIS LINE
   });
 }
 
+
 function enableEdit(id){
+
+  const unit = document.getElementById("unit").value;
+
+  // 🔴 block if unit not selected
+  if(!unit){
+    alert("⚠️ Please select Unit first");
+    return;
+  }
+
   const el = document.getElementById(id);
 
-  el.removeAttribute("disabled");   // 🔥 better than el.disabled = false
-  el.focus();
+  if(el){
+    el.removeAttribute("disabled");
+    el.focus();
+  }
 }
 
 function fillPriceFields(item){
@@ -1237,7 +1249,25 @@ async function loadUnitMaster(){
 
 }
 
+function lockFieldsUntilUnit(){
 
+  const unit = document.getElementById("unit").value;
+
+  const fields = ["mrp","discount","gstIncluded","gstRate"];
+
+  fields.forEach(id => {
+    const el = document.getElementById(id);
+    if(!el) return;
+
+    if(!unit){
+      el.disabled = true;   // 🔒 lock
+    } else {
+      el.disabled = false;  // 🔓 unlock
+    }
+  });
+
+}
+  
 function enableAllFields(){
 
   const ids = ["unit","mrp","discount","gstIncluded","gstRate"];
@@ -1258,6 +1288,7 @@ function handleUnitChange(){
   const selectedUnit = el.value;
 
   if(!selectedUnit){
+       lockFieldsUntilUnit();   // 🔥 ADD THIS
     el.blur();
     return;
   }
@@ -1274,6 +1305,8 @@ function handleUnitChange(){
     alert("❌ This unit already exists for this item");
 
     el.value = "";   // reset
+       lockFieldsUntilUnit();   // 🔥 ADD THIS
+    
     el.blur();
     return;
   }
@@ -1282,7 +1315,7 @@ function handleUnitChange(){
   if(manageVariants[manageVariantIndex]){
     manageVariants[manageVariantIndex].Unit = selectedUnit;
   }
-
+   lockFieldsUntilUnit();   // 🔥 ADD THIS
   el.blur(); // existing behavior preserve
 }
   
@@ -1596,7 +1629,11 @@ function addNewVariant(){
   manageVariantIndex = manageVariants.length - 1;
 
   loadManageVariant(newVar);
-  enableAllFields();   // 🔥 ADD THIS
+// 🔥 only unit editable
+document.getElementById("unit").disabled = false;
+
+// 🔒 rest locked
+lockFieldsUntilUnit();
   updateVariantUI();
 
 }
