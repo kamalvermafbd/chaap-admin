@@ -708,6 +708,42 @@ td:nth-child(8) { width: 220px; } /* Action */
 .modal-box button:hover {
   transform: scale(1.02);
 }
+
+.manage-tabs {
+  display: flex;
+  border-bottom: 1px solid #ddd;
+  margin-top: 10px;
+}
+
+.manage-tabs .tab {
+  padding: 8px 14px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #555;
+  border-bottom: 2px solid transparent;
+}
+
+.manage-tabs .tab.active {
+  color: #007bff;
+  border-bottom: 2px solid #007bff;
+  font-weight: 600;
+}
+
+.tab-content {
+  padding: 15px 5px;
+}
+
+.tab-pane {
+  display: none;
+}
+
+.tab-pane.active {
+  display: block;
+}
+
+
+
+    
   </style>
 </head>
 <body>
@@ -1104,6 +1140,23 @@ function closeManageModal(){
 
 }
 
+
+  function switchTab(e, tab){
+
+  // remove active from tabs
+  document.querySelectorAll(".manage-tabs .tab")
+    .forEach(el => el.classList.remove("active"));
+
+  // remove active from panes
+  document.querySelectorAll(".tab-pane")
+    .forEach(el => el.classList.remove("active"));
+
+  // activate clicked tab
+  e.currentTarget.classList.add("active");
+
+  // show pane
+  document.getElementById("tab-" + tab).classList.add("active");
+}
   function renderPOSItems(items){
 
   const box = document.getElementById("posItems");
