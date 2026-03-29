@@ -694,8 +694,20 @@ td:nth-child(8) { width: 220px; } /* Action */
 }
 
     
+.manage-modal-box {
+  background:#fff;
+  width:95%;
+  max-width:420px;   /* 🔥 compact */
+  border-radius:12px;
+  padding:20px;
+}
+    .modal-box button {
+  transition: all 0.2s ease;
+}
 
-    
+.modal-box button:hover {
+  transform: scale(1.02);
+}
   </style>
 </head>
 <body>
@@ -6212,20 +6224,26 @@ if ("serviceWorker" in navigator) {
 </div>
 
   <div id="manageModal" class="modal-overlay">
-  <div class="modal-box">
-
+<div class="manage-modal-box">
     <h3>Manage Item</h3>
 
-    <div style="display:flex;flex-direction:column;gap:10px;margin-top:10px;">
-
-      <button onclick="openPriceEdit()">💰 Update Price</button>
-
+    <div style="display:flex;flex-direction:column;gap:12px;margin-top:15px;">
+      
+  <button 
+  onclick="openPriceEdit()"
+  style="padding:10px;border-radius:8px;font-size:14px;">
+  💰 Update Price
+</button>
+      
       <button onclick="openQtyEdit()">📦 Update Qty</button>
 
       <button onclick="openImageUpload()">🖼️ Upload Image</button>
 
-      <button onclick="closeManageModal()" style="background:#6c757d;">Cancel</button>
-
+      <button onclick="closeManageModal()" 
+style="background:#6c757d;padding:10px;border-radius:8px;font-size:14px;">
+Cancel
+</button>
+      
     </div>
 
   </div>
