@@ -1043,10 +1043,33 @@ function openManageMenu(index){
   const row = document.getElementById(`row-${index}`);
   const name = row?.children[1]?.innerText || "";
 
+  // 🔥 IMPORTANT (data source se lena better hai)
+  const item = menuData[index]; // ensure tu global me store kare
+  const type = item["Cat2"];
+
   document.getElementById("manageItemName").innerText = name;
+
+  // 🔥 store type globally
+  window.currentItemType = type;
 
   document.getElementById("manageModal").classList.add("active");
 }
+
+function openPriceEdit(){
+
+  if(currentItemType === "Single"){
+    alert("Direct price edit (menu sheet)");
+  }
+  else{
+    openVariantSelector(); // 🔥 new step
+  }
+
+}
+
+function openVariantSelector(){
+  alert("Select variant (Full / Half etc)");
+}
+  
 function closeManageModal(){
   document.getElementById("manageModal").classList.remove("active");
 }
