@@ -618,50 +618,67 @@ td:nth-child(8) { width: 220px; } /* Action */
   background: #f0f0f0;
   z-index: 2;
 }
+/* ===== MENU TABLE FIX (FINAL) ===== */
 
 #menuTable table {
-  table-layout: fixed;
-  width: 100%;
+  width: auto;              /* 🔥 main fix */
+  margin: auto;             /* center align */
+  border-collapse: collapse;
 }
+
+#menuTable th,
+#menuTable td {
+  white-space: nowrap;
+  padding: 6px 10px;
+  vertical-align: middle;
+}
+
+/* Column widths (optimized compact) */
+
 #menuTable th:nth-child(1),
 #menuTable td:nth-child(1) {
-  width: 60px;
+  width: 50px;
   text-align: center;
 }
 
 #menuTable th:nth-child(2),
 #menuTable td:nth-child(2) {
-  width: 250px;
+  min-width: 180px;   /* 🔥 fixed width hata ke flexible kiya */
+  max-width: 220px;
 }
 
 #menuTable th:nth-child(3),
 #menuTable td:nth-child(3) {
-  width: 120px;
+  width: 80px;
   text-align: center;
 }
 
 #menuTable th:nth-child(4),
 #menuTable td:nth-child(4) {
-  width: 80px;
+  width: 60px;
   text-align: center;
 }
 
 #menuTable th:nth-child(5),
 #menuTable td:nth-child(5) {
-  width: 120px;
+  width: 100px;
   text-align: center;
 }
+
+/* Image center */
 #menuTable img {
   display: block;
   margin: auto;
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 6px;
 }
-    #menuTable button {
+
+/* Button center */
+#menuTable button {
   display: inline-block;
-  margin: auto;
 }
-#menuTable td {
-  vertical-align: middle;
-}    
   </style>
 </head>
 <body>
