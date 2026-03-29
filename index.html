@@ -797,29 +797,31 @@ td:nth-child(8) { width: 220px; } /* Action */
   display: block;
 }
 
-/* 🔥 INPUT / SELECT (FINAL COMPACT) */
+
+    .price-form {
+  max-width: 260px;
+  margin: auto;
+}
+
+.price-form label {
+  font-size: 11px;
+  color: #555;
+  margin-bottom: 2px;
+  display: block;
+}
+
 .price-form input,
 .price-form select {
   width: 100%;
+  max-width: 260px;   /* 🔥 main fix */
   padding: 4px 6px;
   margin-bottom: 6px;
   font-size: 12px;
   border-radius: 6px;
   border: 1px solid #ccc;
   height: 30px;
-  box-sizing: border-box;
+  display: block;
 }
-
-/* 🔥 FORCE OVERRIDE (VERY IMPORTANT) */
-.manage-modal-box .price-form input,
-.manage-modal-box .price-form select {
-  width: 100% !important;
-  padding: 4px 6px !important;
-  margin-bottom: 6px !important;
-  font-size: 12px !important;
-  height: 30px !important;
-}
-    
   </style>
 </head>
 <body>
