@@ -5608,9 +5608,9 @@ function saveRow(index) {
   updatedData["Image Url"] = finalUrl || "";
   
  apiPost("updateMenuRecord", {
-    api: "updateMenuRecord",   // 🔥 ADD THIS
-  index: index+1,
-  data: updatedData
+  api: "updateMenuRecord",
+  index: index,                 // ⚠️ +1 mat kar (backend already +2 logic use kar raha)
+  updatedData: updatedData      // 🔥 KEY FIX
 })
 .then((res) => {
 console.log("UPLOAD RESPONSE:", res, typeof res);
