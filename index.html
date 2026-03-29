@@ -1023,9 +1023,8 @@ renderCart();           // 🔥 ADD THIS (FINAL FIX)
 }
 
 if (pageId === 'pageMenu') {
-  loadMenudata();   // 🔥 ADD THIS
+  loadMenuData();   // ✅ correct function
 }
-
   
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         const btn = document.querySelector('.nav-btn[data-page="'+pageId+'"]');
