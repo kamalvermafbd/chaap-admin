@@ -1,4 +1,4 @@
-const CACHE_NAME = "chaap-admin-cache-v67"; // 🔥 version update
+const CACHE_NAME = "chaap-admin-cache-v68"; // 🔥 version update
 
 const URLS_TO_CACHE = [
   "/",
