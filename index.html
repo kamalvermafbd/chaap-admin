@@ -611,6 +611,13 @@ td:nth-child(8) { width: 220px; } /* Action */
 #modalBillContent .tax-small {
   font-size: 8px;
 }
+
+    th {
+  position: sticky;
+  top: 0;
+  background: #f0f0f0;
+  z-index: 2;
+}
   </style>
 </head>
 <body>
@@ -5386,7 +5393,11 @@ data.forEach((item, i) => {
   </td>
 
   <td>
-    <button onclick="openManageMenu(${index})">⚙️ Manage</button>
+    <button 
+  style="background:#007bff;color:#fff;padding:5px 10px;border-radius:5px;"
+  onclick="openManageMenu(${index})">
+  ⚙️ Manage
+</button>
   </td>
 </tr>
 `;
