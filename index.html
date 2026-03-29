@@ -755,7 +755,10 @@ td:nth-child(8) { width: 220px; } /* Action */
   align-items: center;
   z-index: 9999;
 }
-    
+
+.modalitem-overlay.active {
+  display: flex;
+}
   </style>
 </head>
 <body>
@@ -1086,13 +1089,18 @@ renderCategories(menuItems);   // 🔥 ADD THIS LINE
 let currentManageIndex = null;
   
 function openManageMenu(index){
+   console.log("Manage clicked:", index);
+    if(!menuItems || !menuItems[index]){
+    console.error("Item not found", index);
+    return;
+  }
+
   currentManageIndex = index;
 
   const row = document.getElementById(`row-${index}`);
-  const name = row?.children[1]?.innerText || "";
-
+ const name = menuItems[index]?.Name || "Item";
   // 🔥 IMPORTANT (data source se lena better hai)
-  const item = menuData[index]; // ensure tu global me store kare
+  const item = menuItems[index]; // ensure tu global me store kare
   const type = item["Cat2"];
 
   document.getElementById("manageItemName").innerText = name;
