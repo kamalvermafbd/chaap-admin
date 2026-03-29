@@ -6223,28 +6223,34 @@ if ("serviceWorker" in navigator) {
   </div>
 </div>
 
-  <div id="manageModal" class="modal-overlay">
-<div class="manage-modal-box">
-    <h3>Manage Item</h3>
+  <div class="manage-modal-box">
+  <h3 style="margin-bottom:10px;">Manage Item</h3>
 
-    <div style="display:flex;flex-direction:column;gap:12px;margin-top:15px;">
-      
-  <button 
-  onclick="openPriceEdit()"
-  style="padding:10px;border-radius:8px;font-size:14px;">
-  💰 Update Price
-</button>
-      
-      <button onclick="openQtyEdit()">📦 Update Qty</button>
+  <div style="display:flex;flex-direction:column;gap:12px;margin-top:10px;">
 
-      <button onclick="openImageUpload()">🖼️ Upload Image</button>
+    <button 
+      onclick="openPriceEdit()"
+      style="padding:10px;border-radius:8px;font-size:14px;">
+      💰 Update Price
+    </button>
 
-      <button onclick="closeManageModal()" 
-style="background:#6c757d;padding:10px;border-radius:8px;font-size:14px;">
-Cancel
-</button>
-      
-    </div>
+    <button 
+      onclick="openQtyEdit()"
+      style="padding:10px;border-radius:8px;font-size:14px;">
+      📦 Update Qty
+    </button>
+
+    <button 
+      onclick="openImageUpload()"
+      style="padding:10px;border-radius:8px;font-size:14px;">
+      🖼️ Upload Image
+    </button>
+
+    <button 
+      onclick="closeManageModal()"
+      style="background:#6c757d;padding:10px;border-radius:8px;font-size:14px;">
+      Cancel
+    </button>
 
   </div>
 </div>
