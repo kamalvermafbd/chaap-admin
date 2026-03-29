@@ -1112,11 +1112,17 @@ function openManageMenu(index){
   // ✅ UI update
   document.getElementById("manageItemName").innerText = name;
 // 🔥 ADD THIS (type UI)
-const typeText = (type === "Multi")
-  ? "Multi Item (Variants available)"
-  : "Single Item";
 
-document.getElementById("manageItemType").innerText = typeText;
+let typeLabel = "";
+
+if(type === "Multi"){
+  typeLabel = "Multi Item (Variants available)";
+} else {
+  typeLabel = "Single Item";
+}
+
+document.getElementById("manageItemType").innerText = typeLabel;
+
   
   // ✅ global use (price / variant flow ke liye)
   window.currentItemType = type;
