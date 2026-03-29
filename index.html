@@ -1236,6 +1236,20 @@ async function loadUnitMaster(){
   }
 
 }
+
+
+function enableAllFields(){
+
+  const ids = ["unit","mrp","discount","gstIncluded","gstRate"];
+
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if(el){
+      el.disabled = false;
+    }
+  });
+
+}
   
 function disableAllFields(){
 
@@ -1531,6 +1545,7 @@ function addNewVariant(){
   manageVariantIndex = manageVariants.length - 1;
 
   loadManageVariant(newVar);
+  enableAllFields();   // 🔥 ADD THIS
   updateVariantUI();
 
 }
