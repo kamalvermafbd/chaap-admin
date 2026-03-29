@@ -1366,7 +1366,6 @@ function prevVariant(){
   
 let currentManageIndex = null;
   
-
 function openManageMenu(index){
 
   if(unitList.length === 0){
@@ -1388,12 +1387,22 @@ function openManageMenu(index){
   const name = item.Name || "Item";
   const type = item["Cat2"] || "";
 
+// 🔥 UNIT CONTROL (ADD THIS)
+const unitEl = document.getElementById("unit");
+
+if(unitEl){
+  if((type || "").toLowerCase() === "multi"){
+    unitEl.disabled = false;   // editable
+  } else {
+    unitEl.disabled = true;    // 🔒 lock for single
+  }
+}
 
   // 🔥 ADD VARIANT BUTTON CONTROL
 const addBtn = document.getElementById("addVariantBtn");
 
 if(addBtn){
-  if(type === "Multi"){
+ if((type || "").toLowerCase() === "multi"){
     addBtn.style.display = "block";   // ✅ show
   } else {
     addBtn.style.display = "none";    // ❌ hide for single
@@ -1421,7 +1430,7 @@ if(nav) nav.style.display = "none";
     // 🔥 MAIN LOGIC
     // =========================
 
-    if(type === "Multi"){
+   if((type || "").toLowerCase() === "multi"){
 // 🔥 LOADING STATE (ADD THIS)
  document.getElementById("manageLoading").style.display = "block";
       const btn = document.getElementById("addVariantBtn");
