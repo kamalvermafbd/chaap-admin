@@ -1022,6 +1022,11 @@ renderCart();           // 🔥 ADD THIS (FINAL FIX)
     
 }
 
+if (pageId === 'pageMenu') {
+  loadMenu();   // 🔥 ADD THIS
+}
+
+  
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         const btn = document.querySelector('.nav-btn[data-page="'+pageId+'"]');
         if (btn) btn.classList.add('active');
@@ -1089,26 +1094,35 @@ renderCategories(menuItems);   // 🔥 ADD THIS LINE
 let currentManageIndex = null;
   
 function openManageMenu(index){
-   console.log("Manage clicked:", index);
-    if(!menuItems || !menuItems[index]){
+
+  console.log("Manage clicked:", index);
+
+  // ✅ single source of truth
+  if(!window.menuData || !window.menuData[index]){
     console.error("Item not found", index);
     return;
   }
 
   currentManageIndex = index;
 
-  const row = document.getElementById(`row-${index}`);
- const name = menuItems[index]?.Name || "Item";
-  // 🔥 IMPORTANT (data source se lena better hai)
-  const item = menuItems[index]; // ensure tu global me store kare
-  const type = item["Cat2"];
+  const item = window.menuData[index];
 
+  const name = item.Name || "Item";
+  const type = item["Cat2"] || "";
+
+  // ✅ UI update
   document.getElementById("manageItemName").innerText = name;
 
-  // 🔥 store type globally
+  // ✅ global use (price / variant flow ke liye)
   window.currentItemType = type;
 
-  document.getElementById("manageModal").classList.add("active");
+  // ✅ open modal
+  const modal = document.getElementById("manageModal");
+  if(modal){
+    modal.classList.add("active");
+  } else {
+    console.error("manageModal not found");
+  }
 }
 
 function openPriceEdit(){
