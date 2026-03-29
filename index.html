@@ -842,6 +842,14 @@ td:nth-child(8) { width: 220px; } /* Action */
   justify-content: center;
   align-items: center;
 } 
+
+#addVariantBtn:disabled {
+  background: #ccc !important;
+  color: #666 !important;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+    
   </style>
 </head>
 <body>
@@ -1490,6 +1498,16 @@ function closeManageModal(){
 
 function addNewVariant(){
 
+
+  // 🔴 ADD THIS BLOCK (TOP PE)
+  const btn = document.getElementById("addVariantBtn");
+
+  if(btn && btn.disabled){
+    alert("⏳ Please wait... Variants are still loading");
+    return;
+  }
+  
+  
   const item = window.menuData[currentManageIndex];
   const itemId = item.itemId;
 
