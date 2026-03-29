@@ -1281,7 +1281,7 @@ function openManageMenu(index){
   if(modal){
 
     modal.classList.add("active");
-
+ clearManageFields();   // 🔥 YAHI LAGANA HAI (VERY IMPORTANT)
     disableAllFields();
     renderUnitDropdown();
 
@@ -1290,7 +1290,12 @@ function openManageMenu(index){
     // =========================
 
     if(type === "Multi"){
-
+// 🔥 LOADING STATE (ADD THIS)
+  document.getElementById("mrp").value = "Loading...";
+  document.getElementById("discount").value = "";
+  document.getElementById("gstRate").value = "";
+  document.getElementById("price").value = "";
+      
       apiGet("getVariants", { name: item.Name })
         .then(function(data){
 
@@ -1328,6 +1333,19 @@ function openManageMenu(index){
   }
 }
 
+function clearManageFields(){
+
+  document.getElementById("unit").value = "";
+  document.getElementById("mrp").value = "";
+  document.getElementById("discount").value = "";
+  document.getElementById("gstRate").value = "";
+  document.getElementById("gstIncluded").value = "Yes";
+
+  // optional
+  document.getElementById("price").value = "";
+  document.getElementById("gstAmt").value = "";
+}
+  
   
   function renderUnitDropdown(){
 
