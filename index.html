@@ -2161,20 +2161,65 @@ lockFieldsUntilUnit();
   }
 }
 
+  
 function saveNewSingleItem(){
+  const btn = document.getElementById("saveNewItemBtn");
+
+  if(btn){
+    btn.disabled = true;
+    btn.innerText = "Creating...";
+  }
+
   const payload = collectNewItemPayload();
+
   apiPost("addMenuSingleItem", payload)
-    .then(handleNewItemSuccess)
-    .catch(handleNewItemError);
+    .then(res => {
+      handleNewItemSuccess(res);
+
+      if(btn){
+        btn.disabled = false;
+        btn.innerText = "Create Final";
+      }
+    })
+    .catch(err => {
+      if(btn){
+        btn.disabled = false;
+        btn.innerText = "Create Final";
+      }
+
+      handleNewItemError(err);
+    });
 }
+
 
   function saveNewMultiItem(){
-  const payload = collectNewItemPayload();
-  apiPost("addMenuMultiItem", payload)
-    .then(handleNewItemSuccess)
-    .catch(handleNewItemError);
-}
+  const btn = document.getElementById("saveNewItemBtn");
 
+  if(btn){
+    btn.disabled = true;
+    btn.innerText = "Creating...";
+  }
+
+  const payload = collectNewItemPayload();
+
+  apiPost("addMenuMultiItem", payload)
+    .then(res => {
+      handleNewItemSuccess(res);
+
+      if(btn){
+        btn.disabled = false;
+        btn.innerText = "Create Final";
+      }
+    })
+    .catch(err => {
+      if(btn){
+        btn.disabled = false;
+        btn.innerText = "Create Final";
+      }
+
+      handleNewItemError(err);
+    });
+}
 
 function collectNewItemPayload(){
   return {
