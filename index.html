@@ -1790,20 +1790,6 @@ if (Number(payload.Discount_Percent) >= 100) {
   return;
 }
 
-// 🔥 WEIGHT VALIDATION (Restaurant Info based)
-const weightMandatory =
-  String(restaurantInfo.weight_mandatory || "")
-    .trim()
-    .toLowerCase() === "yes";
-
-const weightValue =
-  parseFloat(document.getElementById("otherWeight").value) || 0;
-
-if (weightMandatory && weightValue <= 0) {
-  alert("❌ Weight is mandatory");
-  resetSaveBtn();
-  return;
-}
 
     
 // 🔥 GST VALIDATION
@@ -1831,7 +1817,24 @@ if (gstIncludedValue === "Not Applicable") {
   payload.GST_Rate = 0;
   payload.GST_Amt = 0;
 }
-  
+
+
+
+// 🔥 WEIGHT VALIDATION (Restaurant Info based)
+const weightMandatory =
+  String(restaurantInfo.weight_mandatory || "")
+    .trim()
+    .toLowerCase() === "yes";
+
+const weightValue =
+  parseFloat(document.getElementById("otherWeight").value) || 0;
+
+if (weightMandatory && weightValue <= 0) {
+  alert("❌ Weight is mandatory");
+  resetSaveBtn();
+  return;
+}
+    
   // =========================
   // 🔥 SINGLE ITEM
   // =========================
