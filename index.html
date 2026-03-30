@@ -1225,6 +1225,27 @@ function fillPriceFields(item){
   calculatePrice();
 }
 
+  function fillOtherFields(item){
+  if(!item) return;
+
+  // ✅ checkbox fields
+  document.getElementById("otherCancel").checked =
+    String(item.Cancel || "").trim().toLowerCase() === "true";
+
+  document.getElementById("otherHold").checked =
+    String(item.hold1 || "").trim().toLowerCase() === "true";
+
+  // ✅ smart single + multi mapping
+  document.getElementById("otherWeight").value =
+    item.cat_weight || item.item_weight || "";
+
+  document.getElementById("otherOpening").value =
+    item.Opening_cat || item.Opening || "";
+
+  document.getElementById("otherBarcode").value =
+    item.Barcode || "";
+}
+
   function loadManageVariant(v){
 
   document.getElementById("unit").value = v.Unit || "";
@@ -1239,7 +1260,7 @@ function fillPriceFields(item){
   document.getElementById("gstIncluded").value = v.GST_Included || "Yes";
 
   calculatePrice();
-
+fillOtherFields(v);
   
 }
 
@@ -1497,6 +1518,7 @@ if(btn) btn.disabled = false;
   renderUnitDropdown();     // 🔥 MAIN FIX
       // ✅ SINGLE ITEM
       fillPriceFields(item);
+     fillOtherFields(item);
 const nav = document.getElementById("variantNav");
 if(nav) nav.style.display = "none";
     }
