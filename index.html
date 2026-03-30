@@ -7843,6 +7843,27 @@ document.addEventListener("DOMContentLoaded", function(){
 <div class="form-row">
   <label>Image</label>
   <input id="manageImage" type="text" placeholder="Upload image or paste URL">
+
+  <label for="manageImageUpload"
+       style="
+         cursor:pointer;
+         font-size:12px;
+         text-align:center;
+         background:#007bff;
+         color:#fff;
+         padding:4px 8px;
+         border-radius:6px;
+         display:inline-block;
+         white-space:nowrap;
+       ">
+  Upload
+</label>
+
+  <input id="manageImageUpload"
+         type="file"
+         accept="image/*"
+         style="display:none"
+         onchange="uploadManageItemImage(this)">
 </div>
 
 <div class="form-row">
