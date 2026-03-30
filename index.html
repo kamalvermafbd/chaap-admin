@@ -2038,11 +2038,28 @@ function openVariantSelector(){
 }
   
 function closeManageModal(){
+
   const modal = document.getElementById("manageModal");
-  if(modal){
-    modal.classList.remove("active");
+  if(!modal) return;
+
+  const price = parseFloat(
+    document.getElementById("price")?.value
+  ) || 0;
+
+  // 🔥 block close only after new create
+  if(window.forcePriceSetup && price <= 0){
+    alert("⚠️ Please update price before closing");
+    document.getElementById("mrp")?.focus();
+    return;
   }
+
+  window.forcePriceSetup = false;
+  modal.classList.remove("active");
 }
+
+
+
+  
   function getNetPrice(price, discount){
 
   const p = Number(price) || 0;
@@ -7033,6 +7050,7 @@ if(btn){
     }
 
     if(newIndex >= 0){
+      window.forcePriceSetup = true;   // 🔥 must save price first
       openManageMenu(newIndex);
     }
 
