@@ -1708,6 +1708,19 @@ function openManageMenu(index){
   currentManageIndex = index;
 
   const item = window.menuData[index];
+  clearManageFields();   // 🔥 YAHI LAGANA HAI (VERY IMPORTANT)
+  document.getElementById("manageImage").value =
+  item["Image Url"] || item.Image || "";
+
+document.getElementById("manageDescription").value =
+  item.Description || "";
+
+document.getElementById("manageHotSelling").checked =
+  String(item.HotSelling || item["Hot Selling"] || "")
+    .trim()
+    .toLowerCase() === "yes";
+
+ 
 
   const name = item.Name || "Item";
   const type = item["Cat2"] || "";
@@ -1733,8 +1746,6 @@ if(addBtn){
     addBtn.style.display = "none";    // ❌ hide for single
   }
 }
-
-  
   document.getElementById("manageItemName").innerText = name;
   document.getElementById("manageItemType").innerText = type;
 
@@ -1759,11 +1770,8 @@ document.querySelectorAll(".tab-pane").forEach(el => el.classList.remove("active
 document.querySelector(".manage-tabs .tab").classList.add("active");
 document.getElementById("tab-price").classList.add("active");
 
-
-    
     const nav = document.getElementById("variantNav");
 if(nav) nav.style.display = "none";
- clearManageFields();   // 🔥 YAHI LAGANA HAI (VERY IMPORTANT)
    // disableAllFields();
    
 
@@ -1792,14 +1800,13 @@ if(btn) btn.disabled = false;
 
   manageVariants = [];          // 🔥 ADD THIS
   renderUnitDropdown();         // 🔥 ADD THIS
-
   alert("No variants found");
   return;
 }
           manageVariants = data;
           manageVariantIndex = 0;
  renderUnitDropdown();
-          loadManageVariant(manageVariants[0]); // ✅ first variant
+loadManageVariant(manageVariants[0]); // ✅ first variant
 const nav = document.getElementById("variantNav");
 if(nav) nav.style.display = "flex";
 updateVariantUI();
@@ -1819,8 +1826,8 @@ if(btn) btn.disabled = false;
   manageVariants = [];      // 🔥 reset
   renderUnitDropdown();     // 🔥 MAIN FIX
       // ✅ SINGLE ITEM
-      fillPriceFields(item);
-     fillOtherFields(item);
+fillPriceFields(item);
+fillOtherFields(item);
 const nav = document.getElementById("variantNav");
 if(nav) nav.style.display = "none";
     }
@@ -1852,6 +1859,10 @@ function clearManageFields(){
   document.getElementById("otherWeight").value = "";
   document.getElementById("otherOpening").value = "";
   document.getElementById("otherBarcode").value = "";
+
+  document.getElementById("manageImage").value = "";
+document.getElementById("manageDescription").value = "";
+document.getElementById("manageHotSelling").checked = false;
   
 }
   
@@ -2064,6 +2075,11 @@ const focusInvalidField = (id) => {
   const payload = {
     Name: item.Name,
     Unit: document.getElementById("unit").value,
+    
+Image_Url: document.getElementById("manageImage").value.trim(),
+Description: document.getElementById("manageDescription").value.trim(),
+HotSelling: document.getElementById("manageHotSelling").checked ? "Yes" : "No",
+    
     MRP: parseFloat(document.getElementById("mrp").value) || 0,
     Discount_Percent: parseFloat(document.getElementById("discount").value) || 0,
     GST_Rate: parseFloat(document.getElementById("gstRate").value) || 0,
@@ -7781,6 +7797,22 @@ document.addEventListener("DOMContentLoaded", function(){
 
     <div id="tab-image" class="tab-pane">
       <p>Image upload UI yaha aayega</p>
+<div class="form-row">
+  <label>Image</label>
+  <input id="manageImage" type="text" placeholder="Upload image or paste URL">
+</div>
+
+<div class="form-row">
+  <label>Description</label>
+  <textarea id="manageDescription" rows="3"
+    style="width:100%;padding:8px;border:1px solid #ccc;border-radius:6px;"></textarea>
+</div>
+
+<div class="form-row" style="display:flex;align-items:center;gap:10px;">
+  <label style="margin:0;">Hot Selling</label>
+  <input id="manageHotSelling" type="checkbox">
+</div>
+      
     </div>
 
   </div>
