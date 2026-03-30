@@ -1432,7 +1432,7 @@ if(addBtn){
     const nav = document.getElementById("variantNav");
 if(nav) nav.style.display = "none";
  clearManageFields();   // 🔥 YAHI LAGANA HAI (VERY IMPORTANT)
-    disableAllFields();
+   // disableAllFields();
    
 
     // =========================
@@ -1440,9 +1440,11 @@ if(nav) nav.style.display = "none";
     // =========================
 
    if((type || "").toLowerCase() === "multi"){
+      disableAllFields();   // 🔥 ADD THIS HERE
 // 🔥 LOADING STATE (ADD THIS)
  document.getElementById("manageLoading").style.display = "block";
       const btn = document.getElementById("addVariantBtn");
+     
 if(btn) btn.disabled = true;
       
       apiGet("getVariants", { name: item.Name })
