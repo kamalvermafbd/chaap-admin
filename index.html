@@ -1593,7 +1593,7 @@ function prevVariant(){
 
     const status = document.getElementById("barcodeStatus");
   if (!barcodeValue) return;
-
+ if (status) status.textContent = "🔎 Checking barcode...";
   apiGet("checkDuplicateBarcode", {
     barcode: barcodeValue
   })
