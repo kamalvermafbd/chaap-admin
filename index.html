@@ -7165,6 +7165,39 @@ document.addEventListener("DOMContentLoaded", function(){
     </div>
     <div id="tab-qty" class="tab-pane">
       <p>Qty update UI yaha aayega</p>
+
+ <div class="form-row">
+      <label>Cancel</label>
+      <input type="checkbox" id="otherCancel">
+      <span></span>
+    </div>
+
+    <div class="form-row">
+      <label>Weight</label>
+      <input id="otherWeight" type="number" disabled>
+      <span class="edit-btn" onclick="enableEdit('otherWeight')">✏️</span>
+    </div>
+
+    <div class="form-row">
+      <label>Hold</label>
+      <input type="checkbox" id="otherHold">
+      <span></span>
+    </div>
+
+    <div class="form-row" id="openingRow" style="display:none;">
+      <label>Opening</label>
+      <input id="otherOpening" type="number" disabled>
+      <span class="edit-btn" onclick="enableEdit('otherOpening')">✏️</span>
+    </div>
+
+    <div class="form-row">
+      <label>Barcode</label>
+      <input id="otherBarcode" type="text" disabled>
+      <span class="edit-btn" onclick="enableEdit('otherBarcode')">📷</span>
+    </div>
+
+
+      
     </div>
 
     <div id="tab-image" class="tab-pane">
