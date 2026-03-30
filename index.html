@@ -1870,9 +1870,13 @@ const weightValue =
   parseFloat(document.getElementById("otherWeight").value) || 0;
 
 if (weightMandatory && weightValue <= 0) {
-   focusInvalidField("otherWeight");
-  alert("❌ Weight is mandatory");
+  focusInvalidField("otherWeight");
   resetSaveBtn();
+
+  setTimeout(() => {
+    alert("❌ Weight is mandatory");
+  }, 150);
+
   return;
 }
     
