@@ -2120,8 +2120,7 @@ const focusInvalidField = (id) => {
     
 Image_Url: document.getElementById("manageImage").value.trim(),
 Description: document.getElementById("manageDescription").value.trim(),
-HotSelling: document.getElementById("manageHotSelling").checked ? "Yes" : "No",
-    
+HotSelling: document.getElementById("manageHotSelling").checked ? "TRUE" : "",    
     MRP: parseFloat(document.getElementById("mrp").value) || 0,
     Discount_Percent: parseFloat(document.getElementById("discount").value) || 0,
     GST_Rate: parseFloat(document.getElementById("gstRate").value) || 0,
