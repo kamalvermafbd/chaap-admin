@@ -7166,11 +7166,11 @@ function saveRow(index) {
     Name: cells[1].querySelector("input").value.trim(),
     Category: cells[2].querySelector("select").value.trim(),
     Description: cells[3].querySelector("input").value.trim(),
-    Hold: document.getElementById(`hold-checkbox-${index}`).checked ? "TRUE" : "FALSE",
+    Hold: document.getElementById(`hold-checkbox-${index}`).checked ? "TRUE" : "",
 
     Price: cells[5].querySelector("input").value.trim(),
     "Image Url": "",
-    Hotselling: document.getElementById(`hotselling-checkbox-${index}`).checked ? "TRUE" : "FALSE",
+    Hotselling: document.getElementById(`hotselling-checkbox-${index}`).checked ? "TRUE" : "",
 
     
     Opening: cells[8].querySelector("input").value.trim(),
@@ -7318,7 +7318,7 @@ function saveNewRecord() {
     Hold: row.querySelector('td:nth-child(5) input').value.trim(),
     Price: row.querySelector('td:nth-child(6) input').value.trim(),
     "Image Url": row.querySelector('#img-input-new').value.trim(),
-    Hotselling: document.getElementById("new-hotselling").checked ? "TRUE" : "FALSE",
+    Hotselling: document.getElementById("new-hotselling").checked ? "TRUE" : "",
 
     
     Opening: row.querySelector('td:nth-child(9) input').value.trim()
