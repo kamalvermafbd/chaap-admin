@@ -1674,7 +1674,21 @@ lockFieldsUntilUnit();
 }
 
   function saveManageItem(){
+const saveBtn = document.getElementById("saveManageBtn");
+const oldText = saveBtn ? saveBtn.innerText : "Save";
 
+if (saveBtn) {
+  saveBtn.innerText = "Saving...";
+  saveBtn.disabled = true;
+}
+
+    const resetSaveBtn = () => {
+  if (saveBtn) {
+    saveBtn.innerText = oldText;
+    saveBtn.disabled = false;
+  }
+};
+    
   const item = window.menuData[currentManageIndex];
   const type = window.currentItemType;
 
@@ -1695,22 +1709,26 @@ lockFieldsUntilUnit();
 // 🔥 BASIC PRICE VALIDATION
 if (Number(payload.MRP) <= 0) {
   alert("❌ MRP must be greater than 0");
+  resetSaveBtn();
   return;
 }
 
 if (Number(payload.GST_Rate) < 0) {
   alert("❌ GST % cannot be negative");
+  resetSaveBtn();
   return;
 }
 
     // 🔥 DISCOUNT VALIDATION
 if (Number(payload.Discount_Percent) < 0) {
   alert("❌ Discount % cannot be negative");
+  resetSaveBtn();
   return;
 }
 
 if (Number(payload.Discount_Percent) >= 100) {
   alert("❌ Discount % must be less than 100");
+  resetSaveBtn();
   return;
 }
     
@@ -1730,6 +1748,7 @@ if (
   gstRateValue === 0
 ) {
   alert("❌ GST % is mandatory, or choose Not Applicable");
+  resetSaveBtn();   // 🔥 MUST ADD
   return;
 }
 
@@ -1749,9 +1768,11 @@ if (gstIncludedValue === "Not Applicable") {
     apiPost("updateMenuItem", payload)
       .then(res => {
         alert("Updated successfully");
+        resetSaveBtn();   // 🔥 MUST ADD
         closeManageModal();
       })
       .catch(err => {
+        resetSaveBtn();   // 🔥 MUST ADD
         console.error(err);
         alert("Update failed");
       });
@@ -1773,11 +1794,13 @@ if (gstIncludedValue === "Not Applicable") {
 
     apiPost("addVariant", payload)
       .then(res => {
+        resetSaveBtn();
         alert("Variant added");
         currentVariant.isNew = false; // reset
         closeManageModal();
       })
       .catch(err => {
+        resetSaveBtn();
         console.error(err);
         alert("Insert failed");
       });
@@ -1787,10 +1810,12 @@ if (gstIncludedValue === "Not Applicable") {
     // 🔥 EXISTING → UPDATE
     apiPost("updateVariant", payload)
       .then(res => {
+        resetSaveBtn();
         alert("Variant updated");
         closeManageModal();
       })
       .catch(err => {
+        resetSaveBtn();
         console.error(err);
         alert("Update failed");
       });
@@ -7147,7 +7172,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
 <div style="margin-top:10px;text-align:right;display:flex;gap:10px;justify-content:flex-end;">
 
-  <button 
+  <button id="saveManageBtn"
     onclick="saveManageItem()"
     style="background:#28a745;padding:8px 14px;border-radius:6px;font-size:14px;">
     💾 Save
