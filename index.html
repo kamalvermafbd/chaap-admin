@@ -2172,6 +2172,13 @@ function saveNewSingleItem(){
 
   const payload = collectNewItemPayload();
 
+  if(!validateItemPayload(payload, () => {
+  btn.disabled = false;
+  btn.innerText = "Create Final";
+})){
+  return;
+}
+
   apiPost("addMenuSingleItem", payload)
     .then(res => {
       handleNewItemSuccess(res);
@@ -2201,7 +2208,12 @@ function saveNewSingleItem(){
   }
 
   const payload = collectNewItemPayload();
-
+if(!validateItemPayload(payload, () => {
+  btn.disabled = false;
+  btn.innerText = "Create Final";
+})){
+  return;
+}
   apiPost("addMenuMultiItem", payload)
     .then(res => {
       handleNewItemSuccess(res);
@@ -2480,6 +2492,77 @@ payload.Opening_cat = payload.openingValue;
 
   }
 
+}
+
+  function validateItemPayload(payload, resetBtn){
+  const focusInvalidField = (id) => {
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.removeAttribute("disabled");
+    setTimeout(() => {
+      el.focus();
+      if(typeof el.select === "function") el.select();
+    }, 120);
+  };
+
+  if (Number(payload.MRP) <= 0) {
+    focusInvalidField("mrp");
+    alert("❌ MRP must be greater than 0");
+    resetBtn?.();
+    return false;
+  }
+
+  if (Number(payload.GST_Rate) < 0) {
+    focusInvalidField("gstRate");
+    alert("❌ GST % cannot be negative");
+    resetBtn?.();
+    return false;
+  }
+
+  if (Number(payload.Discount_Percent) < 0) {
+    focusInvalidField("discount");
+    alert("❌ Discount % cannot be negative");
+    resetBtn?.();
+    return false;
+  }
+
+  if (Number(payload.Discount_Percent) >= 100) {
+    focusInvalidField("discount");
+    alert("❌ Discount % must be less than 100");
+    resetBtn?.();
+    return false;
+  }
+
+const gstApplicable =
+  String(restaurantInfo.GST_applicable || "")
+    .trim()
+    .toLowerCase() === "yes";
+
+if (
+  gstApplicable &&
+  String(payload.GST_Included || "").trim() !== "Not Applicable" &&
+  Number(payload.GST_Rate) === 0
+) {
+  focusInvalidField("gstRate");
+  alert("❌ GST % is mandatory");
+  resetBtn?.();
+  return false;
+}
+
+const weightMandatory =
+  String(restaurantInfo.weight_mandatory || "")
+    .trim()
+    .toLowerCase() === "yes";
+
+if (weightMandatory && Number(payload.item_weight || 0) <= 0) {
+  focusInvalidField("otherWeight");
+  alert("❌ Weight is mandatory");
+  resetBtn?.();
+  return false;
+}
+
+    
+  return true;
 }
   
 function getNextVariantId(itemId, variants){
