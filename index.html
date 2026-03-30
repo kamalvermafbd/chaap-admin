@@ -857,27 +857,11 @@ td:nth-child(8) { width: 220px; } /* Action */
   margin: 0;
   justify-self: start;
 }
-
-    #menuTable input[type="checkbox"]{
+    
+#menuTable input[type="checkbox"]{
   width:16px !important;
   height:16px !important;
   margin:0 auto !important;
-}
-
-   #menuTable .hot-col,
-#menuTable .hot-col-cell{
-  width: 42px !important;
-  min-width: 42px !important;
-  max-width: 42px !important;
-  padding: 4px 2px !important;
-  text-align: center !important;
-}
-
-#menuTable .hot-col-cell input[type="checkbox"]{
-  display: block;
-  margin: auto;
-  width: 16px;
-  height: 16px;
 }
     
   </style>
@@ -6669,13 +6653,10 @@ style="border-collapse:collapse;">
          style="width:60px;height:60px;object-fit:cover;border-radius:6px;">
   </td>
 
-<td class="hot-col-cell" style="width:42px;text-align:center;">
+<td style="text-align:center;">
   <input type="checkbox"
-    style="display:inline-block !important; width:16px !important; height:16px !important; opacity:1 !important; visibility:visible !important;"
-   ${["TRUE", "true", true, 1, "1"].includes(item["Hotselling"]) ||
-  String(item["Hotselling"]).trim().toUpperCase() === "TRUE"
-    ? "checked"
-    : ""}
+    style="width:16px;height:16px;cursor:pointer;margin:0;"
+    ${String(item["Hotselling"]).toUpperCase() === "TRUE" ? "checked" : ""}
     onchange="toggleHotSelling(${index}, this.checked)">
 </td>
 
