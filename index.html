@@ -863,13 +863,20 @@ td:nth-child(8) { width: 220px; } /* Action */
   margin:0 auto !important;
 }
 
-    #menuTable .hot-col,
+   #menuTable .hot-col,
 #menuTable .hot-col-cell{
-  width: 60px;
-  min-width: 38px;
-  max-width: 60px;
-  padding: 4px;
-  text-align: center;
+  width: 60px !important;
+  min-width: 42px !important;
+  max-width: 60px !important;
+  padding: 4px 2px !important;
+  text-align: center !important;
+}
+
+#menuTable .hot-col-cell input[type="checkbox"]{
+  display: block;
+  margin: auto;
+  width: 16px;
+  height: 16px;
 }
     
   </style>
