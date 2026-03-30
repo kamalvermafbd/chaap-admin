@@ -934,6 +934,31 @@ td:nth-child(8) { width: 220px; } /* Action */
     box-sizing: border-box;
   }
 }
+
+
+    .menu-toolbar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .menu-toolbar {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .menu-toolbar select,
+  .menu-toolbar input,
+  .menu-toolbar button {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+    
   </style>
 </head>
 <body>
@@ -6782,7 +6807,7 @@ data.forEach((item, i) => {
   }
 
 let html = `
-<div style="display:flex;gap:10px;margin-bottom:10px;align-items:center;">
+<div class="menu-toolbar">
 
   <select id="menuCategoryFilter" onchange="filterMenu()">
     <option value="">All Categories</option>
