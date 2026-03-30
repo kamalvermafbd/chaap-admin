@@ -7033,8 +7033,11 @@ if(btn){
   const createdItemId = res?.itemId || "";
 
       // 🔥 wait render complete then auto open manage
-      setTimeout(() => {
- let newIndex = -1;
+setTimeout(() => {
+  loadMenuData();
+
+  setTimeout(() => {
+    let newIndex = -1;
 
     if(createdItemId){
       newIndex = window.menuData.findIndex(
@@ -7042,7 +7045,6 @@ if(btn){
       );
     }
 
-    // fallback by name
     if(newIndex < 0){
       newIndex = window.menuData.findIndex(
         x => x.Name === name
@@ -7050,11 +7052,13 @@ if(btn){
     }
 
     if(newIndex >= 0){
-      window.forcePriceSetup = true;   // 🔥 must save price first
+      window.forcePriceSetup = true;
       openManageMenu(newIndex);
     }
 
-  }, 1200);
+  }, 800);
+
+}, 400);
 
 })
     .catch(function(err){
