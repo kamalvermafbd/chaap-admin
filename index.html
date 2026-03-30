@@ -2236,6 +2236,7 @@ if(!validateItemPayload(payload, () => {
 function collectNewItemPayload(){
   return {
     ...window.pendingNewItem,
+    Hotselling: document.getElementById("manageHotSelling").checked ? "TRUE" : "",
     Unit: document.getElementById("unit").value,
     MRP: parseFloat(document.getElementById("mrp").value) || 0,
     Discount_Percent: parseFloat(document.getElementById("discount").value) || 0,
