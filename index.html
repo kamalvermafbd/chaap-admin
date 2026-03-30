@@ -1723,7 +1723,7 @@ lockFieldsUntilUnit();
 
 }
 
-  function saveManageItem(){
+function saveManageItem(){
 const saveBtn = document.getElementById("saveManageBtn");
 const oldText = saveBtn ? saveBtn.innerText : "Save";
 
@@ -1743,21 +1743,17 @@ const focusInvalidField = (id) => {
   const el = document.getElementById(id);
   if (!el) return;
 
-  // 🔥 if field belongs to Others tab → activate it first
+  // 🔥 Others tab field
   if (id.startsWith("other")) {
-    document.querySelectorAll(".manage-tabs .tab")
-      .forEach(tab => tab.classList.remove("active"));
+    const fakeEvent = {
+      currentTarget: document.querySelector(
+        '.manage-tabs .tab[onclick*="others"]'
+      )
+    };
 
-    document.querySelectorAll(".tab-pane")
-      .forEach(pane => pane.classList.remove("active"));
-
-  const otherTabBtn = document.querySelector(
-  '.manage-tabs .tab[onclick*="others"]'
-);
-const otherPane = document.getElementById("tab-others");
-
-    if (otherTabBtn) otherTabBtn.classList.add("active");
-    if (otherPane) otherPane.classList.add("active");
+    if (fakeEvent.currentTarget) {
+      switchTab(fakeEvent, "others"); // ✅ existing tab system reuse
+    }
   }
 
   el.removeAttribute("disabled");
@@ -1767,8 +1763,8 @@ const otherPane = document.getElementById("tab-others");
     if (typeof el.select === "function") {
       el.select();
     }
-  }, 50);
-};
+  }, 120);
+};;
     
   const item = window.menuData[currentManageIndex];
   const type = window.currentItemType;
