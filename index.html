@@ -912,10 +912,9 @@ td:nth-child(8) { width: 220px; } /* Action */
 }
 
 
-   @media (max-width: 768px) {
+@media (max-width: 768px) {
 
   #posCategories {
-    display: block !important;
     width: 100%;
     margin-bottom: 8px;
     overflow-x: auto;
@@ -923,15 +922,15 @@ td:nth-child(8) { width: 220px; } /* Action */
   }
 
   .pos-order-bar {
-    display: flex;
-    flex-direction: column;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
     gap: 8px;
+    width: 100%;
   }
 
   #posSearch,
   #clearSearchBtn {
-    width: 100%;
-    display: block;
+    width: 100% !important;
     box-sizing: border-box;
   }
 }
