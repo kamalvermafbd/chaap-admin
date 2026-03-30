@@ -1590,6 +1590,8 @@ function prevVariant(){
 }
 
   function validateAndFillBarcode(barcodeValue) {
+
+    const status = document.getElementById("barcodeStatus");
   if (!barcodeValue) return;
 
   apiGet("checkDuplicateBarcode", {
@@ -1598,6 +1600,7 @@ function prevVariant(){
   .then(function(res) {
 
     if (res.exists) {
+      if (status) status.textContent = "❌ Duplicate barcode found";
       const unitText = res.unit ? ` (${res.unit})` : "";
 
       alert(
@@ -1610,6 +1613,8 @@ function prevVariant(){
     if (barcodeBox) {
       barcodeBox.value = barcodeValue;
     }
+    
+    if (status) status.textContent = "✅ Barcode filled successfully";
   })
   .catch(function(err) {
     console.error("Barcode duplicate check failed:", err);
@@ -1623,7 +1628,10 @@ let barcodeTimer = null;
 async function scanBarcodeToTextbox() {
   try {
     const video = document.getElementById("barcodeVideo");
-    const input = document.getElementById("otherBarcode");
+const status = document.getElementById("barcodeStatus");
+if (status) status.textContent = "📷 Starting camera...";
+    
+    //const input = document.getElementById("otherBarcode");
 
     if (!("BarcodeDetector" in window)) {
       alert("Barcode scan not supported");
@@ -1640,11 +1648,12 @@ async function scanBarcodeToTextbox() {
 
     video.srcObject = barcodeStream;
     video.style.display = "block";
-
+if (status) status.textContent = "🔍 Scanning barcode...";
     barcodeTimer = setInterval(async () => {
       const codes = await detector.detect(video);
 
       if (codes.length > 0) {
+        if (status) status.textContent = "✅ Barcode detected";  
   const code = codes[0].rawValue;
 
   // ✅ STOP CAMERA FIRST
@@ -1657,6 +1666,10 @@ async function scanBarcodeToTextbox() {
 
   } catch (err) {
     console.error(err);
+
+    const status = document.getElementById("barcodeStatus");
+  if (status) status.textContent = "❌ Camera failed";
+    
     alert("Camera failed");
   }
 }
@@ -7747,6 +7760,16 @@ document.addEventListener("DOMContentLoaded", function(){
 </span>
     </div>
 
+  <!-- ✅ STATUS BAR -->
+<div id="barcodeStatus"
+     style="
+       font-size:12px;
+       color:#666;
+       margin-top:4px;
+       min-height:18px;
+     ">
+</div>
+  
 <video id="barcodeVideo"
        autoplay
        playsinline
