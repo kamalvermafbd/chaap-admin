@@ -1692,6 +1692,31 @@ lockFieldsUntilUnit();
     
   };
 
+// 🔥 GST VALIDATION
+const gstApplicable =
+  String(restaurantInfo.GST_applicable || "")
+    .trim()
+    .toLowerCase() === "yes";
+
+const gstIncludedValue = String(payload.GST_Included || "").trim();
+const gstRateValue = Number(payload.GST_Rate) || 0;
+
+// ✅ GST master ON → taxable item must have GST %
+if (
+  gstApplicable &&
+  gstIncludedValue !== "Not Applicable" &&
+  gstRateValue === 0
+) {
+  alert("❌ GST % is mandatory, or choose Not Applicable");
+  return;
+}
+
+// ✅ GST-free item → force zero
+if (gstIncludedValue === "Not Applicable") {
+  payload.GST_Rate = 0;
+  payload.GST_Amt = 0;
+}
+  
   // =========================
   // 🔥 SINGLE ITEM
   // =========================
@@ -7067,6 +7092,8 @@ document.addEventListener("DOMContentLoaded", function(){
 <select id="gstIncluded"disabled  onchange="calculatePrice()">
   <option>Yes</option>
   <option>No</option>
+  <option>Not Applicable</option>
+  
 </select>
            <span class="edit-btn" onclick="enableEdit('gstIncluded')">✏️</span>
          </div>
