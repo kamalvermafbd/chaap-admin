@@ -961,7 +961,7 @@ td:nth-child(8) { width: 220px; } /* Action */
       </div>
 
       <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:10px;">
-        <button onclick="saveNewItem()">Create Item</button>
+    <button id="createItemBtn" onclick="saveNewItem()">Create Item</button>
         <button onclick="closeCreateItemModal()">Cancel</button>
     
       </div>
@@ -1282,8 +1282,23 @@ function uploadNewItemImage(inputEl){
   if(!file) return;
 inputEl.disabled = true;
 
- if(!file.type.startsWith("image/")){
+
+  const createBtn = document.getElementById("createItemBtn");
+if(createBtn){
+  createBtn.disabled = true;
+  createBtn.style.background = "#ccc";
+  createBtn.style.cursor = "not-allowed";
+}
+  
+if(!file.type.startsWith("image/")){
   inputEl.disabled = false;
+
+  if(createBtn){
+    createBtn.disabled = false;
+    createBtn.style.background = "#007bff";
+    createBtn.style.cursor = "pointer";
+  }
+
   return alert("Only image files allowed");
 }
   const reader = new FileReader();
@@ -1312,12 +1327,24 @@ inputEl.disabled = true;
       imgInput.value = url;
       inputEl.disabled = false;
 
+if(createBtn){
+  createBtn.disabled = false;
+  createBtn.style.background = "#007bff";
+  createBtn.style.cursor = "pointer";
+}
+      
+      
     })
     .catch(function(err){
       console.error(err);
       imgInput.value = "";
       inputEl.disabled = false;
       alert("Upload failed");
+      if(createBtn){
+  createBtn.disabled = false;
+  createBtn.style.background = "#007bff";
+  createBtn.style.cursor = "pointer";
+}
     });
 
   };
