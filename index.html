@@ -1751,10 +1751,10 @@ const focusInvalidField = (id) => {
     document.querySelectorAll(".tab-pane")
       .forEach(pane => pane.classList.remove("active"));
 
-    const otherTabBtn = document.querySelector(
-      '.manage-tabs .tab[onclick*="other"]'
-    );
-    const otherPane = document.getElementById("tab-other");
+  const otherTabBtn = document.querySelector(
+  '.manage-tabs .tab[onclick*="others"]'
+);
+const otherPane = document.getElementById("tab-others");
 
     if (otherTabBtn) otherTabBtn.classList.add("active");
     if (otherPane) otherPane.classList.add("active");
