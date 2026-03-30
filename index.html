@@ -1823,7 +1823,8 @@ if(unitEl){
   if((type || "").toLowerCase() === "multi"){
     unitEl.disabled = false;   // editable
   } else {
-    unitEl.disabled = true;    // 🔒 lock for single
+    unitEl.disabled = !window.pendingNewItem;
+    
   }
 }
 
