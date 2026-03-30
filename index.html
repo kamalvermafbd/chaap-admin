@@ -912,19 +912,20 @@ td:nth-child(8) { width: 220px; } /* Action */
 }
 
 
-    @media (max-width: 768px) {
+   @media (max-width: 768px) {
+
+  #posCategories {
+    display: block !important;
+    width: 100%;
+    margin-bottom: 8px;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
 
   .pos-order-bar {
     display: flex;
     flex-direction: column;
     gap: 8px;
-  }
-
-  #posCategories {
-    display: flex;
-    overflow-x: auto;
-    white-space: nowrap;
-    width: 100%;
   }
 
   #posSearch,
@@ -933,7 +934,6 @@ td:nth-child(8) { width: 220px; } /* Action */
     display: block;
     box-sizing: border-box;
   }
-
 }
   </style>
 </head>
