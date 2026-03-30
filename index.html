@@ -2496,14 +2496,47 @@ payload.Opening_cat = payload.openingValue;
 
   function validateItemPayload(payload, resetBtn){
   const focusInvalidField = (id) => {
-    const el = document.getElementById(id);
-    if(!el) return;
-    el.removeAttribute("disabled");
-    setTimeout(() => {
-      el.focus();
-      if(typeof el.select === "function") el.select();
-    }, 120);
+  // 🔥 tab switch mapping
+  const tabMap = {
+    mrp: "tab-price",
+    discount: "tab-price",
+    gstRate: "tab-price",
+    gstIncluded: "tab-price",
+    price: "tab-price",
+
+    otherWeight: "tab-other",
+    otherOpening: "tab-other",
+    otherBarcode: "tab-other"
   };
+
+  const tabId = tabMap[id];
+
+  if(tabId){
+    document.querySelectorAll(".manage-tabs .tab")
+      .forEach(el => el.classList.remove("active"));
+
+    document.querySelectorAll(".tab-pane")
+      .forEach(el => el.classList.remove("active"));
+
+    const pane = document.getElementById(tabId);
+    if(pane) pane.classList.add("active");
+
+    const tabBtn = document.querySelector(
+      `.manage-tabs .tab[data-tab="${tabId}"]`
+    );
+    if(tabBtn) tabBtn.classList.add("active");
+  }
+
+  const el = document.getElementById(id);
+  if(!el) return;
+
+  el.removeAttribute("disabled");
+
+  setTimeout(() => {
+    el.focus();
+    if(typeof el.select === "function") el.select();
+  }, 120);
+};
 
   if (Number(payload.MRP) <= 0) {
     focusInvalidField("mrp");
