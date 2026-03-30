@@ -1758,9 +1758,9 @@ document.getElementById("manageDescription").value =
   item.Description || "";
 
 document.getElementById("manageHotSelling").checked =
-  String(item.HotSelling || item["Hot Selling"] || "")
+  String(item.Hotselling || item.HotSelling || item["Hot Selling"] || "")
     .trim()
-    .toLowerCase() === "yes";
+    .toLowerCase() === "true";
 
  
 
