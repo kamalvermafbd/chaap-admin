@@ -6597,6 +6597,83 @@ function closeCreateItemModal(){
     .classList.remove("active");
 }
 
+function resetCreateItemForm(){
+  document.getElementById("newItemName").value = "";
+  document.getElementById("newItemCategory").value = "";
+  document.getElementById("newItemDescription").value = "";
+  document.getElementById("newItemImage").value = "";
+  document.getElementById("newItemHot").value = "FALSE";
+  document.getElementById("newItemCat2").value = "Single";
+}
+
+  function saveNewItem(){
+
+  const name = document.getElementById("newItemName").value.trim();
+  const category = document.getElementById("newItemCategory").value.trim();
+  const description = document.getElementById("newItemDescription").value.trim();
+  const imageUrl = document.getElementById("newItemImage").value.trim();
+  const hot = document.getElementById("newItemHot").value;
+  const cat2 = document.getElementById("newItemCat2").value;
+
+  // ✅ basic validation
+  if(!name){
+    alert("⚠️ Name is required");
+    return;
+  }
+
+  if(!category){
+    alert("⚠️ Category is required");
+    return;
+  }
+
+  const payload = {
+    Name: name,
+    Category: category,
+    Description: description,
+    "Image Url": imageUrl,
+    Hotselling: hot,
+    Cat2: cat2
+  };
+
+  apiPost("addMenuItem", payload)
+    .then(function(res){
+resetCreateItemForm();
+      closeCreateItemModal();
+
+      // 🔥 reload menu
+      loadMenuData();
+ // 🔥 use API response itemId if available
+  const createdItemId = res?.itemId || "";
+
+      // 🔥 wait render complete then auto open manage
+      setTimeout(() => {
+ let newIndex = -1;
+
+    if(createdItemId){
+      newIndex = window.menuData.findIndex(
+        x => String(x.itemId) === String(createdItemId)
+      );
+    }
+
+    // fallback by name
+    if(newIndex < 0){
+      newIndex = window.menuData.findIndex(
+        x => x.Name === name
+      );
+    }
+
+    if(newIndex >= 0){
+      openManageMenu(newIndex);
+    }
+
+  }, 1200);
+
+})
+    .catch(function(err){
+      console.error(err);
+      alert("❌ Failed to create item");
+    });
+}
   
 
 function editRow(index) {
