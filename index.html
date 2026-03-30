@@ -689,12 +689,13 @@ td:nth-child(8) { width: 220px; } /* Action */
 #menuTable button {
   display: inline-block;
 }
-/* 🔥 MENU FILTER FIX */
+    
 #menuTable select,
-#menuTable input {
+#menuTable input:not([type="checkbox"]) {
   width: auto !important;
   margin-bottom: 0 !important;
 }
+    
     #menuTable select {
   min-width: 180px;
 }
@@ -865,9 +866,9 @@ td:nth-child(8) { width: 220px; } /* Action */
 
    #menuTable .hot-col,
 #menuTable .hot-col-cell{
-  width: 60px !important;
+  width: 42px !important;
   min-width: 42px !important;
-  max-width: 60px !important;
+  max-width: 42px !important;
   padding: 4px 2px !important;
   text-align: center !important;
 }
