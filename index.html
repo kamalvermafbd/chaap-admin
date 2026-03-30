@@ -2234,6 +2234,7 @@ payload.Opening = payload.openingValue;
         resetSaveBtn();   // 🔥 MUST ADD
         alert("Updated successfully");
         closeManageModal();
+        loadMenuData();   // 🔥 refresh menu
       })
       .catch(err => {
         resetSaveBtn();   // 🔥 MUST ADD
@@ -2265,6 +2266,7 @@ payload.Opening_cat = payload.openingValue;
         alert("Variant added");
         currentVariant.isNew = false; // reset
         closeManageModal();
+        loadMenuData();   // 🔥 refresh menu
       })
       .catch(err => {
         resetSaveBtn();
@@ -2280,6 +2282,7 @@ payload.Opening_cat = payload.openingValue;
         resetSaveBtn();
         alert("Variant updated");
         closeManageModal();
+        loadMenuData();   // 🔥 refresh menu
       })
       .catch(err => {
         resetSaveBtn();
