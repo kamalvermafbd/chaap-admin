@@ -1853,6 +1853,18 @@ if (openingRow) {
   
   const modal = document.getElementById("manageModal");
 
+  const saveBtn = document.getElementById("saveManageBtn");
+const createBtn = document.getElementById("saveNewItemBtn");
+
+if(window.pendingNewItem){
+  if(saveBtn) saveBtn.style.display = "none";
+  if(createBtn) createBtn.style.display = "inline-block";
+} else {
+  if(saveBtn) saveBtn.style.display = "inline-block";
+  if(createBtn) createBtn.style.display = "none";
+}
+  
+
   if(modal){
 
     modal.classList.add("active");
@@ -2137,32 +2149,65 @@ lockFieldsUntilUnit();
 }
 
 
-function handlePendingNewItemSave(payload){
-  if(!window.pendingNewItem) return false;
 
-  const finalPayload = {
+
+  function savePendingNewItemFinal(){
+  const type = String(window.pendingNewItem?.Cat2 || "").toLowerCase();
+
+  if(type === "multi"){
+    saveNewMultiItem();
+  } else {
+    saveNewSingleItem();
+  }
+}
+
+function saveNewSingleItem(){
+  const payload = collectNewItemPayload();
+  apiPost("addMenuSingleItem", payload)
+    .then(handleNewItemSuccess)
+    .catch(handleNewItemError);
+}
+
+  function saveNewMultiItem(){
+  const payload = collectNewItemPayload();
+  apiPost("addMenuMultiItem", payload)
+    .then(handleNewItemSuccess)
+    .catch(handleNewItemError);
+}
+
+
+function collectNewItemPayload(){
+  return {
     ...window.pendingNewItem,
-    ...payload
+    Unit: document.getElementById("unit").value,
+    MRP: parseFloat(document.getElementById("mrp").value) || 0,
+    Discount_Percent: parseFloat(document.getElementById("discount").value) || 0,
+    GST_Rate: parseFloat(document.getElementById("gstRate").value) || 0,
+    GST_Included: document.getElementById("gstIncluded").value,
+    Price: parseFloat(document.getElementById("price").value) || 0,
+    GST_Amt: parseFloat(document.getElementById("gstAmt").value) || 0,
+    item_weight: parseFloat(document.getElementById("otherWeight").value) || "",
+    Opening: parseFloat(document.getElementById("otherOpening").value) || "",
+    Barcode: document.getElementById("otherBarcode").value || ""
   };
+}
 
-  apiPost("addMenuItem", finalPayload)
-    .then(() => {
-      window.pendingNewItem = null;
-      window.menuData.pop();
-      alert("✅ Item created successfully");
-      closeManageModal();
-      loadMenuData();
-      resetCreateItemForm();
-    })
-    .catch(err => {
-      console.error(err);
-      alert("❌ Failed to create item");
-    });
+function handleNewItemSuccess(){
+  window.pendingNewItem = null;
+  window.menuData.pop();
+  alert("✅ Item created successfully");
+  closeManageModal();
+  loadMenuData();
+  resetCreateItemForm();
+}
 
-  return true;
+function handleNewItemError(err){
+  console.error(err);
+  alert("❌ Failed to create item");
 }
   
 function saveManageItem(){
+  
 const saveBtn = document.getElementById("saveManageBtn");
 const oldText = saveBtn ? saveBtn.innerText : "Save";
 
@@ -2317,10 +2362,7 @@ if (weightMandatory && weightValue <= 0) {
   return;
 }
 
- if(handlePendingNewItemSave(payload)){
-  resetSaveBtn();
-  return;
-}
+
   // =========================
   // 🔥 SINGLE ITEM
   // =========================
@@ -8048,6 +8090,13 @@ document.addEventListener("DOMContentLoaded", function(){
           ">
     💾 Save
   </button>
+
+
+  <button id="saveNewItemBtn"
+        onclick="savePendingNewItemFinal()"
+        style="display:none;">
+  Create Final
+</button>
         <button onclick="closeManageModal()"
           style="
             min-width:110px;
