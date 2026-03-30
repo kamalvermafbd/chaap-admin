@@ -1277,12 +1277,15 @@ renderCategories(menuItems);   // 🔥 ADD THIS LINE
 function uploadNewItemImage(inputEl){
 
   const file = inputEl.files && inputEl.files[0];
+  document.getElementById("newItemImageUpload").value = "";
+  
   if(!file) return;
+inputEl.disabled = true;
 
-  if(!file.type.startsWith("image/")){
-    return alert("Only image files allowed");
-  }
-
+ if(!file.type.startsWith("image/")){
+  inputEl.disabled = false;
+  return alert("Only image files allowed");
+}
   const reader = new FileReader();
 
   reader.onload = function(e){
@@ -1307,11 +1310,13 @@ function uploadNewItemImage(inputEl){
       const url = res.url || res;
 
       imgInput.value = url;
+      inputEl.disabled = false;
 
     })
     .catch(function(err){
       console.error(err);
       imgInput.value = "";
+      inputEl.disabled = false;
       alert("Upload failed");
     });
 
@@ -6680,13 +6685,14 @@ function resetCreateItemForm(){
   document.getElementById("newItemName").value = "";
   document.getElementById("newItemCategory").value = "";
   document.getElementById("newItemDescription").value = "";
-  document.getElementById("newItemImage").value = "";
+ document.getElementById("newItemImageUpload").value = "";
  document.getElementById("newItemHot").checked = false;
   document.getElementById("newItemCat2").value = "Single";
 }
 
   function saveNewItem(){
-
+const btn = event?.target;
+if(btn) btn.disabled = true;
   const name = document.getElementById("newItemName").value.trim();
   const category = document.getElementById("newItemCategory").value.trim();
   const description = document.getElementById("newItemDescription").value.trim();
@@ -6720,7 +6726,7 @@ function resetCreateItemForm(){
     .then(function(res){
 resetCreateItemForm();
       closeCreateItemModal();
-
+if(btn) btn.disabled = false;
       // 🔥 reload menu
       loadMenuData();
  // 🔥 use API response itemId if available
@@ -6753,6 +6759,7 @@ resetCreateItemForm();
     .catch(function(err){
       console.error(err);
       alert("❌ Failed to create item");
+      if(btn) btn.disabled = false;
     });
 }
   
