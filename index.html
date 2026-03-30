@@ -6690,9 +6690,13 @@ function resetCreateItemForm(){
   document.getElementById("newItemCat2").value = "Single";
 }
 
-  function saveNewItem(){
+function saveNewItem(){
 const btn = event?.target;
-if(btn) btn.disabled = true;
+if(btn){
+  btn.disabled = true;
+  btn.textContent = "⏳ Creating...";
+}
+  
   const name = document.getElementById("newItemName").value.trim();
   const category = document.getElementById("newItemCategory").value.trim();
   const description = document.getElementById("newItemDescription").value.trim();
@@ -6705,11 +6709,19 @@ if(btn) btn.disabled = true;
   // ✅ basic validation
   if(!name){
     alert("⚠️ Name is required");
+    if(btn){
+  btn.disabled = false;
+  btn.textContent = "Create Item";
+}
     return;
   }
 
   if(!category){
     alert("⚠️ Category is required");
+    if(btn){
+  btn.disabled = false;
+  btn.textContent = "Create Item";
+}
     return;
   }
 
@@ -6726,7 +6738,10 @@ if(btn) btn.disabled = true;
     .then(function(res){
 resetCreateItemForm();
       closeCreateItemModal();
-if(btn) btn.disabled = false;
+if(btn){
+  btn.disabled = false;
+  btn.textContent = "Create Item";
+}
       // 🔥 reload menu
       loadMenuData();
  // 🔥 use API response itemId if available
@@ -6759,7 +6774,10 @@ if(btn) btn.disabled = false;
     .catch(function(err){
       console.error(err);
       alert("❌ Failed to create item");
-      if(btn) btn.disabled = false;
+      if(btn){
+  btn.disabled = false;
+  btn.textContent = "Create Item";
+}
     });
 }
   
