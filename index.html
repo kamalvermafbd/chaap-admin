@@ -1192,15 +1192,16 @@ function enableEdit(id){
   const type = window.currentItemType || "";
   const isMulti = (type || "").toLowerCase() === "multi";
 
-  if(!isMulti){
-    alert("⚠️ Edit not allowed for Single item");
+ // 🔒 Single item → only unit locked
+  if(!isMulti && id === "unit"){
+    alert("⚠️ Unit edit not allowed for Single item");
     return;
   }
 
   const unit = document.getElementById("unit").value;
 
-  // 🔴 block if unit not selected
-  if(!unit){
+   // 🔴 Multi only → unit required before edit
+  if(isMulti && !unit){
     alert("⚠️ Please select Unit first");
     return;
   }
