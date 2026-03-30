@@ -1686,12 +1686,33 @@ lockFieldsUntilUnit();
     GST_Rate: parseFloat(document.getElementById("gstRate").value) || 0,
     GST_Included: document.getElementById("gstIncluded").value,
      Price: parseFloat(document.getElementById("price").value) || 0,
-
-  // 🔥 BAS YE ADD KAR
   GST_Amt: parseFloat(document.getElementById("gstAmt").value) || 0
     
   };
 
+
+// 🔥 BASIC PRICE VALIDATION
+if (Number(payload.MRP) <= 0) {
+  alert("❌ MRP must be greater than 0");
+  return;
+}
+
+if (Number(payload.GST_Rate) < 0) {
+  alert("❌ GST % cannot be negative");
+  return;
+}
+
+    // 🔥 DISCOUNT VALIDATION
+if (Number(payload.Discount_Percent) < 0) {
+  alert("❌ Discount % cannot be negative");
+  return;
+}
+
+if (Number(payload.Discount_Percent) >= 100) {
+  alert("❌ Discount % must be less than 100");
+  return;
+}
+    
 // 🔥 GST VALIDATION
 const gstApplicable =
   String(restaurantInfo.GST_applicable || "")
