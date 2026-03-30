@@ -1754,9 +1754,7 @@ const focusInvalidField = (id) => {
   // 🔥 Others tab field
   if (id.startsWith("other")) {
     const fakeEvent = {
-      currentTarget: document.querySelector(
-        '.manage-tabs .tab[onclick*="others"]'
-      )
+      currentTarget: document.getElementById("othersTabBtn")
     };
 
     if (fakeEvent.currentTarget) {
@@ -7194,7 +7192,9 @@ document.addEventListener("DOMContentLoaded", function(){
   <!-- 🔥 TABS HEADER -->
   <div class="manage-tabs">
     <div class="tab active" onclick="switchTab(event,'price')">💰 Price</div>
-    <div class="tab" onclick="switchTab(event,'qty')">📦 Others</div>
+   <div id="othersTabBtn" class="tab" onclick="switchTab(event,'others')">
+  Others
+</div>
     <div class="tab" onclick="switchTab(event,'image')">🖼️ Image</div>
   </div>
 
