@@ -6672,7 +6672,10 @@ style="border-collapse:collapse;">
 <td class="hot-col-cell" style="width:42px;text-align:center;">
   <input type="checkbox"
     style="display:inline-block !important; width:16px !important; height:16px !important; opacity:1 !important; visibility:visible !important;"
-    ${String(item["Hotselling"]).toUpperCase() === "TRUE" ? "checked" : ""}
+   ${["TRUE", "true", true, 1, "1"].includes(item["Hotselling"]) ||
+  String(item["Hotselling"]).trim().toUpperCase() === "TRUE"
+    ? "checked"
+    : ""}
     onchange="toggleHotSelling(${index}, this.checked)">
 </td>
 
