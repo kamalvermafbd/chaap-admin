@@ -872,6 +872,44 @@ td:nth-child(8) { width: 220px; } /* Action */
     .image-form input[type="text"]{
   font-size: 13px;
 }
+
+    .image-form {
+  max-width: 260px;
+  margin: auto;
+}
+
+.image-form .form-row {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  align-items: center;
+  margin-bottom: 12px;
+  gap: 8px;
+}
+
+.image-form label {
+  font-size: 12px;
+  color: #555;
+}
+
+.image-form input[type="text"],
+.image-form textarea {
+  width: 100%;
+  padding: 6px 8px;
+  font-size: 13px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+.image-form textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.image-form input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+}
   </style>
 </head>
 <body>
