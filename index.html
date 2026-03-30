@@ -914,23 +914,24 @@ td:nth-child(8) { width: 220px; } /* Action */
 
     @media (max-width: 768px) {
 
+  .pos-order-bar {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
   #posCategories {
-    display: block;
-    margin-bottom: 10px;
+    display: flex;
     overflow-x: auto;
     white-space: nowrap;
-  }
-
-  #posSearch {
-    display: block;
     width: 100%;
-    margin: 0 0 10px 0;
-    box-sizing: border-box;
   }
 
+  #posSearch,
   #clearSearchBtn {
-    display: block;
     width: 100%;
+    display: block;
+    box-sizing: border-box;
   }
 
 }
