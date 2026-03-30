@@ -1468,6 +1468,14 @@ if (openingRow) {
   if(modal){
 
     modal.classList.add("active");
+
+document.querySelectorAll(".manage-tabs .tab").forEach(el => el.classList.remove("active"));
+document.querySelectorAll(".tab-pane").forEach(el => el.classList.remove("active"));
+document.querySelector(".manage-tabs .tab").classList.add("active");
+document.getElementById("tab-price").classList.add("active");
+
+
+    
     const nav = document.getElementById("variantNav");
 if(nav) nav.style.display = "none";
  clearManageFields();   // 🔥 YAHI LAGANA HAI (VERY IMPORTANT)
