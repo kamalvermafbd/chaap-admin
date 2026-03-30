@@ -919,7 +919,10 @@ td:nth-child(8) { width: 220px; } /* Action */
 
       <div class="form-row">
         <label>Category</label>
-        <input id="newItemCategory" type="text">
+       <select id="newItemCategory">
+  <option value="">Select Category</option>
+</select>
+        
       </div>
 
       <div class="form-row">
@@ -6593,6 +6596,18 @@ if(cat){
 }
 
 function openCreateItemModal(){
+
+  const el = document.getElementById("newItemCategory");
+
+  if(el){
+    const cats = window.CATEGORY_OPTIONS || [];
+
+    el.innerHTML = `<option value="">Select Category</option>` +
+      cats.map(cat =>
+        `<option value="${cat}">${cat}</option>`
+      ).join("");
+  }
+
   document.getElementById("createItemModal")
     .classList.add("active");
 }
