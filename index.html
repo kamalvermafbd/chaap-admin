@@ -7417,6 +7417,78 @@ function loadCategoryList() {
     });
 }
 
+  function uploadManageItemImage(inputEl){
+
+  const file = inputEl.files && inputEl.files[0];
+  document.getElementById("manageImageUpload").value = "";
+
+  if(!file) return;
+
+  inputEl.disabled = true;
+
+  const saveBtn = document.getElementById("saveManageBtn");
+  if(saveBtn){
+    saveBtn.disabled = true;
+    saveBtn.innerText = "Uploading...";
+  }
+
+  if(!file.type.startsWith("image/")){
+    inputEl.disabled = false;
+
+    if(saveBtn){
+      saveBtn.disabled = false;
+      saveBtn.innerText = "💾 Save";
+    }
+
+    return alert("Only image files allowed");
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = function(e){
+
+    const base64 = e.target.result.split(",")[1];
+    const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+    const filename = `manage_${Date.now()}.${ext}`;
+
+    const imgInput = document.getElementById("manageImage");
+    imgInput.value = "Uploading...";
+
+    apiPost("uploadMenuImage", {
+      api: "uploadMenuImage",
+      base64: base64,
+      filename: filename,
+      type: file.type
+    })
+    .then(function(res){
+
+      imgInput.value = res.url || res;
+      inputEl.disabled = false;
+
+      if(saveBtn){
+        saveBtn.disabled = false;
+        saveBtn.innerText = "💾 Save";
+      }
+
+    })
+    .catch(function(err){
+
+      console.error(err);
+      imgInput.value = "";
+      inputEl.disabled = false;
+
+      if(saveBtn){
+        saveBtn.disabled = false;
+        saveBtn.innerText = "💾 Save";
+      }
+
+      alert("Upload failed");
+    });
+
+  };
+
+  reader.readAsDataURL(file);
+}
 function refreshCategoryDropdown() {
   const dl = document.getElementById("cat-list");
   if (!dl) return;
@@ -7842,18 +7914,26 @@ document.addEventListener("DOMContentLoaded", function(){
       <p>Image upload UI</p>
 <div class="form-row">
   <label>Image</label>
-  <input id=newItemImage" type="text" placeholder="Upload image or paste URL">
-  <label for="newItemImageUpload"
-         style="cursor:pointer;font-size:18px;text-align:center;">
-    📤
+  <input id="manageImage" type="text" placeholder="Upload image or paste URL">
+
+  <label for="manageImageUpload"
+         style="
+           cursor:pointer;
+           background:#007bff;
+           color:#fff;
+           padding:4px 8px;
+           border-radius:6px;
+           font-size:12px;
+           white-space:nowrap;
+         ">
+    Upload
   </label>
 
-
-    <input id="newItemImageUpload"
+  <input id="manageImageUpload"
          type="file"
          accept="image/*"
          style="display:none"
-         onchange="uploadNewItemImage(this)">
+         onchange="uploadManageItemImage(this)">
 </div>
 
 
