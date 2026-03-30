@@ -1767,8 +1767,8 @@ if (gstIncludedValue === "Not Applicable") {
 
     apiPost("updateMenuItem", payload)
       .then(res => {
-        alert("Updated successfully");
         resetSaveBtn();   // 🔥 MUST ADD
+        alert("Updated successfully");
         closeManageModal();
       })
       .catch(err => {
