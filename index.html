@@ -2135,6 +2135,32 @@ lockFieldsUntilUnit();
 
 }
 
+
+function handlePendingNewItemSave(payload){
+  if(!window.pendingNewItem) return false;
+
+  const finalPayload = {
+    ...window.pendingNewItem,
+    ...payload
+  };
+
+  apiPost("addMenuItem", finalPayload)
+    .then(() => {
+      window.pendingNewItem = null;
+      window.menuData.pop();
+      alert("✅ Item created successfully");
+      closeManageModal();
+      loadMenuData();
+      resetCreateItemForm();
+    })
+    .catch(err => {
+      console.error(err);
+      alert("❌ Failed to create item");
+    });
+
+  return true;
+}
+  
 function saveManageItem(){
 const saveBtn = document.getElementById("saveManageBtn");
 const oldText = saveBtn ? saveBtn.innerText : "Save";
@@ -2177,6 +2203,8 @@ const focusInvalidField = (id) => {
 };;
     
   const item = window.menuData[currentManageIndex];
+
+  
   const type = window.currentItemType;
 
   // 🔥 common fields
@@ -2204,7 +2232,9 @@ payload.weightValue =
 
 payload.openingValue =
   parseFloat(document.getElementById("otherOpening").value) || "";
-    
+
+
+  
 // 🔥 BASIC PRICE VALIDATION
 if (Number(payload.MRP) <= 0) {
   focusInvalidField("mrp");
@@ -2285,7 +2315,11 @@ if (weightMandatory && weightValue <= 0) {
 
   return;
 }
-    
+
+ if(handlePendingNewItemSave(payload)){
+  resetSaveBtn();
+  return;
+}
   // =========================
   // 🔥 SINGLE ITEM
   // =========================
@@ -6975,6 +7009,20 @@ function resetCreateItemForm(){
   document.getElementById("newItemCat2").value = "Single";
 }
 
+function prepareNewItemForManage(payload){
+  window.pendingNewItem = payload;
+
+  closeCreateItemModal();
+
+  window.menuData = window.menuData || [];
+  window.menuData.push(payload);
+
+  const tempIndex = window.menuData.length - 1;
+
+  window.forcePriceSetup = true;
+  openManageMenu(tempIndex);
+}
+  
 function saveNewItem(){
 const btn = event?.target;
 if(btn){
@@ -7019,56 +7067,12 @@ if(btn){
     Cat2: cat2
   };
 
-  apiPost("addMenuItem", payload)
-    .then(function(res){
-resetCreateItemForm();
-      closeCreateItemModal();
-if(btn){
+ if(btn){
   btn.disabled = false;
   btn.textContent = "Create Item";
 }
-      // 🔥 reload menu
-      loadMenuData();
- // 🔥 use API response itemId if available
-  const createdItemId = res?.itemId || "";
 
-      // 🔥 wait render complete then auto open manage
-setTimeout(() => {
-  loadMenuData();
-
-  setTimeout(() => {
-    let newIndex = -1;
-
-    if(createdItemId){
-      newIndex = window.menuData.findIndex(
-        x => String(x.itemId) === String(createdItemId)
-      );
-    }
-
-    if(newIndex < 0){
-      newIndex = window.menuData.findIndex(
-        x => x.Name === name
-      );
-    }
-
-    if(newIndex >= 0){
-      window.forcePriceSetup = true;
-      openManageMenu(newIndex);
-    }
-
-  }, 800);
-
-}, 400);
-
-})
-    .catch(function(err){
-      console.error(err);
-      alert("❌ Failed to create item");
-      if(btn){
-  btn.disabled = false;
-  btn.textContent = "Create Item";
-}
-    });
+prepareNewItemForManage(payload);
 }
   
 
