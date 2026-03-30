@@ -1425,6 +1425,14 @@ if(addBtn){
 
   window.currentItemType = type;
 
+const openingRow = document.getElementById("openingRow");
+
+if (openingRow) {
+  const stockMode = String(restaurantInfo.stock_update || "").trim().toLowerCase();
+  openingRow.style.display =
+    stockMode === "check_closing_stock" ? "grid" : "none";
+}
+  
   const modal = document.getElementById("manageModal");
 
   if(modal){
