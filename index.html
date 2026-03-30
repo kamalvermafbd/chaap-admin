@@ -7917,7 +7917,8 @@ document.addEventListener("DOMContentLoaded", function(){
       <p>Image upload UI</p>
 <div class="form-row">
   <label>Image</label>
-  <input id="manageImage" type="text" placeholder="Upload image or paste URL">
+  <div style="display:flex;gap:6px;align-items:center;width:100%;">
+  <input id="manageImage" type="text" placeholder="Upload image or paste URL" style="flex:1;">
 
   <label for="manageImageUpload"
          style="
@@ -7928,10 +7929,11 @@ document.addEventListener("DOMContentLoaded", function(){
            border-radius:6px;
            font-size:12px;
            white-space:nowrap;
+    margin:0;
          ">
     Upload
   </label>
-
+  </div>
   <input id="manageImageUpload"
          type="file"
          accept="image/*"
