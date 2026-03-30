@@ -893,7 +893,81 @@ td:nth-child(8) { width: 220px; } /* Action */
     <p>Welcome Master! You can manage menu items here.</p>
     <!-- You can add a form or table later -->
      <div id="menuTable"></div>
-     
+
+
+
+
+
+<!-- 🔥 CREATE ITEM MODAL -->
+<div id="createItemModal" class="modalitem-overlay">
+  <div class="manage-modal-box">
+    <h3 style="margin-bottom:10px;">➕ Add New Item</h3>
+
+    <div class="price-form">
+
+      <div class="form-row">
+        <label>Name</label>
+        <input id="newItemName" type="text">
+      </div>
+
+      <div class="form-row">
+        <label>Category</label>
+        <input id="newItemCategory" type="text">
+      </div>
+
+      <div class="form-row">
+        <label>Description</label>
+        <input id="newItemDescription" type="text">
+      </div>
+
+      <div class="form-row">
+        <label>Image URL</label>
+        <input id="newItemImage" type="text">
+      </div>
+
+      <div class="form-row">
+        <label>Hot Selling</label>
+        <select id="newItemHot">
+          <option value="FALSE">No</option>
+          <option value="TRUE">Yes</option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <label>Cat2</label>
+        <select id="newItemCat2">
+          <option value="Single">Single</option>
+          <option value="Multi">Multi</option>
+        </select>
+      </div>
+
+      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:10px;">
+        <button onclick="closeCreateItemModal()">Cancel</button>
+        <button onclick="saveNewItem()">Create Item</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
   </div>
 </div>  
 <div id="pageCouponStatus" class="page" style="display:none;">
@@ -6490,7 +6564,7 @@ style="border-collapse:collapse;">
   });
 
   html += '</table></div>';
-  html += '<br><button onclick="addNewRecord()">➕ Add New Record</button>';
+html += '<br><button onclick="openCreateItemModal()">➕ Add New Record</button>';
 
   menuDiv.innerHTML = html;
 
@@ -6513,6 +6587,17 @@ if(cat){
 
 }
 
+function openCreateItemModal(){
+  document.getElementById("createItemModal")
+    .classList.add("active");
+}
+
+function closeCreateItemModal(){
+  document.getElementById("createItemModal")
+    .classList.remove("active");
+}
+
+  
 
 function editRow(index) {
 
