@@ -6694,15 +6694,14 @@ if(cat){
 
 }
 
-
 function toggleHotSelling(index, checked){
 
   const item = window.menuData[index];
   if(!item) return;
 
-  apiPost("updateMenuHot", {
+  apiPost("toggleHotSelling", {
     itemId: item.itemId,
-    Hotselling: checked ? "TRUE" : ""
+    isHot: checked
   })
   .then(() => {
     item.Hotselling = checked ? "TRUE" : "";
@@ -6710,9 +6709,10 @@ function toggleHotSelling(index, checked){
   .catch(err => {
     console.error(err);
     alert("❌ Hot update failed");
-    loadMenuData(); // rollback UI
+    loadMenuData();
   });
 }
+
   
 function openCreateItemModal(){
  resetCreateItemForm();   // 🔥 IMPORTANT
