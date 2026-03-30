@@ -9,7 +9,7 @@
   <title>Pending Orders ka - Dashboard</title>
 
   <link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#343a40">
+<meta name="theme-color" content="#343a40">new
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
  <script src="https://unpkg.com/@zxing/library@latest"></script>
   
@@ -7842,15 +7842,20 @@ document.addEventListener("DOMContentLoaded", function(){
       <p>Image upload UI</p>
 <div class="form-row">
   <label>Image</label>
-  <input id="manageImage" type="text" placeholder="Upload image or paste URL">
-<label for="newItemImageUpload">📤</label>
+  <input id=newItemImage" type="text" placeholder="Upload image or paste URL">
+  <label for="newItemImageUpload"
+         style="cursor:pointer;font-size:18px;text-align:center;">
+    📤
+  </label>
 
-  <input id="manageImageUpload"
+
+    <input id="newItemImageUpload"
          type="file"
          accept="image/*"
          style="display:none"
          onchange="uploadNewItemImage(this)">
 </div>
+
 
 <div class="form-row">
   <label>Description</label>
