@@ -862,6 +862,15 @@ td:nth-child(8) { width: 220px; } /* Action */
   height:16px !important;
   margin:0 auto !important;
 }
+
+    #menuTable .hot-col,
+#menuTable .hot-col-cell{
+  width: 38px;
+  min-width: 38px;
+  max-width: 38px;
+  padding: 4px;
+  text-align: center;
+}
     
   </style>
 </head>
@@ -6622,7 +6631,7 @@ style="border-collapse:collapse;">
   <th>#</th>
   <th>Name</th>
   <th>Image</th>
-  <th>🔥 Hot</th>
+  <th class="hot-col">🔥 Hot</th>
   <th>Action</th>
 </tr>
 `;
@@ -6652,7 +6661,7 @@ style="border-collapse:collapse;">
          style="width:60px;height:60px;object-fit:cover;border-radius:6px;">
   </td>
 
-<td style="text-align:center;">
+<td class="hot-col-cell">
   <input type="checkbox"
     style="width:16px;height:16px;cursor:pointer;margin:0;"
     ${String(item["Hotselling"]).toUpperCase() === "TRUE" ? "checked" : ""}
