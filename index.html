@@ -1355,7 +1355,16 @@ function handleUnitChange(){
   
 function disableAllFields(){
 
-  const ids = ["unit","mrp","discount","gstIncluded","gstRate"];
+  const ids = [    
+    "unit",
+    "mrp",
+    "discount",
+    "gstIncluded",
+    "gstRate",
+    "otherWeight",
+    "otherOpening",
+    "otherBarcode"
+  ];
 
   ids.forEach(id => {
     const el = document.getElementById(id);
@@ -1543,6 +1552,14 @@ function clearManageFields(){
   // optional
   document.getElementById("price").value = "";
   document.getElementById("gstAmt").value = "";
+
+ // 🔥 Others tab reset
+  document.getElementById("otherCancel").checked = false;
+  document.getElementById("otherHold").checked = false;
+  document.getElementById("otherWeight").value = "";
+  document.getElementById("otherOpening").value = "";
+  document.getElementById("otherBarcode").value = "";
+  
 }
   
   
@@ -1734,11 +1751,19 @@ if (saveBtn) {
     GST_Rate: parseFloat(document.getElementById("gstRate").value) || 0,
     GST_Included: document.getElementById("gstIncluded").value,
      Price: parseFloat(document.getElementById("price").value) || 0,
-  GST_Amt: parseFloat(document.getElementById("gstAmt").value) || 0
-    
+  GST_Amt: parseFloat(document.getElementById("gstAmt").value) || 0,
+      Cancel: document.getElementById("otherCancel").checked ? "TRUE" : "",
+  hold1: document.getElementById("otherHold").checked ? "TRUE" : "",
+  Barcode: document.getElementById("otherBarcode").value || "",
+ 
   };
 
+payload.weightValue =
+  parseFloat(document.getElementById("otherWeight").value) || "";
 
+payload.openingValue =
+  parseFloat(document.getElementById("otherOpening").value) || "";
+    
 // 🔥 BASIC PRICE VALIDATION
 if (Number(payload.MRP) <= 0) {
   alert("❌ MRP must be greater than 0");
@@ -1764,6 +1789,22 @@ if (Number(payload.Discount_Percent) >= 100) {
   resetSaveBtn();
   return;
 }
+
+// 🔥 WEIGHT VALIDATION (Restaurant Info based)
+const weightMandatory =
+  String(restaurantInfo.weight_mandatory || "")
+    .trim()
+    .toLowerCase() === "yes";
+
+const weightValue =
+  parseFloat(document.getElementById("otherWeight").value) || 0;
+
+if (weightMandatory && weightValue <= 0) {
+  alert("❌ Weight is mandatory");
+  resetSaveBtn();
+  return;
+}
+
     
 // 🔥 GST VALIDATION
 const gstApplicable =
@@ -1797,7 +1838,9 @@ if (gstIncludedValue === "Not Applicable") {
   if(type !== "Multi"){
 
     payload.itemId = item.itemId;
-
+payload.item_weight = payload.weightValue;
+payload.Opening = payload.openingValue;
+    
     apiPost("updateMenuItem", payload)
       .then(res => {
         resetSaveBtn();   // 🔥 MUST ADD
@@ -1821,7 +1864,10 @@ if (gstIncludedValue === "Not Applicable") {
 
   payload.itemId = currentVariant.itemId;
   payload.variantId = currentVariant.variantId;
+payload.cat_weight = payload.weightValue;
+payload.Opening_cat = payload.openingValue;
 
+    
   // 🔥 NEW VARIANT → INSERT
   if(currentVariant.isNew){
 
