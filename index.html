@@ -1738,6 +1738,23 @@ if (saveBtn) {
     saveBtn.disabled = false;
   }
 };
+
+
+const focusInvalidField = (id) => {
+  const el = document.getElementById(id);
+  if (!el) return;
+
+  // 🔓 existing project edit flow follow
+  el.removeAttribute("disabled");
+
+  // 🎯 cursor direct field me
+  el.focus();
+
+  // optional select current value
+  if (typeof el.select === "function") {
+    el.select();
+  }
+};
     
   const item = window.menuData[currentManageIndex];
   const type = window.currentItemType;
@@ -1766,12 +1783,14 @@ payload.openingValue =
     
 // 🔥 BASIC PRICE VALIDATION
 if (Number(payload.MRP) <= 0) {
+  focusInvalidField("mrp");
   alert("❌ MRP must be greater than 0");
   resetSaveBtn();
   return;
 }
 
 if (Number(payload.GST_Rate) < 0) {
+  focusInvalidField("gstRate");
   alert("❌ GST % cannot be negative");
   resetSaveBtn();
   return;
@@ -1779,12 +1798,14 @@ if (Number(payload.GST_Rate) < 0) {
 
     // 🔥 DISCOUNT VALIDATION
 if (Number(payload.Discount_Percent) < 0) {
+   focusInvalidField("discount");
   alert("❌ Discount % cannot be negative");
   resetSaveBtn();
   return;
 }
 
 if (Number(payload.Discount_Percent) >= 100) {
+  focusInvalidField("discount");
   alert("❌ Discount % must be less than 100");
   resetSaveBtn();
   return;
@@ -1807,6 +1828,7 @@ if (
   gstIncludedValue !== "Not Applicable" &&
   gstRateValue === 0
 ) {
+  focusInvalidField("gstRate");
   alert("❌ GST % is mandatory, or choose Not Applicable");
   resetSaveBtn();   // 🔥 MUST ADD
   return;
@@ -1830,6 +1852,7 @@ const weightValue =
   parseFloat(document.getElementById("otherWeight").value) || 0;
 
 if (weightMandatory && weightValue <= 0) {
+   focusInvalidField("otherWeight");
   alert("❌ Weight is mandatory");
   resetSaveBtn();
   return;
