@@ -1589,6 +1589,67 @@ function prevVariant(){
 
 }
 
+
+let barcodeStream = null;
+let barcodeTimer = null;
+
+async function scanBarcodeToTextbox() {
+  try {
+    const video = document.getElementById("barcodeVideo");
+    const input = document.getElementById("otherBarcode");
+
+    if (!("BarcodeDetector" in window)) {
+      alert("Barcode scan not supported");
+      return;
+    }
+
+    const detector = new BarcodeDetector({
+      formats: ["code_128", "ean_13", "ean_8", "upc_a"]
+    });
+
+    barcodeStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: "environment" }
+    });
+
+    video.srcObject = barcodeStream;
+    video.style.display = "block";
+
+    barcodeTimer = setInterval(async () => {
+      const codes = await detector.detect(video);
+
+      if (codes.length > 0) {
+        const code = codes[0].rawValue;
+
+        // ✅ ONLY FILL TEXTBOX
+        input.removeAttribute("disabled");
+        input.value = code;
+        input.setAttribute("disabled", true);
+
+        // ✅ ONLY STOP CAMERA
+        stopBarcodeScanner();
+      }
+    }, 300);
+
+  } catch (err) {
+    console.error(err);
+    alert("Camera failed");
+  }
+}
+
+function stopBarcodeScanner() {
+  const video = document.getElementById("barcodeVideo");
+
+  if (barcodeTimer) clearInterval(barcodeTimer);
+
+  if (barcodeStream) {
+    barcodeStream.getTracks().forEach(track => track.stop());
+  }
+
+  video.srcObject = null;
+  video.style.display = "none";
+}
+
+
   
 let currentManageIndex = null;
   
@@ -7647,10 +7708,14 @@ document.addEventListener("DOMContentLoaded", function(){
     <div class="form-row">
       <label>Barcode</label>
       <input id="otherBarcode" type="text" disabled>
-      <span class="edit-btn" onclick="enableEdit('otherBarcode')">📷</span>
+       <span class="edit-btn" onclick="scanBarcodeToTextbox()">📷</span>
     </div>
 
-
+<video id="barcodeVideo"
+       autoplay
+       playsinline
+       style="display:none; width:220px; margin-top:8px; border:1px solid #ccc; border-radius:8px;">
+</video>
 </div>
     </div>
 
