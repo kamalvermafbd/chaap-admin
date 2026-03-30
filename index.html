@@ -856,6 +856,12 @@ td:nth-child(8) { width: 220px; } /* Action */
   margin: 0;
   justify-self: start;
 }
+
+    #menuTable input[type="checkbox"]{
+  width:16px !important;
+  height:16px !important;
+  margin:0 auto !important;
+}
     
   </style>
 </head>
@@ -6646,10 +6652,12 @@ style="border-collapse:collapse;">
          style="width:60px;height:60px;object-fit:cover;border-radius:6px;">
   </td>
 
-  <td style="text-align:center;">
-    <input type="checkbox" disabled 
-      ${String(item["Hotselling"]).toUpperCase() === "TRUE" ? "checked" : ""}>
-  </td>
+<td style="text-align:center;">
+  <input type="checkbox"
+    style="width:16px;height:16px;cursor:pointer;margin:0;"
+    ${String(item["Hotselling"]).toUpperCase() === "TRUE" ? "checked" : ""}
+    onchange="toggleHotSelling(${index}, this.checked)">
+</td>
 
   <td>
     <button 
@@ -6686,6 +6694,26 @@ if(cat){
 
 }
 
+
+function toggleHotSelling(index, checked){
+
+  const item = window.menuData[index];
+  if(!item) return;
+
+  apiPost("updateMenuHot", {
+    itemId: item.itemId,
+    Hotselling: checked ? "TRUE" : ""
+  })
+  .then(() => {
+    item.Hotselling = checked ? "TRUE" : "";
+  })
+  .catch(err => {
+    console.error(err);
+    alert("❌ Hot update failed");
+    loadMenuData(); // rollback UI
+  });
+}
+  
 function openCreateItemModal(){
  resetCreateItemForm();   // 🔥 IMPORTANT
   const el = document.getElementById("newItemCategory");
