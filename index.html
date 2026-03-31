@@ -1651,6 +1651,7 @@ function closeAreaModal(){
 }
 
 function saveArea(btn){
+  // 🔴 button loading state
   if(btn){
     btn.disabled = true;
     btn.dataset.original = btn.innerHTML;
@@ -1658,6 +1659,7 @@ function saveArea(btn){
     btn.style.opacity = "0.7";
   }
 
+  // 🔴 reusable reset
   const resetBtn = () => {
     if(btn){
       btn.innerHTML = btn.dataset.original || "Save";
@@ -1669,6 +1671,7 @@ function saveArea(btn){
   const location = document.getElementById("newAreaLocation").value.trim();
   const sequence = document.getElementById("newAreaSequence").value.trim();
 
+  // 🔴 validation
   if(!location){
     alert("⚠️ Enter location");
     resetBtn();
@@ -1681,30 +1684,43 @@ function saveArea(btn){
     return;
   }
 
-  // ✅ duplicate check before save
+  // ✅ duplicate + save flow
   apiGet("getAreas")
     .then(rows => {
       const duplicate = (rows || []).some(
-        r => String(r.Area).trim().toLowerCase() === location.toLowerCase()
+        r => String(r.Area || "").trim().toLowerCase() === location.toLowerCase()
       );
 
       if(duplicate){
         alert("❌ Area already exists");
         resetBtn();
-        return;
+        return null;
       }
 
-      // 🔥 backend API next step
-      alert("✅ Duplicate check passed, API next");
+      // ✅ actual backend save
+      return apiPost("addArea", {
+        Location: location,
+        Sequence: Number(sequence)
+      });
+    })
+    .then(res => {
+      if(!res) return;
+
+      alert("✅ Area added successfully");
+
       resetBtn();
+      closeAreaModal();
+
+      // 🔥 refresh table + status
+      loadTableData();
+      loadTableStatus();
     })
     .catch(err => {
-      console.error(err);
-      alert("❌ Failed to validate area");
+      console.error("saveArea error:", err);
+      alert("❌ Failed to save area");
       resetBtn();
     });
 }
-  
 function loadTableStatus(){
   const box = document.getElementById("tableStatusList");
   if(!box) return;
