@@ -1650,6 +1650,7 @@ function closeAreaModal(){
   document.getElementById("areaModal").classList.remove("active");
 }
 
+
 function saveArea(btn){
   // 🔴 button loading state
   if(btn){
@@ -1684,9 +1685,9 @@ function saveArea(btn){
     return;
   }
 
-  // ✅ duplicate + save flow
   apiGet("getAreas")
     .then(rows => {
+      // ✅ duplicate LOCATION check frontend
       const duplicate = (rows || []).some(
         r => String(r.Area || "").trim().toLowerCase() === location.toLowerCase()
       );
@@ -1704,14 +1705,22 @@ function saveArea(btn){
       });
     })
     .then(res => {
-      if(!res) return;
+      if(!res){
+        return;
+      }
 
+      // 🔥 IMPORTANT BACKEND RESPONSE CHECK
+      if(res.success === false){
+        alert("❌ " + (res.message || "Failed to save area"));
+        resetBtn();
+        return;
+      }
+
+      // ✅ only real success
       alert("✅ Area added successfully");
 
       resetBtn();
       closeAreaModal();
-
-      // 🔥 refresh table + status
       loadTableData();
       loadTableStatus();
     })
@@ -1721,6 +1730,8 @@ function saveArea(btn){
       resetBtn();
     });
 }
+
+  
 function loadTableStatus(){
   const box = document.getElementById("tableStatusList");
   if(!box) return;
