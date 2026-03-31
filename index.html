@@ -1730,8 +1730,8 @@ box.innerHTML = orderedAreas
     box.innerHTML = "Failed to load table status";
   });
 }
-
-function openTableModal(){
+  
+function openTableModal(btn){
   if(btn){
     btn.disabled = true;
     btn.dataset.original = btn.innerHTML;
@@ -1762,6 +1762,10 @@ function openTableModal(){
     .catch(err => {
       console.error(err);
       alert("❌ Failed to load areas");
+       if(btn){
+    btn.innerHTML = btn.dataset.original || "+ Add Table";
+    btn.disabled = false;
+  }
     });
 }
 
