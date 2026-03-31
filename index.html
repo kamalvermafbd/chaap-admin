@@ -1113,6 +1113,25 @@ td:nth-child(8) { width: 220px; } /* Action */
   </div>
 </div>
 
+<div id="tableModal" class="modal-overlay">
+  <div class="modal-box">
+    <h3>Add Table</h3>
+
+    <div style="display:grid;gap:10px;">
+      <input id="newTableNo" type="text" placeholder="Enter Table Number">
+
+      <select id="newTableArea">
+        <option value="">Select Area</option>
+      </select>
+    </div>
+
+    <div style="margin-top:15px;display:flex;gap:10px;justify-content:flex-end;">
+      <button onclick="saveTable()">Save</button>
+      <button onclick="closeTableModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
       
 <div id="pageCouponStatus" class="page" style="display:none;">
   <div class="container">
@@ -1588,6 +1607,81 @@ function loadTableStatus(){
     box.innerHTML = "Failed to load table status";
   });
 }
+
+
+
+function openTableModal(){
+  const modal = document.getElementById("tableModal");
+  const areaSelect = document.getElementById("newTableArea");
+  const tableInput = document.getElementById("newTableNo");
+
+  tableInput.value = "";
+  areaSelect.innerHTML = `<option value="">Select Area</option>`;
+
+  apiGet("getAreas")
+    .then(rows => {
+      (rows || []).forEach(r => {
+        const opt = document.createElement("option");
+        opt.value = r.Area;
+        opt.textContent = r.Area;
+        areaSelect.appendChild(opt);
+      });
+
+      modal.classList.add("active");
+    })
+    .catch(err => {
+      console.error(err);
+      alert("❌ Failed to load areas");
+    });
+}
+
+function closeTableModal(){
+  document.getElementById("tableModal").classList.remove("active");
+}
+
+function saveTable(){
+  const tableNo = document.getElementById("newTableNo").value.trim();
+  const area = document.getElementById("newTableArea").value.trim();
+
+  if(!tableNo){
+    alert("⚠️ Enter table number");
+    return;
+  }
+
+  if(!area){
+    alert("⚠️ Select area");
+    return;
+  }
+
+  apiGet("getTables")
+    .then(rows => {
+      const duplicate = (rows || []).some(
+        r => String(r.NO).trim().toLowerCase() === tableNo.toLowerCase()
+      );
+
+      if(duplicate){
+        alert("❌ Table number already exists");
+        return;
+      }
+
+      return apiPost("addTable", {
+        NO: tableNo,
+        Area: area
+      });
+    })
+    .then(res => {
+      if(!res) return;
+
+      alert("✅ Table added successfully");
+      closeTableModal();
+      loadTableData();
+    })
+    .catch(err => {
+      console.error(err);
+      alert("❌ Failed to save table");
+    });
+}
+  
   
 function loadTableData(){
   const box = document.getElementById("tableList");
