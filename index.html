@@ -1385,6 +1385,21 @@ renderCategories(menuItems);   // 🔥 ADD THIS LINE
 
 }
 
+
+  function downloadTableQR(qrUrl, tableNo){
+  if(!qrUrl) return;
+
+  const link = document.createElement("a");
+  link.href = qrUrl;
+
+  // 🔥 jpeg filename
+  link.download = `${tableNo}-QR.jpeg`;
+
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+  
 function loadTableData(){
   const box = document.getElementById("tableList");
   if(!box) return;
