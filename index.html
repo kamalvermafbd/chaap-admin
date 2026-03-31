@@ -1322,6 +1322,7 @@ if (pageId === 'pageMenu') {
 }
 
 if (pageId === 'pageTable') {
+   loadRestaurantInfo();
    loadTableData();
 }
   
@@ -1397,11 +1398,38 @@ function loadTableData(){
         return;
       }
 
-      box.innerHTML = rows.map((r, i) => `
-        <div style="padding:8px;border:1px solid #ddd;margin-bottom:6px;border-radius:6px;">
-          ${i + 1}. ${r.NO}
-        </div>
-      `).join("");
+      box.innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>NO</th>
+              <th>QR Code</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.map(r => `
+              <tr>
+                <td>${r.NO}</td>
+                <td>
+                  ${
+                    r.QR
+                      ? `<img src="${r.QR}" width="80" height="80" style="border-radius:6px;">`
+                      : `—`
+                  }
+                </td>
+                <td>
+                  ${
+                    r.QR
+                      ? `<button disabled>✅ Generated</button>`
+                      : `<button onclick="generateTableQR('${r.NO}')">Generate QR</button>`
+                  }
+                </td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      `;
     })
     .catch(err => {
       console.error(err);
@@ -1409,6 +1437,38 @@ function loadTableData(){
     });
 }
 
+
+function generateTableQR(tableNo){
+  if(!tableNo) return;
+
+  const prefix =
+    String(restaurantInfo?.Prefix || "")
+      .trim();
+
+  if(!prefix){
+    alert("⚠️ Prefix not found in Restaurant Info");
+    return;
+  }
+
+  const customerUrl = `${prefix}?table=${encodeURIComponent(tableNo)}`;
+
+  const qrUrl =
+    `https://quickchart.io/chart?cht=qr&chs=200x200&chl=${encodeURIComponent(customerUrl)}`;
+
+  apiPost("updateTableQR", {
+    NO: tableNo,
+    QR: qrUrl
+  })
+  .then(() => {
+    alert("✅ QR generated successfully");
+    loadTableData();
+  })
+  .catch(err => {
+    console.error(err);
+    alert("❌ Failed to generate QR");
+  });
+}
+  
 function uploadNewItemImage(inputEl){
 
   const file = inputEl.files && inputEl.files[0];
