@@ -1388,7 +1388,14 @@ renderCategories(menuItems);   // 🔥 ADD THIS LINE
 
 async function downloadTableQR(qrUrl, tableNo, btn){
   if(!qrUrl) return;
-
+  
+ if(btn){
+    btn.disabled = true;
+    btn.innerText = "Downloading...";
+    btn.style.background = "#6c757d";
+    btn.style.cursor = "not-allowed";
+  }
+  
   try {
     const img = new Image();
     img.crossOrigin = "anonymous";
@@ -1429,6 +1436,14 @@ async function downloadTableQR(qrUrl, tableNo, btn){
       link.click();
       document.body.removeChild(link);
 
+ // ✅ success state
+      if(btn){
+        btn.innerText = "⬇ Download QR";
+        btn.disabled = false;
+        btn.style.background = "#007bff";
+        btn.style.cursor = "pointer";
+      }
+      
       // success msg permanent
       const msg = document.getElementById(`download-msg-${tableNo}`);
       if(msg){
@@ -1441,11 +1456,25 @@ async function downloadTableQR(qrUrl, tableNo, btn){
       alert("❌ Failed to load QR image");
     };
 
+       if(btn){
+        btn.innerText = "⬇ Download QR";
+        btn.disabled = false;
+        btn.style.background = "#007bff";
+      }
+    };
+
     img.src = qrUrl;
 
   } catch(err){
     console.error("QR download failed:", err);
     alert("❌ QR download failed");
+
+  if(btn){
+      btn.innerText = "⬇ Download QR";
+      btn.disabled = false;
+      btn.style.background = "#007bff";
+    }
+  
   }
 }
   
@@ -1504,7 +1533,7 @@ function loadTableData(){
           opacity:0.9;
         ">✅ Generated</button>
 
-        <button onclick="downloadTableQR('${r.QR}', '${r.NO}')">
+        <button onclick="downloadTableQR('${r.QR}', '${r.NO}', this)">
           ⬇ Download QR
         </button>
 
