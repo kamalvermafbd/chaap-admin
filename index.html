@@ -1478,11 +1478,10 @@ function enableEdit(id){
   const unit = document.getElementById("unit").value;
 
    // 🔴 Multi only → unit required before edit
-  if(isMulti && !unit){
-    alert("⚠️ Please select Unit first");
-    return;
-  }
-
+if(window.pendingNewItem && !unit && id !== "unit"){
+  alert("⚠️ Please select Unit first");
+  return;
+}
   const el = document.getElementById(id);
 
   if(el){
