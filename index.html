@@ -1672,11 +1672,29 @@ function saveArea(btn){
     return;
   }
 
-  // 🔥 API next step me connect hoga
-  alert("✅ Frontend ready, API next step");
-  resetBtn();
-}
+  // ✅ duplicate check before save
+  apiGet("getAreas")
+    .then(rows => {
+      const duplicate = (rows || []).some(
+        r => String(r.Area).trim().toLowerCase() === location.toLowerCase()
+      );
 
+      if(duplicate){
+        alert("❌ Area already exists");
+        resetBtn();
+        return;
+      }
+
+      // 🔥 backend API next step
+      alert("✅ Duplicate check passed, API next");
+      resetBtn();
+    })
+    .catch(err => {
+      console.error(err);
+      alert("❌ Failed to validate area");
+      resetBtn();
+    });
+}
   
 function loadTableStatus(){
   const box = document.getElementById("tableStatusList");
