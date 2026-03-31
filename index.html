@@ -1424,7 +1424,7 @@ function loadTableData(){
                   <td>
                     ${
                       hasQR
-                        ? `<button disabled style="background:#28a745;cursor:not-allowed;">✅ Generated</button>`
+                        ? `<button disabled style="background:#6c757d;color:#fff;cursor:not-allowed;opacity:0.9;">✅ Generated</button>`
                         : `<button id="qr-btn-${r.NO}" onclick="generateTableQR('${r.NO}', this)">Generate QR</button>`
                     }
                   </td>
