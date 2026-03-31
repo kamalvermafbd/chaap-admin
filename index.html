@@ -1491,6 +1491,79 @@ async function downloadTableQR(qrUrl, tableNo, btn){
     }
   }
 }
+
+
+function loadTableStatus(){
+  const box = document.getElementById("tableStatusList");
+  if(!box) return;
+
+  box.innerHTML = "Loading tables...";
+
+  Promise.all([
+    apiGet("getTables"),
+    apiGet("getRunningTableOrders")
+  ])
+  .then(([tables, running]) => {
+    if(!tables || !tables.length){
+      box.innerHTML = "No tables found";
+      return;
+    }
+
+    const runningMap = {};
+    (running || []).forEach(r => {
+      runningMap[r.Table] = r;
+    });
+
+    box.innerHTML = `
+      <div style="
+        display:grid;
+        grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+        gap:12px;
+      ">
+        ${tables.map(t => {
+          const active = runningMap[t.NO];
+          const isOccupied = !!active;
+
+          return `
+            <div style="
+              border-radius:12px;
+              padding:14px;
+              background:${isOccupied ? "#ffe5e5" : "#e9fbe9"};
+              border:2px solid ${isOccupied ? "red" : "green"};
+              min-height:120px;
+            ">
+              <div style="font-size:20px;font-weight:bold;">
+                ${t.NO}
+              </div>
+
+              <div style="margin-top:8px;font-weight:bold;
+                          color:${isOccupied ? "red" : "green"};">
+                ${isOccupied ? "🔴 Running" : "🟢 Free"}
+              </div>
+
+              ${
+                isOccupied
+                  ? `
+                    <div style="margin-top:8px;font-size:13px;">
+                      ${active.Items || ""}
+                    </div>
+                    <div style="margin-top:6px;font-weight:bold;">
+                      ₹${active.Total || 0}
+                    </div>
+                  `
+                  : ""
+              }
+            </div>
+          `;
+        }).join("")}
+      </div>
+    `;
+  })
+  .catch(err => {
+    console.error(err);
+    box.innerHTML = "Failed to load table status";
+  });
+}
   
 function loadTableData(){
   const box = document.getElementById("tableList");
