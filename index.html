@@ -1004,7 +1004,18 @@ td:nth-child(8) { width: 220px; } /* Action */
   border-collapse: collapse;
   margin: 0 auto;
 }     
-    
+
+
+    .table-scroll {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-scroll table {
+  width: fit-content;
+  min-width: 650px;
+}
   </style>
 </head>
 <body>
@@ -1743,6 +1754,7 @@ function loadTableData(){
       }
 
       box.innerHTML = `
+    <div class="table-scroll">
         <table>
           <thead>
             <tr>
@@ -1805,6 +1817,7 @@ function loadTableData(){
             }).join("")}
           </tbody>
         </table>
+        </div>
       `;
     })
     .catch(err => {
