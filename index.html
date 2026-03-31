@@ -1386,31 +1386,62 @@ renderCategories(menuItems);   // 🔥 ADD THIS LINE
 }
 
 
-  async function downloadTableQR(qrUrl, tableNo, btn){
+async function downloadTableQR(qrUrl, tableNo, btn){
   if(!qrUrl) return;
 
   try {
-    const response = await fetch(qrUrl);
-    const blob = await response.blob();
+    const img = new Image();
+    img.crossOrigin = "anonymous";
 
-    const blobUrl = window.URL.createObjectURL(blob);
+    img.onload = function(){
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
 
-    const link = document.createElement("a");
-    link.href = blobUrl;
-    link.download = `${tableNo}-QR.jpeg`;
+      // 📐 final jpeg size
+      canvas.width = 300;
+      canvas.height = 360;
 
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+      // white background
+      ctx.fillStyle = "#fff";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    window.URL.revokeObjectURL(blobUrl);
+      // QR image draw
+      ctx.drawImage(img, 50, 20, 200, 200);
 
-    // 🔴 success message
-   const msg = document.getElementById(`download-msg-${tableNo}`);
-if(msg){
-  msg.style.display = "block";
-  msg.innerText = "✅ QR downloaded";
-}
+      // 🔥 table number text
+      ctx.fillStyle = "#000";
+      ctx.font = "bold 28px Arial";
+      ctx.textAlign = "center";
+      ctx.fillText(`Table ${tableNo}`, 150, 270);
+
+      // optional small print line
+      ctx.font = "16px Arial";
+      ctx.fillStyle = "#555";
+      ctx.fillText("Scan to Order", 150, 310);
+
+      // 📥 jpeg download
+      const finalUrl = canvas.toDataURL("image/jpeg", 1.0);
+
+      const link = document.createElement("a");
+      link.href = finalUrl;
+      link.download = `${tableNo}-QR.jpeg`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // success msg permanent
+      const msg = document.getElementById(`download-msg-${tableNo}`);
+      if(msg){
+        msg.style.display = "block";
+        msg.innerText = "✅ QR downloaded";
+      }
+    };
+
+    img.onerror = function(){
+      alert("❌ Failed to load QR image");
+    };
+
+    img.src = qrUrl;
 
   } catch(err){
     console.error("QR download failed:", err);
