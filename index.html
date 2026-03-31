@@ -974,6 +974,14 @@ td:nth-child(8) { width: 220px; } /* Action */
       <button class="nav-btn active" data-page="pageLogin">Login</button>
       <button class="nav-btn" data-page="pageOrders">Pending Orders</button>
       <button class="nav-btn" data-page="pagePOS">POS</button>
+
+<button class="nav-btn"
+        data-page="pageTableStatus"
+        id="tableStatusTab"
+        style="display:none;">
+  Table Status
+</button>
+      
       <button class="nav-btn" data-page="pageSummary">Summary</button>
       <!-- Menu tab (only visible to Admin) -->
 <button class="nav-btn" data-page="pageMenu" id="menuTab" style="display:none;">Menu</button>
@@ -1084,6 +1092,14 @@ td:nth-child(8) { width: 220px; } /* Action */
   </div>
 </div>
 
+<div id="pageTableStatus" class="page" style="display:none;">
+  <div class="container pos-full">
+    <h2>Table Status</h2>
+    <p>Live dine-in table running orders.</p>
+    <div id="tableStatusList">Loading...</div>
+  </div>
+</div>
+      
 <div id="pageTable" class="page" style="display:none;">
   <div class="container">
     <h2>Table Management</h2>
@@ -1320,11 +1336,17 @@ if (pageId === 'pageMenu') {
   loadMenuData();   // ✅ correct function
   loadUnitMaster();   // 🔥 ADD THIS
 }
-
+if (pageId === 'pageTableStatus') {
+  loadRestaurantInfo();
+  loadTableStatus();
+}
+  
 if (pageId === 'pageTable') {
    loadRestaurantInfo();
    loadTableData();
 }
+
+
   
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         const btn = document.querySelector('.nav-btn[data-page="'+pageId+'"]');
