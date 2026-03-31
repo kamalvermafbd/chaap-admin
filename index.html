@@ -1386,7 +1386,7 @@ renderCategories(menuItems);   // 🔥 ADD THIS LINE
 }
 
 
-  async function downloadTableQR(qrUrl, tableNo){
+  async function downloadTableQR(qrUrl, tableNo, btn){
   if(!qrUrl) return;
 
   try {
@@ -1403,14 +1403,24 @@ renderCategories(menuItems);   // 🔥 ADD THIS LINE
     link.click();
     document.body.removeChild(link);
 
-    // 🔥 cleanup
     window.URL.revokeObjectURL(blobUrl);
+
+    // 🔴 success message
+    const msg = document.getElementById(`download-msg-${tableNo}`);
+    if(msg){
+      msg.style.display = "block";
+
+      setTimeout(() => {
+        msg.style.display = "none";
+      }, 2000);
+    }
 
   } catch(err){
     console.error("QR download failed:", err);
     alert("❌ QR download failed");
   }
 }
+  
 function loadTableData(){
   const box = document.getElementById("tableList");
   if(!box) return;
@@ -1462,6 +1472,11 @@ function loadTableData(){
         <button onclick="downloadTableQR('${r.QR}', '${r.NO}')">
           ⬇ Download QR
         </button>
+
+        <div id="download-msg-${r.NO}" 
+     style="display:none;color:red;font-size:12px;font-weight:bold;">
+  QR downloaded
+</div>
       </div>
     `
     : `<button id="qr-btn-${r.NO}" onclick="generateTableQR('${r.NO}', this)">Generate QR</button>`
