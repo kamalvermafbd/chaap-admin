@@ -1408,25 +1408,29 @@ function loadTableData(){
             </tr>
           </thead>
           <tbody>
-            ${rows.map(r => `
-              <tr>
-                <td>${r.NO}</td>
-                <td>
-                  ${
-                    r.QR
-                      ? `<img src="${r.QR}" width="80" height="80" style="border-radius:6px;">`
-                      : `—`
-                  }
-                </td>
-                <td>
-                  ${
-                    r.QR
-                      ? `<button disabled>✅ Generated</button>`
-                      : `<button onclick="generateTableQR('${r.NO}')">Generate QR</button>`
-                  }
-                </td>
-              </tr>
-            `).join("")}
+            ${rows.map(r => {
+              const hasQR = String(r.QR || "").trim() !== "";
+
+              return `
+                <tr>
+                  <td>${r.NO}</td>
+                  <td>
+                    ${
+                      hasQR
+                        ? `<img src="${r.QR}" width="80" height="80" style="border-radius:6px;">`
+                        : `—`
+                    }
+                  </td>
+                  <td>
+                    ${
+                      hasQR
+                        ? `<button disabled style="background:#28a745;cursor:not-allowed;">✅ Generated</button>`
+                        : `<button id="qr-btn-${r.NO}" onclick="generateTableQR('${r.NO}', this)">Generate QR</button>`
+                    }
+                  </td>
+                </tr>
+              `;
+            }).join("")}
           </tbody>
         </table>
       `;
@@ -1436,8 +1440,7 @@ function loadTableData(){
       box.innerHTML = "Failed to load tables";
     });
 }
-
-
+  
 function generateTableQR(tableNo){
   if(!tableNo) return;
 
