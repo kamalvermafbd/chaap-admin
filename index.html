@@ -2066,12 +2066,25 @@ function closeManageModal(){
     document.getElementById("price")?.value
   ) || 0;
 
-  // 🔥 block close only after new create
-  if(window.forcePriceSetup && price <= 0){
-    alert("⚠️ Please update price before closing");
+if(window.forcePriceSetup && price <= 0){
+  const shouldQuit = confirm(
+    "Are you sure you want to quit? Your unsaved changes will be lost."
+  );
+
+  if(!shouldQuit){
     document.getElementById("mrp")?.focus();
     return;
   }
+
+  // 🔥 cleanup pending draft if any
+  if(window.pendingNewItem){
+    window.pendingNewItem = null;
+
+    if(window.menuData?.length){
+      window.menuData.pop();
+    }
+  }
+}
 
   window.forcePriceSetup = false;
   modal.classList.remove("active");
