@@ -1195,9 +1195,10 @@ td:nth-child(8) { width: 220px; } /* Action */
     <h2>Table Management</h2>
     <p>Create and manage dine-in tables here.</p>
 
-    <div style="margin-bottom:10px;">
-      <button id="addTableBtn" onclick="openTableModal(this)">+ Add Table</button>
-    </div>
+ <div style="margin-bottom:10px;display:flex;gap:10px;flex-wrap:wrap;">
+  <button id="addTableBtn" onclick="openTableModal(this)">+ Add Table</button>
+  <button id="addAreaBtn" onclick="openAreaModal(this)">+ Add Area</button>
+</div>
 
     <div id="tableList">Loading...</div>
   </div>
@@ -1222,6 +1223,22 @@ td:nth-child(8) { width: 220px; } /* Action */
   </div>
 </div>
 
+<div id="areaModal" class="modal-overlay">
+  <div class="modal-box table-modal-box">
+    <h3>Add Area</h3>
+
+    <div style="display:grid;gap:10px;">
+      <input id="newAreaLocation" type="text" placeholder="Enter Location">
+      <input id="newAreaSequence" type="number" placeholder="Enter Sequence">
+    </div>
+
+    <div class="table-modal-actions">
+      <button onclick="saveArea(this)">Save</button>
+      <button onclick="closeAreaModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+      
       
 <div id="pageCouponStatus" class="page" style="display:none;">
   <div class="container">
@@ -1600,6 +1617,67 @@ async function downloadTableQR(qrUrl, tableNo, btn){
     }
   }
 }
+
+
+function openAreaModal(btn){
+  if(btn){
+    btn.disabled = true;
+    btn.dataset.original = btn.innerHTML;
+    btn.innerHTML = "Opening...";
+  }
+
+  document.getElementById("newAreaLocation").value = "";
+  document.getElementById("newAreaSequence").value = "";
+
+  document.getElementById("areaModal").classList.add("active");
+
+  if(btn){
+    btn.innerHTML = btn.dataset.original || "+ Add Area";
+    btn.disabled = false;
+  }
+}
+
+function closeAreaModal(){
+  document.getElementById("areaModal").classList.remove("active");
+}
+
+function saveArea(btn){
+  if(btn){
+    btn.disabled = true;
+    btn.dataset.original = btn.innerHTML;
+    btn.innerHTML = "Saving...";
+    btn.style.opacity = "0.7";
+  }
+
+  const resetBtn = () => {
+    if(btn){
+      btn.innerHTML = btn.dataset.original || "Save";
+      btn.disabled = false;
+      btn.style.opacity = "1";
+    }
+  };
+
+  const location = document.getElementById("newAreaLocation").value.trim();
+  const sequence = document.getElementById("newAreaSequence").value.trim();
+
+  if(!location){
+    alert("⚠️ Enter location");
+    resetBtn();
+    return;
+  }
+
+  if(!sequence){
+    alert("⚠️ Enter sequence");
+    resetBtn();
+    return;
+  }
+
+  // 🔥 API next step me connect hoga
+  alert("✅ Frontend ready, API next step");
+  resetBtn();
+}
+
+  
 function loadTableStatus(){
   const box = document.getElementById("tableStatusList");
   if(!box) return;
