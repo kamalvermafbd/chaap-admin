@@ -2337,7 +2337,13 @@ payload.weightValue =
 payload.openingValue =
   parseFloat(document.getElementById("otherOpening").value) || "";
 
-
+// 🔥 UNIT VALIDATION FIRST
+if (!String(payload.Unit || "").trim()) {
+  focusInvalidField("unit");
+  alert("❌ Unit is required");
+  resetSaveBtn();
+  return;
+}
   
 // 🔥 BASIC PRICE VALIDATION
 if (Number(payload.MRP) <= 0) {
@@ -2539,6 +2545,15 @@ payload.Opening_cat = payload.openingValue;
   }, 120);
 };
 
+    // 🔥 UNIT VALIDATION FIRST
+if (!String(payload.Unit || "").trim()) {
+  focusInvalidField("unit");
+  alert("❌ Unit is required");
+  resetSaveBtn();
+  return false;
+}
+
+    
   if (Number(payload.MRP) <= 0) {
     focusInvalidField("mrp");
     alert("❌ MRP must be greater than 0");
