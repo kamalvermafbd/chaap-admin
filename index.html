@@ -1384,7 +1384,25 @@ function loadTableData(){
   const box = document.getElementById("tableList");
   if(!box) return;
 
-  box.innerHTML = "No tables found";
+  box.innerHTML = "Loading...";
+
+  apiGet("getTables")
+    .then(rows => {
+      if(!rows || !rows.length){
+        box.innerHTML = "No tables found";
+        return;
+      }
+
+      box.innerHTML = rows.map((r, i) => `
+        <div style="padding:8px;border:1px solid #ddd;margin-bottom:6px;border-radius:6px;">
+          ${i + 1}. ${r.NO}
+        </div>
+      `).join("");
+    })
+    .catch(err => {
+      console.error(err);
+      box.innerHTML = "Failed to load tables";
+    });
 }
 
 function uploadNewItemImage(inputEl){
