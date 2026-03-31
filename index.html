@@ -1492,7 +1492,6 @@ async function downloadTableQR(qrUrl, tableNo, btn){
   }
 }
 
-
 function loadTableStatus(){
   const box = document.getElementById("tableStatusList");
   if(!box) return;
@@ -1504,12 +1503,8 @@ function loadTableStatus(){
     apiGet("getRunningTableOrders")
   ])
   .then(([tables, running]) => {
-    if(!tables || !tables.length){
-      box.innerHTML = "No tables found";
-      return;
-    }
-
     const runningMap = {};
+
     (running || []).forEach(r => {
       runningMap[r.Table] = r;
     });
@@ -1522,27 +1517,31 @@ function loadTableStatus(){
       ">
         ${tables.map(t => {
           const active = runningMap[t.NO];
-          const isOccupied = !!active;
+          const isRunning = !!active;
 
           return `
             <div style="
               border-radius:12px;
               padding:14px;
-              background:${isOccupied ? "#ffe5e5" : "#e9fbe9"};
-              border:2px solid ${isOccupied ? "red" : "green"};
               min-height:120px;
+              background:${isRunning ? "#ffe5e5" : "#e9fbe9"};
+              border:2px solid ${isRunning ? "red" : "green"};
+              box-shadow:0 2px 6px rgba(0,0,0,0.08);
             ">
-              <div style="font-size:20px;font-weight:bold;">
+              <div style="font-size:22px;font-weight:bold;">
                 ${t.NO}
               </div>
 
-              <div style="margin-top:8px;font-weight:bold;
-                          color:${isOccupied ? "red" : "green"};">
-                ${isOccupied ? "🔴 Running" : "🟢 Free"}
+              <div style="
+                margin-top:10px;
+                font-weight:bold;
+                color:${isRunning ? "red" : "green"};
+              ">
+                ${isRunning ? "🔴 Running" : "🟢 Free"}
               </div>
 
               ${
-                isOccupied
+                isRunning
                   ? `
                     <div style="margin-top:8px;font-size:13px;">
                       ${active.Items || ""}
