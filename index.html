@@ -1441,15 +1441,28 @@ function loadTableData(){
     });
 }
   
-function generateTableQR(tableNo){
+function generateTableQR(tableNo, btn){
   if(!tableNo) return;
 
-  const prefix =
-    String(restaurantInfo?.Prefix || "")
-      .trim();
+  // 🔒 instant disable to prevent double click
+  if(btn){
+    btn.disabled = true;
+    btn.innerText = "Generating...";
+    btn.style.background = "#999";
+    btn.style.cursor = "not-allowed";
+  }
+
+  const prefix = String(restaurantInfo?.Prefix || "").trim();
 
   if(!prefix){
     alert("⚠️ Prefix not found in Restaurant Info");
+
+    if(btn){
+      btn.disabled = false;
+      btn.innerText = "Generate QR";
+      btn.style.background = "#007bff";
+      btn.style.cursor = "pointer";
+    }
     return;
   }
 
@@ -1464,14 +1477,21 @@ function generateTableQR(tableNo){
   })
   .then(() => {
     alert("✅ QR generated successfully");
-    loadTableData();
+    loadTableData(); // 🔥 refresh => button permanently disabled
   })
   .catch(err => {
     console.error(err);
     alert("❌ Failed to generate QR");
+
+    // 🔓 re-enable only on failure
+    if(btn){
+      btn.disabled = false;
+      btn.innerText = "Generate QR";
+      btn.style.background = "#007bff";
+      btn.style.cursor = "pointer";
+    }
   });
 }
-  
 function uploadNewItemImage(inputEl){
 
   const file = inputEl.files && inputEl.files[0];
