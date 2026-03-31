@@ -1320,6 +1320,10 @@ if (pageId === 'pageMenu') {
   loadMenuData();   // ✅ correct function
   loadUnitMaster();   // 🔥 ADD THIS
 }
+
+if (pageId === 'pageTable') {
+   loadTableData();
+}
   
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         const btn = document.querySelector('.nav-btn[data-page="'+pageId+'"]');
