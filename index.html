@@ -7257,6 +7257,17 @@ const walletUsed = Math.max(
 console.log("PARSED walletUsed:", walletUsed);
       
   const billAmt = totalAmount;
+
+      // 🔴 FIX: delivery taxable aware display logic
+const deliveryTaxable = String(order['deliveryTaxable'] || "").trim().toLowerCase();
+const deliveryIncludedInTax = deliveryTaxable === "yes";
+
+// 🔴 Total line display logic
+const totalLine = deliveryIncludedInTax
+  ? totalAmount
+  : totalAmount - chargeValue;
+
+      
 const couponUsed = rewardCoupon > 0 ? rewardCoupon : paidCoupon;
       
 let couponSection = "";
@@ -7296,15 +7307,21 @@ ${line("Items Subtotal", baseTotal.toFixed(2))}
 ${order.serviceCharge > 0 ? line("Service Charge", order.serviceCharge.toFixed(2)) : ""}
 
 ${couponDisc > 0 ? line(`Offer Applied (${order['couponId']||''})`, (-couponDisc).toFixed(2)) : ""}
+${deliveryIncludedInTax && chargeValue > 0
+  ? line(chargeLabel, chargeValue.toFixed(2)) + "\n"
+  : ""}
 ${line("Gross Value", taxable.toFixed(2))}
 ${line("Taxable Amount", taxable.toFixed(2))}
 
 ${line("CGST", cgst.toFixed(2))}
 ${line("SGST", sgst.toFixed(2))}
 
-${line("Total", totalAmount.toFixed(2))}
-${chargeValue > 0 ? line(chargeLabel, chargeValue.toFixed(2)) : ""}
+${line("Total", totalLine.toFixed(2))}
+${chargeValue > 0 && !deliveryIncludedInTax
+  ? line(chargeLabel, chargeValue.toFixed(2))
+  : ""}
 ${line("Bill Amt", billAmt.toFixed(2))}
+
 ${couponUsed > 0 ? 
   line("Less: Coupon", (-couponUsed).toFixed(2)) + 
   `\n(${order['couponId'] || ''})` 
