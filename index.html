@@ -1574,10 +1574,11 @@ function loadTableStatus(){
   box.innerHTML = "Loading tables...";
 
   Promise.all([
-    apiGet("getTables"),
-    apiGet("getRunningTableOrders")
-  ])
-  .then(([tables, running]) => {
+  apiGet("getTables"),
+  apiGet("getRunningTableOrders"),
+  apiGet("getAreas")
+])
+.then(([tables, running, areas]) => {
     const runningMap = {};
 
     (running || []).forEach(r => {
@@ -1592,7 +1593,11 @@ function loadTableStatus(){
       grouped[area].push(t);
     });
 
-    box.innerHTML = Object.keys(grouped).map(area => `
+  const orderedAreas = (areas || []).map(a => a.Area);
+
+box.innerHTML = orderedAreas
+  .filter(area => grouped[area])
+  .map(area => `
       <div style="margin-bottom:20px;">
         <div style="
           font-size:18px;
