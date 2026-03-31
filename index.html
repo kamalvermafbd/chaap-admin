@@ -1235,7 +1235,7 @@ td:nth-child(8) { width: 220px; } /* Action */
   </div>
 
 <script>
-  const API_BASE_URL = "https://script.google.com/macros/s/AKfycbwVBUxaJAlIzQK793ioDSfNeLaRA9HfesGNbvmD3w6AFCtShUxTWsAxCrhiDAwVOuck/exec";
+  const API_BASE_URL = "https://script.google.com/macros/s/AKfycbzE34R5WF-NKOb80SDjz6u9e6J9fpJ5UA-lPB61zd5XKxNvJBREQn4v9KY3Pb-O8tqS/exec";
 
 // =========================
 // GET API
@@ -1523,7 +1523,7 @@ function loadTableStatus(){
             <div style="
               border-radius:12px;
               padding:14px;
-              min-height:120px;
+             
               background:${isRunning ? "#ffe5e5" : "#e9fbe9"};
               border:2px solid ${isRunning ? "red" : "green"};
               box-shadow:0 2px 6px rgba(0,0,0,0.08);
@@ -1541,17 +1541,42 @@ function loadTableStatus(){
               </div>
 
               ${
-                isRunning
-                  ? `
-                    <div style="margin-top:8px;font-size:13px;">
-                      ${active.Items || ""}
-                    </div>
-                    <div style="margin-top:6px;font-weight:bold;">
-                      ₹${active.Total || 0}
-                    </div>
-                  `
-                  : ""
-              }
+  isRunning
+    ? `
+      <table style="
+        width:100%;
+        margin-top:8px;
+        font-size:12px;
+        border-collapse:collapse;
+      ">
+        <thead>
+          <tr>
+            <th style="text-align:left;">Order No</th>
+            <th>Items</th>
+            <th>Net</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${(active.Orders || []).map(o => `
+            <tr>
+              <td>${o.OrderNo}</td>
+              <td style="text-align:center;">${o.ItemCount}</td>
+              <td style="text-align:right;">${o.NetPayable}</td>
+            </tr>
+          `).join("")}
+          <tr style="font-weight:bold;border-top:1px solid #ccc;">
+            <td></td>
+            <td>Total</td>
+            <td style="text-align:right;">
+  ${Number(active.Total || 0).toLocaleString()}
+</td>
+          </tr>
+        </tbody>
+      </table>
+    `
+    : ""
+}
+
             </div>
           `;
         }).join("")}
