@@ -7289,6 +7289,7 @@ if(btn){
   }
 
   if(!category){
+    
     alert("⚠️ Category is required");
     if(btn){
   btn.disabled = false;
@@ -7297,6 +7298,23 @@ if(btn){
     return;
   }
 
+  // 🔥 EXACT DUPLICATE NAME CHECK
+const duplicate = (window.menuData || []).find(item =>
+  String(item.Name || "").trim().toLowerCase() === name.toLowerCase()
+);
+
+if(duplicate){
+  alert("❌ Same item name already exists");
+
+  if(btn){
+    btn.disabled = false;
+    btn.textContent = "Create Item";
+  }
+
+  document.getElementById("newItemName")?.focus();
+  return;
+}
+  
   const payload = {
     Name: name,
     Category: category,
