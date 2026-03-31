@@ -1423,10 +1423,23 @@ function loadTableData(){
                   </td>
                   <td>
                     ${
-                      hasQR
-                        ? `<button disabled style="background:#6c757d;color:#fff;cursor:not-allowed;opacity:0.9;">✅ Generated</button>`
-                        : `<button id="qr-btn-${r.NO}" onclick="generateTableQR('${r.NO}', this)">Generate QR</button>`
-                    }
+  hasQR
+    ? `
+      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-start;">
+        <button disabled style="
+          background:#6c757d;
+          color:#fff;
+          cursor:not-allowed;
+          opacity:0.9;
+        ">✅ Generated</button>
+
+        <button onclick="downloadTableQR('${r.QR}', '${r.NO}')">
+          ⬇ Download QR
+        </button>
+      </div>
+    `
+    : `<button id="qr-btn-${r.NO}" onclick="generateTableQR('${r.NO}', this)">Generate QR</button>`
+}
                   </td>
                 </tr>
               `;
