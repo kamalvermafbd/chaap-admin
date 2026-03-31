@@ -1016,6 +1016,32 @@ td:nth-child(8) { width: 220px; } /* Action */
   width: fit-content;
   min-width: 650px;
 }
+
+.table-modal-box {
+  width: 480px;
+  max-width: 92%;
+  padding: 24px;
+  border-radius: 16px;
+}
+
+.table-modal-box input,
+.table-modal-box select {
+  width: 100%;
+  padding: 10px 12px;
+  margin-top: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+  box-sizing: border-box;
+}
+
+.table-modal-actions {
+  margin-top: 18px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+    
   </style>
 </head>
 <body>
@@ -1163,7 +1189,7 @@ td:nth-child(8) { width: 220px; } /* Action */
     <p>Create and manage dine-in tables here.</p>
 
     <div style="margin-bottom:10px;">
-      <button onclick="openTableModal()">+ Add Table</button>
+      <button id="addTableBtn" onclick="openTableModal(this)">+ Add Table</button>
     </div>
 
     <div id="tableList">Loading...</div>
@@ -1171,7 +1197,7 @@ td:nth-child(8) { width: 220px; } /* Action */
 </div>
 
 <div id="tableModal" class="modal-overlay">
-  <div class="modal-box">
+ <div class="modal-box table-modal-box">
     <h3>Add Table</h3>
 
     <div style="display:grid;gap:10px;">
@@ -1182,7 +1208,7 @@ td:nth-child(8) { width: 220px; } /* Action */
       </select>
     </div>
 
-    <div style="margin-top:15px;display:flex;gap:10px;justify-content:flex-end;">
+ <div class="table-modal-actions">
       <button onclick="saveTable()">Save</button>
       <button onclick="closeTableModal()">Cancel</button>
     </div>
@@ -1706,6 +1732,11 @@ box.innerHTML = orderedAreas
 }
 
 function openTableModal(){
+  if(btn){
+    btn.disabled = true;
+    btn.dataset.original = btn.innerHTML;
+    btn.innerHTML = "Opening...";
+  }
   const modal = document.getElementById("tableModal");
   const areaSelect = document.getElementById("newTableArea");
   const tableInput = document.getElementById("newTableNo");
@@ -1723,6 +1754,10 @@ function openTableModal(){
       });
 
       modal.classList.add("active");
+            if(btn){
+        btn.innerHTML = btn.dataset.original || "+ Add Table";
+        btn.disabled = false;
+      }
     })
     .catch(err => {
       console.error(err);
