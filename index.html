@@ -1607,6 +1607,7 @@ function loadTableData(){
           <thead>
             <tr>
               <th>NO</th>
+              <th>Area</th>
               <th>QR Code</th>
               <th>Action</th>
             </tr>
@@ -1617,8 +1618,10 @@ function loadTableData(){
 
               return `
                 <tr>
-                  <td>${r.NO}</td>
-                  <td>
+  <td>${r.NO}</td>
+  <td>${r.Area || "-"}</td>
+  <td>
+                  
                     ${
                      hasQR
   ? `
