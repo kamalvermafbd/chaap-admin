@@ -7176,6 +7176,10 @@ function printOrderBillPreview(){
             font-family: monospace;
             padding:10px;
             white-space: pre-wrap;
+            margin:0;
+          }
+          pre{
+            margin:0;
           }
         </style>
       </head>
@@ -7184,7 +7188,17 @@ function printOrderBillPreview(){
   `);
 
   win.document.close();
-  win.print();
+
+  // ✅ print after full load
+  win.onload = function(){
+    win.focus();
+    win.print();
+
+    // ✅ auto close print window after print/cancel
+    setTimeout(() => {
+      win.close();
+    }, 500);
+  };
 }
   
   // BILL generation
