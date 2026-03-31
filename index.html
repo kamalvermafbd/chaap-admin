@@ -1406,14 +1406,11 @@ renderCategories(menuItems);   // 🔥 ADD THIS LINE
     window.URL.revokeObjectURL(blobUrl);
 
     // 🔴 success message
-    const msg = document.getElementById(`download-msg-${tableNo}`);
-    if(msg){
-      msg.style.display = "block";
-
-      setTimeout(() => {
-        msg.style.display = "none";
-      }, 2000);
-    }
+   const msg = document.getElementById(`download-msg-${tableNo}`);
+if(msg){
+  msg.style.display = "block";
+  msg.innerText = "✅ QR downloaded";
+}
 
   } catch(err){
     console.error("QR download failed:", err);
