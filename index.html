@@ -1449,9 +1449,16 @@ function loadTableData(){
                   <td>${r.NO}</td>
                   <td>
                     ${
-                      hasQR
-                        ? `<img src="${r.QR}" width="80" height="80" style="border-radius:6px;">`
-                        : `—`
+                     hasQR
+  ? `
+    <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+      <img src="${r.QR}" width="80" height="80" style="border-radius:6px;">
+      <div style="font-size:12px;font-weight:bold;color:#333;">
+        ${r.NO}
+      </div>
+    </div>
+  `
+  : `—`
                     }
                   </td>
                   <td>
