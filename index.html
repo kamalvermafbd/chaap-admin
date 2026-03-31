@@ -1864,7 +1864,11 @@ if(window.pendingNewItem){
   if(createBtn) createBtn.style.display = "none";
 }
   
-
+// 🔥 NEW ITEM → unit first lock flow
+if(window.pendingNewItem){
+  document.getElementById("unit").disabled = false;
+  lockFieldsUntilUnit();
+}
   if(modal){
 
     modal.classList.add("active");
@@ -1930,8 +1934,11 @@ if(btn) btn.disabled = false;
   manageVariants = [];      // 🔥 reset
   renderUnitDropdown();     // 🔥 MAIN FIX
       // ✅ SINGLE ITEM
-fillPriceFields(item);
-fillOtherFields(item);
+// ✅ Existing item only
+  if(!window.pendingNewItem){
+    fillPriceFields(item);
+    fillOtherFields(item);
+  }
 const nav = document.getElementById("variantNav");
 if(nav) nav.style.display = "none";
     }
