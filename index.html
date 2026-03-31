@@ -1073,27 +1073,24 @@ td:nth-child(8) { width: 220px; } /* Action */
     </div>
   </div>
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     
   </div>
-</div>  
+</div>
+
+<div id="pageTable" class="page" style="display:none;">
+  <div class="container">
+    <h2>Table Management</h2>
+    <p>Create and manage dine-in tables here.</p>
+
+    <div style="margin-bottom:10px;">
+      <button onclick="openTableModal()">+ Add Table</button>
+    </div>
+
+    <div id="tableList">Loading...</div>
+  </div>
+</div>
+
+      
 <div id="pageCouponStatus" class="page" style="display:none;">
   <div class="container">
     <h2>Coupon Payment Status</h2>
@@ -1215,7 +1212,7 @@ td:nth-child(8) { width: 220px; } /* Action */
   </div>
 
 <script>
-  const API_BASE_URL = "https://script.google.com/macros/s/AKfycbykekagfLgsA7lC9vYTIhX65abqyRVsNZm6MD3g2nPc1DCyyxlS9pZALVcf0czyMuQ/exec";
+  const API_BASE_URL = "https://script.google.com/macros/s/AKfycbzF02HbG5oQmAW-u53Q-Vv8RlabZc59_2qeT70MRQHOqSO29mXAs9bY5wM07Zf_BT4Z/exec";
 
 // =========================
 // GET API
@@ -1376,7 +1373,12 @@ renderCategories(menuItems);   // 🔥 ADD THIS LINE
 
 }
 
+function loadTableData(){
+  const box = document.getElementById("tableList");
+  if(!box) return;
 
+  box.innerHTML = "No tables found";
+}
 
 function uploadNewItemImage(inputEl){
 
@@ -4409,9 +4411,11 @@ if (savedLogin === "true") {
   document.getElementById('logoutBtn').style.display = 'block';
 // 🔥 RESTORE ROLE BASED TABS ON REFRESH
 const menuTab = document.getElementById('menuTab');
+const tableTab = document.getElementById('tableTab');
 const couponTab = document.getElementById('couponStatusTab');
 
 if (menuTab) menuTab.style.display = (savedRole === 'admin') ? 'block' : 'none';
+if (tableTab) tableTab.style.display = (savedRole === 'admin') ? 'block' : 'none';
 if (couponTab) couponTab.style.display = (savedRole === 'admin') ? 'block' : 'none';
   // 🔥 ALWAYS GO TO PENDING ORDERS
   showPage("pageOrders");
