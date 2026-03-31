@@ -1216,7 +1216,7 @@ td:nth-child(8) { width: 220px; } /* Action */
     </div>
 
  <div class="table-modal-actions">
-      <button onclick="saveTable()">Save</button>
+     <button onclick="saveTable(this)">Save</button>
       <button onclick="closeTableModal()">Cancel</button>
     </div>
   </div>
@@ -1780,17 +1780,35 @@ function closeTableModal(){
   document.getElementById("tableModal").classList.remove("active");
 }
 
-function saveTable(){
+function saveTable(btn){
+  if(btn){
+    btn.disabled = true;
+    btn.dataset.original = btn.innerHTML;
+    btn.innerHTML = "Saving...";
+    btn.style.opacity = "0.7";
+  }
+
+  // 🔴 NEW: reusable reset helper
+  const resetSaveBtn = () => {
+    if(btn){
+      btn.innerHTML = btn.dataset.original || "Save";
+      btn.disabled = false;
+      btn.style.opacity = "1";
+    }
+  };
+  
   const tableNo = document.getElementById("newTableNo").value.trim();
   const area = document.getElementById("newTableArea").value.trim();
 
   if(!tableNo){
     alert("⚠️ Enter table number");
+    resetSaveBtn(); // 🔴 NEW
     return;
   }
 
   if(!area){
     alert("⚠️ Select area");
+    resetSaveBtn(); // 🔴 NEW
     return;
   }
 
@@ -1802,6 +1820,7 @@ function saveTable(){
 
       if(duplicate){
         alert("❌ Table number already exists");
+        resetSaveBtn(); // 🔴 NEW
         return;
       }
 
@@ -1814,12 +1833,14 @@ function saveTable(){
       if(!res) return;
 
       alert("✅ Table added successfully");
+      resetSaveBtn(); // 🔴 NEW
       closeTableModal();
       loadTableData();
     })
     .catch(err => {
       console.error(err);
       alert("❌ Failed to save table");
+      resetSaveBtn(); // 🔴 NEW
     });
 }
   
