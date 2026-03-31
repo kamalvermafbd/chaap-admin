@@ -1567,7 +1567,6 @@ async function downloadTableQR(qrUrl, tableNo, btn){
     }
   }
 }
-
 function loadTableStatus(){
   const box = document.getElementById("tableStatusList");
   if(!box) return;
@@ -1585,87 +1584,121 @@ function loadTableStatus(){
       runningMap[r.Table] = r;
     });
 
-    box.innerHTML = `
-      <div style="
-        display:grid;
-        grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
-        gap:12px;
-      ">
-        ${tables.map(t => {
-          const active = runningMap[t.NO];
-          const isRunning = !!active;
+    // ✅ Area wise grouping
+    const grouped = {};
+    (tables || []).forEach(t => {
+      const area = (t.Area || "Unassigned").trim();
+      if(!grouped[area]) grouped[area] = [];
+      grouped[area].push(t);
+    });
 
-          return `
-            <div style="
-              border-radius:12px;
-              padding:14px;
-             
-              background:${isRunning ? "#ffe5e5" : "#e9fbe9"};
-              border:2px solid ${isRunning ? "red" : "green"};
-              box-shadow:0 2px 6px rgba(0,0,0,0.08);
-            ">
-              <div style="font-size:22px;font-weight:bold;">
-                ${t.NO}
-              </div>
+    box.innerHTML = Object.keys(grouped).map(area => `
+      <div style="margin-bottom:20px;">
+        <div style="
+          font-size:18px;
+          font-weight:700;
+          margin-bottom:10px;
+          padding-bottom:6px;
+          border-bottom:2px solid #ddd;
+        ">
+          📍 ${area}
+        </div>
 
+        <div style="
+          display:grid;
+          grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+          gap:12px;
+        ">
+          ${grouped[area].map(t => {
+            const active = runningMap[t.NO];
+            const isRunning = !!active;
+
+            return `
               <div style="
-                margin-top:10px;
-                font-weight:bold;
-                color:${isRunning ? "red" : "green"};
+                border-radius:12px;
+                padding:14px;
+                background:${isRunning ? "#ffe5e5" : "#e9fbe9"};
+                border:2px solid ${isRunning ? "red" : "green"};
+                box-shadow:0 2px 6px rgba(0,0,0,0.08);
               ">
-                ${isRunning ? "🔴 Running" : "🟢 Free"}
+                <div style="font-size:22px;font-weight:bold;">
+                  ${t.NO}
+                </div>
+
+                <div style="
+                  margin-top:10px;
+                  font-weight:bold;
+                  color:${isRunning ? "red" : "green"};
+                ">
+                  ${isRunning ? "🔴 Running" : "🟢 Free"}
+                </div>
+
+                ${
+                  isRunning
+                    ? `
+                      <table style="
+                        width:100%;
+                        margin-top:8px;
+                        font-size:12px;
+                        border-collapse:collapse;
+                      ">
+                        <thead>
+                          <tr>
+                            <th style="text-align:left;">Order No</th>
+                            <th>Items</th>
+                            <th>Net</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          ${(active.Orders || []).map(o => `
+                            <tr>
+                              <td>${o.OrderNo}</td>
+                              <td style="text-align:center;">${o.ItemCount}</td>
+                              <td style="text-align:right;">${o.NetPayable}</td>
+                            </tr>
+                          `).join("")}
+                          <tr style="font-weight:bold;border-top:1px solid #ccc;">
+                            <td></td>
+                            <td>Total</td>
+                            <td style="text-align:right;">
+                              ${Number(active.Total || 0).toLocaleString()}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    `
+                    : ""
+                }
+
+                ${
+                  isRunning
+                    ? `
+                      <div style="text-align:center;margin-top:12px;">
+                        <button onclick="generateTableBill('${t.NO}')"
+                          style="
+                            background:#28a745;
+                            padding:8px 16px;
+                            font-weight:600;
+                            border-radius:8px;
+                          ">
+                          🧾 Generate Bill
+                        </button>
+                      </div>
+                    `
+                    : ""
+                }
               </div>
-
-              ${
-  isRunning
-    ? `
-      <table style="
-        width:100%;
-        margin-top:8px;
-        font-size:12px;
-        border-collapse:collapse;
-      ">
-        <thead>
-          <tr>
-            <th style="text-align:left;">Order No</th>
-            <th>Items</th>
-            <th>Net</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${(active.Orders || []).map(o => `
-            <tr>
-              <td>${o.OrderNo}</td>
-              <td style="text-align:center;">${o.ItemCount}</td>
-              <td style="text-align:right;">${o.NetPayable}</td>
-            </tr>
-          `).join("")}
-          <tr style="font-weight:bold;border-top:1px solid #ccc;">
-            <td></td>
-            <td>Total</td>
-            <td style="text-align:right;">
-  ${Number(active.Total || 0).toLocaleString()}
-</td>
-          </tr>
-        </tbody>
-      </table>
-    `
-    : ""
-}
-
-            </div>
-          `;
-        }).join("")}
+            `;
+          }).join("")}
+        </div>
       </div>
-    `;
+    `).join("");
   })
   .catch(err => {
     console.error(err);
     box.innerHTML = "Failed to load table status";
   });
 }
-
-
 
 function openTableModal(){
   const modal = document.getElementById("tableModal");
