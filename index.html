@@ -1361,7 +1361,7 @@ td:nth-child(8) { width: 220px; } /* Action */
   </div>
 
 <script>
-  const API_BASE_URL = "https://script.google.com/macros/s/AKfycbxe7LZ1o-PCtcrlOvHtxdnPpNAUejPw1YOqOvd_6ftZGZXuekar-QMLRFqHzjtteA37/exec";
+  const API_BASE_URL = "https://script.google.com/macros/s/AKfycbz9ZZR831KuA96YUAmW4z_OMuGyil1uKrN9_TxkINr8ivSG2hqLYyhAitv9SoCPQmGE/exec";
 
 // =========================
 // GET API
@@ -1617,8 +1617,6 @@ async function downloadTableQR(qrUrl, tableNo, btn){
     }
   }
 }
-
-
 function openAreaModal(btn){
   if(btn){
     btn.disabled = true;
@@ -1629,12 +1627,23 @@ function openAreaModal(btn){
   document.getElementById("newAreaLocation").value = "";
   document.getElementById("newAreaSequence").value = "";
 
-  document.getElementById("areaModal").classList.add("active");
+  apiGet("getAreas")
+    .then(rows => {
+      const nextSeq = (rows?.length || 0) + 1;
+      document.getElementById("newAreaSequence").value = nextSeq;
 
-  if(btn){
-    btn.innerHTML = btn.dataset.original || "+ Add Area";
-    btn.disabled = false;
-  }
+      document.getElementById("areaModal").classList.add("active");
+    })
+    .catch(err => {
+      console.error(err);
+      document.getElementById("areaModal").classList.add("active");
+    })
+    .finally(() => {
+      if(btn){
+        btn.innerHTML = btn.dataset.original || "+ Add Area";
+        btn.disabled = false;
+      }
+    });
 }
 
 function closeAreaModal(){
